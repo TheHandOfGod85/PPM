@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import env from './env'
 import morgan from 'morgan'
+import assetRoutes from './routes/asset'
 
 const app = express()
 
@@ -16,8 +17,6 @@ app.use(
   })
 )
 
-app.get('/', (req, res) => {
-  res.send('Hello pucchiacca bella')
-})
+app.use('/assets', assetRoutes)
 
 export default app
