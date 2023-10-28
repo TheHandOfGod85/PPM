@@ -1,10 +1,11 @@
 import { RequestHandler } from 'express'
-import AssetModel from '../models/asset'
 import { AssetDto } from '../dto/dtos'
+import { create, find } from '../services/asset.service'
 
-export const getAssets: RequestHandler = async (req, res, next) => {
+export const findAssetsHandler: RequestHandler = async (req, res, next) => {
   try {
-    const allAsseets = await AssetModel.find().exec()
+    const allAsseets = await find()
+
     res.status(200).json(allAsseets)
   } catch (error) {
     console.error(error)
@@ -12,7 +13,7 @@ export const getAssets: RequestHandler = async (req, res, next) => {
   }
 }
 
-export const createAsset: RequestHandler<
+export const createAssetHandler: RequestHandler<
   unknown,
   unknown,
   AssetDto,
@@ -20,7 +21,7 @@ export const createAsset: RequestHandler<
 > = async (req, res, next) => {
   const { name, description, serialNumber } = req.body
   try {
-    const newAsset = await AssetModel.create({
+    const newAsset = await create({
       name,
       description,
       serialNumber,

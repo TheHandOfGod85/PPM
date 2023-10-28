@@ -3,7 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import env from './env'
 import morgan from 'morgan'
-import assetRoutes from './routes/asset'
+import assetRoutes from './routes/asset.route'
 
 const app = express()
 

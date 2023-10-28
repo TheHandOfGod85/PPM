@@ -15,6 +15,6 @@ const assetSchema = new Schema(
   { timestamps: true }
 )
 
-type Asset = InferSchemaType<typeof assetSchema>
+type Asset = InferSchemaType<typeof assetSchema> 
 
 export default model<Asset>('Asset', assetSchema)
