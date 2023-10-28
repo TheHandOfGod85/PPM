@@ -8,8 +8,7 @@ export const findAssetsHandler: RequestHandler = async (req, res, next) => {
 
     res.status(200).json(allAsseets)
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error })
+    next(error)
   }
 }
 
@@ -28,7 +27,6 @@ export const createAssetHandler: RequestHandler<
     })
     res.status(201).json(newAsset)
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error })
+    next(error)
   }
 }
