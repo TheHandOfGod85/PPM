@@ -5,11 +5,18 @@ import { createAssetValidator } from '../validation/asset.validator'
 
 const router = express.Router()
 
-router.get('/', AssetController.findAssetsHandler)
-router.post(
-  '/',
-  validateRequestSchema(createAssetValidator),
-  AssetController.createAssetHandler
-)
+router
+  .route('/')
+
+  .get(AssetController.findAssetsHandler)
+  .post(
+    validateRequestSchema(createAssetValidator),
+    AssetController.createAssetHandler
+  )
+
+router
+  .route('/:id')
+  .get(AssetController.findAssetHandler)
+  .post(AssetController.findByIdAndUpdateHandler)
 
 export default router

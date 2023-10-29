@@ -1,6 +1,6 @@
 import * as yup from 'yup'
 
-const assetSchema = yup.object({
+const createaAssetSchema = yup.object({
   name: yup
     .string()
     .required('Name is required')
@@ -9,8 +9,10 @@ const assetSchema = yup.object({
   serialNumber: yup.string().required('Serial Number is required'),
 })
 
-export type AssetBody = yup.InferType<typeof assetSchema>
+export type AssetBody = yup.InferType<typeof createaAssetSchema>
 
 export const createAssetValidator = yup.object({
-  body: assetSchema,
+  body: createaAssetSchema,
 })
+
+//###############################################################
