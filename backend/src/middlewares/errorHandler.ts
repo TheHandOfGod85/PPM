@@ -10,6 +10,10 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = err.status
     errorMessage = err.message
   }
+  if (err.name === 'ValidationError') {
+    statusCode = 400
+    errorMessage = err.message
+  }
 
   res.status(statusCode).json({ error: errorMessage })
 }
