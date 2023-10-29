@@ -1,4 +1,5 @@
 import mongoose, { InferSchemaType, Schema, model } from 'mongoose'
+import uniqueValidator from 'mongoose-unique-validator'
 
 const assetSchema = new Schema(
   {
@@ -15,6 +16,8 @@ const assetSchema = new Schema(
   { timestamps: true }
 )
 
-type Asset = InferSchemaType<typeof assetSchema> 
+type Asset = InferSchemaType<typeof assetSchema>
+
+assetSchema.plugin(uniqueValidator, { message: 'Expected to be unique.' })
 
 export default model<Asset>('Asset', assetSchema)

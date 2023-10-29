@@ -1,10 +1,11 @@
 import { RequestHandler } from 'express'
-import { AssetDto } from '../dto/dtos'
-import { create, find } from '../services/asset.service'
+import AssetModel from '../models/asset'
+import mongoose from 'mongoose'
+import { AssetBody } from '../validation/asset.validator'
 
 export const findAssetsHandler: RequestHandler = async (req, res, next) => {
   try {
-    const allAsseets = await find()
+    const allAsseets = await AssetModel.find().exec()
 
     res.status(200).json(allAsseets)
   } catch (error) {
@@ -15,12 +16,15 @@ export const findAssetsHandler: RequestHandler = async (req, res, next) => {
 export const createAssetHandler: RequestHandler<
   unknown,
   unknown,
-  AssetDto,
+  AssetBody,
   unknown
 > = async (req, res, next) => {
   const { name, description, serialNumber } = req.body
+  const _id = new mongoose.Types.ObjectId()
+
   try {
-    const newAsset = await create({
+    const newAsset = await AssetModel.create({
+      _id,
       name,
       description,
       serialNumber,
