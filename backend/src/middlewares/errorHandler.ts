@@ -5,22 +5,17 @@ import { isHttpError } from 'http-errors'
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.error(err)
   let statusCode = 500
-  let errorMessage =
-    err.name === 'ValidationError' ? [] : ['An unknown error occurred']
+  let errorMessage = 'An unknown error occurred'
   if (isHttpError(err)) {
     statusCode = err.status
-    errorMessage.push(err.message)
+    errorMessage = err.message
   }
   if (err.name === 'ValidationError') {
     for (const field in err.errors) {
       const { kind, path, value } = err.errors[field]
-      errorMessage.push(`${path} is ${kind}.`)
+      errorMessage = `${path} is ${kind}.`
     }
     statusCode = 400
-  }
-  if (err.name === 'CastError') {
-    statusCode = 400
-    errorMessage[0] = 'Not a valid id'
   }
 
   res.status(statusCode).json({ errors: errorMessage })

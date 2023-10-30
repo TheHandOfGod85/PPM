@@ -1,7 +1,10 @@
 import express from 'express'
 import * as AssetController from '../controllers/asset.controller'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
-import { createAssetValidator } from '../validation/asset.validator'
+import {
+  createAssetValidator,
+  idAssetValidator,
+} from '../validation/asset.validator'
 
 const router = express.Router()
 
@@ -16,7 +19,17 @@ router
 
 router
   .route('/:id')
-  .get(AssetController.findAssetHandler)
-  .post(AssetController.findByIdAndUpdateHandler)
+  .get(
+    validateRequestSchema(idAssetValidator),
+    AssetController.findAssetHandler
+  )
+  .post(
+    validateRequestSchema(idAssetValidator),
+    AssetController.findByIdAndUpdateHandler
+  )
+  .delete(
+    validateRequestSchema(idAssetValidator),
+    AssetController.deleteAssetHandler
+  )
 
 export default router

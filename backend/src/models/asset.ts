@@ -13,7 +13,7 @@ const assetSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 )
 
 type Asset = InferSchemaType<typeof assetSchema>

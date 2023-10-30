@@ -1,12 +1,12 @@
 import { RequestHandler } from 'express'
 import AssetModel from '../models/asset'
 import mongoose from 'mongoose'
-import { AssetBody } from '../validation/asset.validator'
+import { AssetBody, IdAssetParams } from '../validation/asset.validator'
 import createHttpError from 'http-errors'
 
 export const findAssetsHandler: RequestHandler = async (req, res, next) => {
   try {
-    const allAsseets = await AssetModel.find().exec()
+    const allAsseets = await AssetModel.find().select(['-__v']).exec()
 
     res.status(200).json(allAsseets)
   } catch (error) {
@@ -14,12 +14,17 @@ export const findAssetsHandler: RequestHandler = async (req, res, next) => {
   }
 }
 
-export const findAssetHandler: RequestHandler = async (req, res, next) => {
+export const findAssetHandler: RequestHandler<
+  IdAssetParams,
+  unknown,
+  unknown,
+  unknown
+> = async (req, res, next) => {
   try {
-    const _id = req.params.id
-    const asset = await AssetModel.findById({ _id })
+    const { id } = req.params
+    const asset = await AssetModel.findById({ _id: id }).select(['-__v'])
     if (!asset) {
-      throw createHttpError(404, `No asset found with id ${_id}`)
+      throw createHttpError(404, `No asset found with id ${id}`)
     }
     res.status(200).json(asset)
   } catch (error) {
@@ -28,7 +33,7 @@ export const findAssetHandler: RequestHandler = async (req, res, next) => {
 }
 
 export const findByIdAndUpdateHandler: RequestHandler<
-  { id: string },
+  IdAssetParams,
   unknown,
   AssetBody,
   unknown
@@ -38,7 +43,7 @@ export const findByIdAndUpdateHandler: RequestHandler<
     const asset = await AssetModel.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
-    })
+    }).select(['-__v'])
     if (!asset) {
       throw createHttpError(404, `No asset found with id ${id}`)
     }
@@ -64,10 +69,28 @@ export const createAssetHandler: RequestHandler<
       description,
       serialNumber,
     })
+    console.log(newAsset)
     res.status(201).json(newAsset)
   } catch (error) {
     next(error)
   }
 }
 
-// TODO deleteAssetHandler
+export const deleteAssetHandler: RequestHandler<
+  IdAssetParams,
+  unknown,
+  unknown,
+  unknown
+> = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const asset = await AssetModel.findById({ _id: id }).select(['-__v'])
+    if (!asset) {
+      throw createHttpError(404, `No asset found with id ${id}`)
+    }
+    await asset.deleteOne()
+    res.sendStatus(204)
+  } catch (error) {
+    next(error)
+  }
+}
