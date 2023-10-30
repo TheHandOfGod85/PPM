@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon src/server.ts",
-    "start:prod": " SET NODE_ENV=production & node build/server.ts",
-    "build": "rm -rf build/ && tsc",
+    "start:prod": " SET NODE_ENV=production & node dist/src/server.js",
+    "build": "rm -rf dist/ && tsc",
     "lint": "eslint . --ext .ts",
     "test": "jest"
   },
