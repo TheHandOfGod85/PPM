@@ -20,15 +20,15 @@ export const findAssetHandler: RequestHandler<
   unknown
 > = async (req, res, next) => {
   try {
-    const { id } = req.params
-    const asset = await AssetModel.findById({ _id: id })
+    const { assetId } = req.params
+    const asset = await AssetModel.findById({ _id: assetId })
       .populate({
         path: 'parts',
         select: ['name', 'manufacturer', 'partNumber', '-asset'],
       })
       .exec()
     if (!asset) {
-      throw createHttpError(404, `No asset found with id ${id}`)
+      throw createHttpError(404, `No asset found with id ${assetId}`)
     }
     res.status(200).json(asset)
   } catch (error) {
@@ -42,14 +42,18 @@ export const findByIdAndUpdateHandler: RequestHandler<
   AssetBody,
   unknown
 > = async (req, res, next) => {
-  const { id } = req.params
+  const { assetId } = req.params
   try {
-    const asset = await AssetModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    }).select(['-__v'])
+    const asset = await AssetModel.findByIdAndUpdate(
+      { _id: assetId },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select(['-__v'])
     if (!asset) {
-      throw createHttpError(404, `No asset found with id ${id}`)
+      throw createHttpError(404, `No asset found with id ${assetId}`)
     }
     res.status(200).json(asset)
   } catch (error) {
@@ -77,11 +81,11 @@ export const deleteAssetHandler: RequestHandler<
   unknown,
   unknown
 > = async (req, res, next) => {
-  const { id } = req.params
+  const { assetId } = req.params
   try {
-    const asset = await AssetModel.findById({ _id: id }).select(['-__v'])
+    const asset = await AssetModel.findById({ _id: assetId }).select(['-__v'])
     if (!asset) {
-      throw createHttpError(404, `No asset found with id ${id}`)
+      throw createHttpError(404, `No asset found with id ${assetId}`)
     }
     await asset.deleteOne()
     res.sendStatus(204)

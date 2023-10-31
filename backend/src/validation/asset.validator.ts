@@ -18,7 +18,7 @@ export const createAssetValidator = yup.object({
 //###############################################################
 export const idAssetValidator = yup.object({
   params: yup.object({
-    id: objectIdSchema.required(),
+    assetId: objectIdSchema,
   }),
 })
 

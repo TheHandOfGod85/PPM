@@ -1,16 +1,37 @@
+import { updatePartValidator } from './../validation/part.validator'
 import express from 'express'
 import * as PartController from '../controllers/part.controller'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
-import { createAssetValidator } from '../validation/asset.validator'
+import {
+  assetIdPartValidator,
+  createPartValidator,
+  idPartValidator,
+} from '../validation/part.validator'
 
-const router = express.Router()
+const router = express.Router({ mergeParams: true })
 
 router
   .route('/')
+  .get(
+    validateRequestSchema(assetIdPartValidator),
+    PartController.findPartsHandler
+  )
   .post(
-    validateRequestSchema(createAssetValidator),
+    validateRequestSchema(createPartValidator),
     PartController.createPartHandler
   )
-  .get(PartController.findPartsHandler)
+
+router
+  .route('/:partId')
+  .get(validateRequestSchema(idPartValidator), PartController.findPartHandler)
+  .delete(
+    validateRequestSchema(assetIdPartValidator),
+    validateRequestSchema(idPartValidator),
+    PartController.deletePartHandler
+  )
+  .patch(
+    validateRequestSchema(updatePartValidator),
+    PartController.updatePartHandler
+  )
 
 export default router

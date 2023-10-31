@@ -10,7 +10,6 @@ const partSchema = new Schema(
     asset: {
       type: mongoose.Schema.ObjectId,
       ref: 'Asset',
-      required: true,
     },
   },
   {

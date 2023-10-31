@@ -6,8 +6,11 @@ import {
   idAssetValidator,
   updateAssetvalidator,
 } from '../validation/asset.validator'
-
+import partRoute from '../routes/part.route'
 const router = express.Router()
+
+router.use('/:assetId/part', partRoute)
+router.use('/:assetId/part/:partId', partRoute)
 
 router
   .route('/')
@@ -19,12 +22,12 @@ router
   )
 
 router
-  .route('/:id')
+  .route('/:assetId')
   .get(
     validateRequestSchema(idAssetValidator),
     AssetController.findAssetHandler
   )
-  .post(
+  .patch(
     validateRequestSchema(updateAssetvalidator),
     AssetController.findByIdAndUpdateHandler
   )
