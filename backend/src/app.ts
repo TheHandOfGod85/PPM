@@ -6,6 +6,7 @@ import morgan from 'morgan'
 import assetRoutes from './routes/asset.route'
 import createHttpError from 'http-errors'
 import errorHandler from './middlewares/errorHandler'
+import partRoute from './routes/part.route'
 
 const app = express()
 
@@ -27,6 +28,7 @@ if (env.NODE_ENV === 'development') {
 console.log('Environment in ' + env.NODE_ENV)
 
 app.use('/assets', assetRoutes)
+app.use('/part', partRoute)
 
 // not found request url error handling
 app.use((req, res, next) => next(createHttpError(404, 'Endpoint not found')))

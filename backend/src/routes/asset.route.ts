@@ -4,6 +4,7 @@ import validateRequestSchema from '../middlewares/validateRequestSchema'
 import {
   createAssetValidator,
   idAssetValidator,
+  updateAssetvalidator,
 } from '../validation/asset.validator'
 
 const router = express.Router()
@@ -24,7 +25,7 @@ router
     AssetController.findAssetHandler
   )
   .post(
-    validateRequestSchema(idAssetValidator),
+    validateRequestSchema(updateAssetvalidator),
     AssetController.findByIdAndUpdateHandler
   )
   .delete(

@@ -1,12 +1,11 @@
 import { RequestHandler } from 'express'
 import AssetModel from '../models/asset'
-import mongoose from 'mongoose'
 import { AssetBody, IdAssetParams } from '../validation/asset.validator'
 import createHttpError from 'http-errors'
 
 export const findAssetsHandler: RequestHandler = async (req, res, next) => {
   try {
-    const allAsseets = await AssetModel.find().select(['-__v']).exec()
+    const allAsseets = await AssetModel.find().select('-__v').exec()
 
     res.status(200).json(allAsseets)
   } catch (error) {
@@ -22,7 +21,12 @@ export const findAssetHandler: RequestHandler<
 > = async (req, res, next) => {
   try {
     const { id } = req.params
-    const asset = await AssetModel.findById({ _id: id }).select(['-__v'])
+    const asset = await AssetModel.findById({ _id: id })
+      .populate({
+        path: 'parts',
+        select: ['name', 'manufacturer', 'partNumber', '-asset'],
+      })
+      .exec()
     if (!asset) {
       throw createHttpError(404, `No asset found with id ${id}`)
     }
@@ -59,17 +63,8 @@ export const createAssetHandler: RequestHandler<
   AssetBody,
   unknown
 > = async (req, res, next) => {
-  const { name, description, serialNumber } = req.body
-  const _id = new mongoose.Types.ObjectId()
-
   try {
-    const newAsset = await AssetModel.create({
-      _id,
-      name,
-      description,
-      serialNumber,
-    })
-    console.log(newAsset)
+    const newAsset = await AssetModel.create(req.body)
     res.status(201).json(newAsset)
   } catch (error) {
     next(error)

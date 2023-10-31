@@ -34,3 +34,14 @@ export const queryAssetValidator = yup.object({
 export type GetAssetQuery = yup.InferType<typeof queryAssetValidator>['query']
 
 //###############################################################
+
+export const updateAssetvalidator = yup.object({
+  params: yup.object({
+    _id: objectIdSchema.required(),
+  }),
+  body: assetBodySchema,
+})
+export type UpdateAssetParams = yup.InferType<
+  typeof updateAssetvalidator
+>['params']
+//###############################################################
