@@ -25,7 +25,6 @@ router
   .route('/:partId')
   .get(validateRequestSchema(idPartValidator), PartController.findPartHandler)
   .delete(
-    validateRequestSchema(assetIdPartValidator),
     validateRequestSchema(idPartValidator),
     PartController.deletePartHandler
   )

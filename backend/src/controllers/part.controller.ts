@@ -37,7 +37,7 @@ export const findPartsHandler: RequestHandler<
     if (!asset) {
       throw createHttpError(404, `No asset found with ID ${req.params.assetId}`)
     }
-    const allParts = await PartModel.find(filter)
+    const allParts = await PartModel.find(filter).select({ asset: 0 })
     res.status(200).json(allParts)
   } catch (error) {
     next(error)

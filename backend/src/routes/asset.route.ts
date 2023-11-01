@@ -10,7 +10,6 @@ import partRoute from '../routes/part.route'
 const router = express.Router()
 
 router.use('/:assetId/part', partRoute)
-router.use('/:assetId/part/:partId', partRoute)
 
 router
   .route('/')
