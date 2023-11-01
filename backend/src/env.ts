@@ -6,6 +6,7 @@ const env = cleanEnv(process.env, {
   WEBSITE_URL: str(),
   SERVER_URL: str(),
   NODE_ENV: str(),
+  SESSION_SECRET: str(),
 })
 
 export default env

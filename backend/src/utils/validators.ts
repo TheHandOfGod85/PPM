@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { validateBufferMIMEType } from 'validate-image-type'
 import * as yup from 'yup'
+import 'multer'
 
 export const imageFileSchema = yup
   .mixed<Express.Multer.File>()
@@ -21,5 +22,5 @@ export const objectIdSchema = yup
   .test(
     'is-objectid',
     '${path} is not a valid ObjectId',
-    (value) => !value || mongoose.Types.ObjectId.isValid(value) 
+    (value) => !value || mongoose.Types.ObjectId.isValid(value)
   )

@@ -7,12 +7,23 @@ import assetRoutes from './routes/asset.route'
 import createHttpError from 'http-errors'
 import errorHandler from './middlewares/errorHandler'
 import partRoute from './routes/part.route'
+import userRoute from './routes/user.route'
+import session from 'express-session'
+import sessionConfig from './config/session'
+import passport from 'passport'
+import './config/passport'
 
 const app = express()
+console.log('Environment in ' + env.NODE_ENV)
+
+// developement logging
+if (env.NODE_ENV === 'production') {
+  app.use(morgan('combined'))
+} else {
+  app.use(morgan('dev'))
+}
 
 app.use(express.json())
-
-app.use(morgan('dev'))
 
 app.use(
   cors({
@@ -20,15 +31,12 @@ app.use(
   })
 )
 
-// developement logging
-if (env.NODE_ENV === 'development') {
-  app.use(morgan('dev'))
-}
-
-console.log('Environment in ' + env.NODE_ENV)
+app.use(session(sessionConfig))
+app.use(passport.authenticate('session'))
 
 app.use('/assets', assetRoutes)
 app.use('/part', partRoute)
+app.use('/user', userRoute)
 
 // not found request url error handling
 app.use((req, res, next) => next(createHttpError(404, 'Endpoint not found')))
