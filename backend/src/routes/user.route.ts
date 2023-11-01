@@ -6,6 +6,8 @@ import passport from 'passport'
 
 const router = express.Router()
 
+router.get('/me', UserController.getAuthenticatedUser)
+
 router.post(
   '/signup',
   validateRequestSchema(signUpSchema),
@@ -14,5 +16,7 @@ router.post(
 router.post('/login', passport.authenticate('local'), (req, res) =>
   res.status(200).json(req.user)
 )
+
+router.post('/logout', UserController.logOut)
 
 export default router
