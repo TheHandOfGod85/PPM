@@ -12,6 +12,7 @@ import session from 'express-session'
 import sessionConfig from './config/session'
 import passport from 'passport'
 import './config/passport'
+import requireAuth from './middlewares/requireAuth'
 
 const app = express()
 console.log('Environment in ' + env.NODE_ENV)
@@ -34,8 +35,8 @@ app.use(
 app.use(session(sessionConfig))
 app.use(passport.authenticate('session'))
 
-app.use('/assets', assetRoutes)
-app.use('/part', partRoute)
+app.use('/assets', requireAuth, assetRoutes)
+app.use('/part', requireAuth, partRoute)
 app.use('/user', userRoute)
 
 // not found request url error handling

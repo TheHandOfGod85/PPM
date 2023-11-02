@@ -7,6 +7,7 @@ import {
   updateAssetvalidator,
 } from '../validation/asset.validator'
 import partRoute from '../routes/part.route'
+
 const router = express.Router()
 
 router.use('/:assetId/part', partRoute)
