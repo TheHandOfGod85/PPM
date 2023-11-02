@@ -2,22 +2,14 @@ import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import UserModel from '../models/user'
 import bcrypt from 'bcrypt'
-// import mongoose from 'mongoose'
+import mongoose from 'mongoose'
 
 passport.serializeUser((user, cb) => {
   cb(null, { _id: user._id, roles: user.role })
 })
 
-passport.deserializeUser(async (userId: string, cb) => {
-  try {
-    const user = await UserModel.findById(userId)
-    if (!user) {
-      return cb(null, false)
-    }
-    return cb(null, user)
-  } catch (error) {
-    cb(error)
-  }
+passport.deserializeUser((user: Express.User, cb) => {
+  cb(null, { _id: new mongoose.Types.ObjectId(user._id), role: user.role })
 })
 
 passport.use(
