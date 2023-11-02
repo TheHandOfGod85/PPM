@@ -4,6 +4,7 @@ declare global {
   namespace Express {
     interface User {
       _id: mongoose.Types.ObjectId
+      role: string
     }
   }
 }

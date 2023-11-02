@@ -24,7 +24,7 @@ export const signup: RequestHandler<
   SignUpBody,
   unknown
 > = async (req, res, next) => {
-  const { username, email, password: passwordRaw } = req.body
+  const { username, email, password: passwordRaw, role } = req.body
   try {
     const existingUsername = await UserModel.findOne({ username })
       .collation({
@@ -42,6 +42,7 @@ export const signup: RequestHandler<
       displayName: username,
       email,
       password: passwordHashed,
+      role,
     })
     const newUser = result.toObject()
     delete newUser.password

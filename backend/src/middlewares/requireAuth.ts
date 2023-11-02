@@ -1,7 +1,8 @@
-import { RequestHandler } from 'express'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createHttpError from 'http-errors'
+import assertIsDefined from '../utils/assertDefined'
 
-const requireAuth: RequestHandler = (req, res, next) => {
+export const requireAuth: RequestHandler = (req, res, next) => {
   if (req.user) {
     next()
   } else {
@@ -9,4 +10,15 @@ const requireAuth: RequestHandler = (req, res, next) => {
   }
 }
 
-export default requireAuth
+export const restrictTo = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    assertIsDefined(req.user)
+    if (!roles.includes(req.user.role)) {
+      throw createHttpError(
+        403,
+        'You do not have the permission to perform this action'
+      )
+    }
+    next()
+  }
+}

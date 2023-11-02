@@ -36,7 +36,7 @@ export const findAssetHandler: RequestHandler<
   }
 }
 
-export const findByIdAndUpdateHandler: RequestHandler<
+export const findByIdAndUpdateAssetHandler: RequestHandler<
   IdAssetParams,
   unknown,
   AssetBody,

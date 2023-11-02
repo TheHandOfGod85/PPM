@@ -18,6 +18,7 @@ export const signUpSchema = yup.object({
     displayName: yup.string(),
     about: yup.string(),
     password: passwordSchema,
+    role: yup.string(),
   }),
 })
 export type SignUpBody = yup.InferType<typeof signUpSchema>['body']

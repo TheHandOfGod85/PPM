@@ -7,6 +7,7 @@ import {
   createPartValidator,
   idPartValidator,
 } from '../validation/part.validator'
+import { restrictTo } from '../middlewares/requireAuth'
 
 const router = express.Router({ mergeParams: true })
 
@@ -17,6 +18,7 @@ router
     PartController.findPartsHandler
   )
   .post(
+    restrictTo('admin'),
     validateRequestSchema(createPartValidator),
     PartController.createPartHandler
   )
@@ -25,10 +27,12 @@ router
   .route('/:partId')
   .get(validateRequestSchema(idPartValidator), PartController.findPartHandler)
   .delete(
+    restrictTo('admin'),
     validateRequestSchema(idPartValidator),
     PartController.deletePartHandler
   )
   .patch(
+    restrictTo('admin'),
     validateRequestSchema(updatePartValidator),
     PartController.updatePartHandler
   )

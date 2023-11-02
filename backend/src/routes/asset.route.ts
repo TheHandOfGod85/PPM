@@ -7,6 +7,7 @@ import {
   updateAssetvalidator,
 } from '../validation/asset.validator'
 import partRoute from '../routes/part.route'
+import { restrictTo } from '../middlewares/requireAuth'
 
 const router = express.Router()
 
@@ -17,6 +18,7 @@ router
 
   .get(AssetController.findAssetsHandler)
   .post(
+    restrictTo('admin'),
     validateRequestSchema(createAssetValidator),
     AssetController.createAssetHandler
   )
@@ -28,10 +30,12 @@ router
     AssetController.findAssetHandler
   )
   .patch(
+    restrictTo('admin'),
     validateRequestSchema(updateAssetvalidator),
-    AssetController.findByIdAndUpdateHandler
+    AssetController.findByIdAndUpdateAssetHandler
   )
   .delete(
+    restrictTo('admin'),
     validateRequestSchema(idAssetValidator),
     AssetController.deleteAssetHandler
   )

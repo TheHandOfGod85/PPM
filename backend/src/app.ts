@@ -12,7 +12,7 @@ import session from 'express-session'
 import sessionConfig from './config/session'
 import passport from 'passport'
 import './config/passport'
-import requireAuth from './middlewares/requireAuth'
+import { requireAuth } from './middlewares/requireAuth'
 
 const app = express()
 console.log('Environment in ' + env.NODE_ENV)
