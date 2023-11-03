@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
 
 passport.serializeUser((user, cb) => {
-  cb(null, { _id: user._id, roles: user.role })
+  cb(null, { _id: user._id, role: user.role })
 })
 
 passport.deserializeUser((user: Express.User, cb) => {
