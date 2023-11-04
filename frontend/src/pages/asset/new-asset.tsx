@@ -2,6 +2,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import * as AssetApi from '@/network/api/asset.api'
 import FormInputField from '@/components/form/FormInputField'
+import LoadingButton from '@/components/LoadingButton'
 
 interface CreateAssetFormData {
   name: string
@@ -13,7 +14,7 @@ export default function CreateNewAsset() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CreateAssetFormData>()
   async function onSubmit(input: CreateAssetFormData) {
     try {
@@ -53,9 +54,9 @@ export default function CreateNewAsset() {
             error={errors.serialNumber}
           />
         </div>
-        <button className="btn btn-accent mt-4 w-full" type="submit">
+        <LoadingButton isLoading={isSubmitting} type="submit">
           Create asset
-        </button>
+        </LoadingButton>
       </form>
     </>
   )
