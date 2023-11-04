@@ -18,7 +18,7 @@ router
 
   .get(AssetController.findAssetsHandler)
   .post(
-    restrictTo('admin'),
+    // restrictTo('admin'),
     validateRequestSchema(createAssetValidator),
     AssetController.createAssetHandler
   )
@@ -30,12 +30,12 @@ router
     AssetController.findAssetHandler
   )
   .patch(
-    restrictTo('admin'),
+    // restrictTo('admin'),
     validateRequestSchema(updateAssetvalidator),
     AssetController.findByIdAndUpdateAssetHandler
   )
   .delete(
-    restrictTo('admin'),
+    // restrictTo('admin'),
     validateRequestSchema(idAssetValidator),
     AssetController.deleteAssetHandler
   )

@@ -35,7 +35,8 @@ app.use(
 app.use(session(sessionConfig))
 app.use(passport.authenticate('session'))
 
-app.use('/assets', requireAuth, assetRoutes)
+// app.use('/assets', requireAuth, assetRoutes)
+app.use('/assets', assetRoutes)
 app.use('/part', requireAuth, partRoute)
 app.use('/user', userRoute)
 
