@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import { objectIdSchema } from '../utils/validators'
+import { imageFileSchema, objectIdSchema } from '../utils/validators'
 
 //###############################################################
 const partBodySchema = yup.object({
@@ -7,13 +7,13 @@ const partBodySchema = yup.object({
   description: yup.string().max(500),
   partNumber: yup.string().required(),
   manufacturer: yup.string().required(),
-  asset: objectIdSchema,
 })
 export type PartBody = yup.InferType<typeof partBodySchema>
 //###############################################################
 
 export const createPartValidator = yup.object({
   body: partBodySchema,
+  partImage: imageFileSchema,
 })
 //###############################################################
 export const idPartValidator = yup.object({
@@ -30,7 +30,7 @@ export const assetIdPartValidator = yup.object({
   }),
 })
 
-export type AsseetIdPartParams = yup.InferType<
+export type AssetIdPartParams = yup.InferType<
   typeof assetIdPartValidator
 >['params']
 //###############################################################

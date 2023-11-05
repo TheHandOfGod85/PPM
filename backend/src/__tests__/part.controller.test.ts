@@ -13,6 +13,7 @@ import {
 } from '../__helpers__/mongodb.memory.test.helper'
 import request from 'supertest'
 import app from '../app'
+import mongoose from 'mongoose'
 
 const signupCredentials = {
   username: 'admin',
@@ -168,11 +169,11 @@ describe('partController test suite', () => {
         serialNumber: 'pppspspd',
       }
 
-      await request(app)
+      const response3 = await request(app)
         .post('/assets')
         .send(asset)
         .set('Cookie', authenticationCookie)
-      const partId = '653fea85466d065471a131a5'
+      const partId = new mongoose.Types.ObjectId('6547d71f52ab4ac0ea451405')
       const part = {
         _id: partId,
         name: 'bearing',
@@ -180,7 +181,7 @@ describe('partController test suite', () => {
         partNumber: 'pppspspd3',
         manufacturer: 'Mozzi',
       }
-      await request(app)
+      const response2 = await request(app)
         .post('/assets/' + id + '/part')
         .set('Cookie', authenticationCookie)
         .send(part)

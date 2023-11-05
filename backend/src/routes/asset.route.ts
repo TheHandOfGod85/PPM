@@ -11,7 +11,7 @@ import { restrictTo } from '../middlewares/requireAuth'
 
 const router = express.Router()
 
-router.use('/:assetId/part', partRoute)
+router.use('/:assetId/part', validateRequestSchema(idAssetValidator), partRoute)
 
 router
   .route('/')
@@ -19,6 +19,7 @@ router
   .get(AssetController.findAssetsHandler)
   .post(
     // restrictTo('admin'),
+
     validateRequestSchema(createAssetValidator),
     AssetController.createAssetHandler
   )

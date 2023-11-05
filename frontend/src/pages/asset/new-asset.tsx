@@ -18,7 +18,7 @@ export default function CreateNewAsset() {
   } = useForm<CreateAssetFormData>()
   async function onSubmit(input: CreateAssetFormData) {
     try {
-      const response = await AssetApi.CreateAsset(input)
+      const response = await AssetApi.createAsset(input)
       console.log(process.env.NEXT_PUBLIC_BACKEND_URL)
       alert('Asset created successfully')
     } catch (error: any) {

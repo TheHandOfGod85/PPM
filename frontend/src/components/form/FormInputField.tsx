@@ -5,6 +5,7 @@ interface FormInputFieldProps {
   label?: string
   textarea?: boolean
   error?: FieldError
+  isFile?: boolean
 }
 
 export default function FormInputField({
@@ -12,6 +13,7 @@ export default function FormInputField({
   label,
   textarea,
   error,
+  isFile,
   ...props
 }: FormInputFieldProps & ComponentProps<'input'> & ComponentProps<'textarea'>) {
   return (
@@ -39,8 +41,11 @@ export default function FormInputField({
           <input
             {...register}
             {...props}
-            type="text"
-            className="input input-bordered input-md"
+            className={
+              isFile
+                ? 'file-input file-input-bordered file-input-md'
+                : 'input input-bordered input-md'
+            }
           />
           {error && (
             <p className=" mt-2 ml-2 text-sm text-error">{error?.message}</p>

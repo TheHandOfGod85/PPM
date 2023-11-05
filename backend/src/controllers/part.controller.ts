@@ -1,5 +1,5 @@
 import {
-  AsseetIdPartParams,
+  AssetIdPartParams,
   IdPartParams,
   PartBody,
   UpdatePartParams,
@@ -9,20 +9,53 @@ import PartModel from '../models/part'
 import AssetModel from '../models/asset'
 import createHttpError from 'http-errors'
 import 'express-async-errors'
+import mongoose from 'mongoose'
+import sharp from 'sharp'
+import env from '../env'
 
 export const createPartHandler: RequestHandler<
-  AsseetIdPartParams,
+  AssetIdPartParams,
   unknown,
   PartBody,
   unknown
 > = async (req, res) => {
-  if (!req.body.asset) req.body.asset = req.params.assetId
-  const newPart = await PartModel.create(req.body)
+  const assetId = req.params.assetId
+  const asset = await AssetModel.findById(assetId)
+  if (!asset) {
+    throw createHttpError(404, `No asset found with ID ${assetId}`)
+  }
+  let newPart
+  const { manufacturer, name, partNumber, description } = req.body
+  const partImage = req.file
+  const partId = new mongoose.Types.ObjectId()
+  if (partImage) {
+    const partImagePath = `/uploads/part-images/${partImage?.originalname}-${partId}.png`
+    await sharp(partImage?.buffer).resize(700, 450).toFile(`./${partImagePath}`)
+    newPart = await PartModel.create({
+      _id: partId,
+      name,
+      description,
+      partNumber,
+      manufacturer,
+      asset: assetId,
+      imageUrl: `${env.SERVER_URL}${partImagePath}`,
+    })
+  } else {
+    newPart = await PartModel.create({
+      _id: partId,
+      name,
+      description,
+      partNumber,
+      manufacturer,
+      asset: assetId,
+    })
+  }
+
   res.status(201).json(newPart)
 }
 
 export const findPartsHandler: RequestHandler<
-  AsseetIdPartParams,
+  AssetIdPartParams,
   unknown,
   unknown,
   unknown
@@ -74,7 +107,7 @@ export const findPartHandler: RequestHandler<
   unknown
 > = async (req, res) => {
   const { partId } = req.params
-  const part = await PartModel.findById({ _id: partId })
+  const part = await PartModel.findOne({ _id: partId })
   if (!part) {
     throw createHttpError(404, `No part found with ID ${partId}`)
   }

@@ -17,6 +17,13 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     }
     statusCode = 400
   }
+  // if (err.name === 'CastError') {
+  //   for (const field in err.errors) {
+  //     const { path } = err.errors[field]
+  //     errorMessage = `${path} is not an ObjectId`
+  //   }
+  //   statusCode = 400
+  // }
 
   res.status(statusCode).json({ errors: errorMessage })
 }

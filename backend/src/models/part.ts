@@ -7,6 +7,7 @@ const partSchema = new Schema(
     description: String,
     manufacturer: { type: String, required: true },
     partNumber: { type: String, required: true, unique: true },
+    imageUrl: { type: String },
     asset: {
       type: mongoose.Schema.ObjectId,
       ref: 'Asset',

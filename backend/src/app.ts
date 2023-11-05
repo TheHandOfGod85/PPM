@@ -35,9 +35,12 @@ app.use(
 app.use(session(sessionConfig))
 app.use(passport.authenticate('session'))
 
+app.use('/uploads/part-images', express.static('uploads/part-images'))
+
 // app.use('/assets', requireAuth, assetRoutes)
 app.use('/assets', assetRoutes)
-app.use('/part', requireAuth, partRoute)
+// app.use('/part', requireAuth, partRoute)
+app.use('/part', partRoute)
 app.use('/user', userRoute)
 
 // not found request url error handling
