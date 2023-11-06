@@ -28,8 +28,9 @@ export const createPartHandler: RequestHandler<
   const { manufacturer, name, partNumber, description } = req.body
   const partImage = req.file
   const partId = new mongoose.Types.ObjectId()
+  const fileName = partImage?.originalname.replace(/\.[^/.]+$/, '')
   if (partImage) {
-    const partImagePath = `/uploads/part-images/${partImage?.originalname}-${partId}.png`
+    const partImagePath = `/uploads/part-images/${fileName}-${partId}.png`
     await sharp(partImage?.buffer).resize(700, 450).toFile(`./${partImagePath}`)
     newPart = await PartModel.create({
       _id: partId,

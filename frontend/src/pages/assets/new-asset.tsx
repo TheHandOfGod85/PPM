@@ -4,6 +4,7 @@ import * as AssetApi from '@/network/api/asset.api'
 import FormInputField from '@/components/form/FormInputField'
 import LoadingButton from '@/components/LoadingButton'
 import { useRouter } from 'next/router'
+import GoBackButton from '@/components/GoBackButton'
 
 interface CreateAssetFormData {
   name: string
@@ -30,9 +31,7 @@ export default function CreateNewAsset() {
   return (
     <>
       <div className="container mx-auto max-w-[1000px] px-2">
-        <h1 className="font-extrabold text-2xl text-center mb-5">
-          Create new asset
-        </h1>
+        <h1 className="title">Create new asset</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="join join-vertical w-full gap-5">
             <FormInputField
@@ -56,9 +55,13 @@ export default function CreateNewAsset() {
               error={errors.serialNumber}
             />
           </div>
-          <LoadingButton isLoading={isSubmitting} type="submit">
-            Create asset
-          </LoadingButton>
+          <div className="flex flex-row items-center justify-between">
+            <LoadingButton isLoading={isSubmitting} type="submit">
+              Create asset
+            </LoadingButton>
+            <div></div>
+            <GoBackButton href="/assets" />
+          </div>
         </form>
       </div>
     </>

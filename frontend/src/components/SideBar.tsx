@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useState } from 'react'
 import { FaAlignJustify, FaHome, FaQuestion, FaTools } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 interface NavBarProps {
@@ -37,15 +37,34 @@ export default function SideBar({ children }: NavBarProps) {
                 <FaHome /> Home
               </Link>
             </li>
-
-            <li>
-              <Link
-                href={'/assets'}
-                className={router.pathname == '/assets' ? 'active' : ''}
+            <div className="dropdown dropdown-hover">
+              <label tabIndex={0} className="btn text-[1.1rem] normal-case">
+                <FaTools /> Asset
+              </label>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
               >
-                <FaTools /> Assets
-              </Link>
-            </li>
+                <li>
+                  <Link
+                    href={'/assets'}
+                    className={router.pathname == '/assets' ? 'active' : ''}
+                  >
+                    Assets List
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={'/assets/new-asset'}
+                    className={
+                      router.pathname == '/assets/new-asset' ? 'active' : ''
+                    }
+                  >
+                    New Asset
+                  </Link>
+                </li>
+              </ul>
+            </div>
             <li className="absolute bottom-0 mb-4">
               <Link
                 href={'/about'}

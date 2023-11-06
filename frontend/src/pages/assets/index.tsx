@@ -25,7 +25,7 @@ export default function AssetPage({ assets }: AssetPageProps) {
         <meta name="description" content="Read all assets" />
       </Head>
       <div className="container mx-auto px-2">
-        <h1 className=" text-center text-2xl font-extrabold mb-5">Assets</h1>
+        <h1 className="title">Assets</h1>
         <Link href={'/assets/new-asset'}>
           <button className="btn btn-neutral mb-2 btn-sm">new asset</button>
         </Link>
