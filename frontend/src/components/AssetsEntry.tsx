@@ -1,4 +1,5 @@
 import { Asset } from '@/models/asset'
+import { formatDate } from '@/utils/utils'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -7,8 +8,17 @@ interface AssetsEntryProps {
 }
 
 export default function AssetsEntry({
-  asset: { name, description, createdAt, serialNumber, _id },
+  asset: { name, description, createdAt, updatedAt, serialNumber, _id },
 }: AssetsEntryProps) {
+  const createdUpdatedAt =
+    updatedAt > createdAt ? (
+      <>
+        updated <time dateTime={updatedAt}>{formatDate(updatedAt)}</time>
+      </>
+    ) : (
+      <time dateTime={createdAt}>{formatDate(createdAt)}</time>
+    )
+
   const router = useRouter()
   const customClasses =
     router.pathname === '/assets' ? (
@@ -21,7 +31,7 @@ export default function AssetsEntry({
       <h2 className="card-title text-accent text-2xl font-bold">{name}</h2>
     )
   return (
-    <div className="card bg-neutral shadow-2xl ">
+    <div className="card bg-neutral shadow-2xl">
       <div className="card-body">
         {customClasses}
         <h3 className="text-lg text-accent-focus ">
@@ -29,8 +39,9 @@ export default function AssetsEntry({
         </h3>
         <p className="text-sm ">
           <span className="font-semibold">Description: </span>
-          {description}
+          <span>{description}</span>
         </p>
+        <span className="text-info">{createdUpdatedAt}</span>
       </div>
     </div>
   )

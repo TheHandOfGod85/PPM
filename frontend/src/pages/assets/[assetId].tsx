@@ -68,11 +68,21 @@ export default function AssetSingle({ asset }: AssetSingleProps) {
                   <td>{part.partNumber}</td>
                   <td>{part.manufacturer}</td>
                   <td>
+                    {/* If I want a responsive image
+                       I need to wrap the image in a container
+                       with these attributes:
+                       position: relative;
+                       width:100%;
+                       max-width700px;
+                       aspect-ratio: at your choice;
+                    */}
                     <Image
                       src={part.imageUrl || '/images/no-image.jpg'}
                       alt="part image"
                       width={60}
                       height={60}
+                      priority
+                      className="rounded"
                     />
                   </td>
                 </tr>
