@@ -40,7 +40,7 @@ export default function CreatePartAsset() {
           },
           assetId
         )
-        alert('Part created successfully')
+        router.push(`/assets/${assetId}`)
       } else {
         throw Error('Invalid assetId')
       }

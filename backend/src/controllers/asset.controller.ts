@@ -24,7 +24,14 @@ export const findAssetHandler: RequestHandler<
   const asset = await AssetModel.findById({ _id: assetId })
     .populate({
       path: 'parts',
-      select: ['name', 'manufacturer', 'partNumber', '-asset'],
+      select: [
+        'name',
+        'manufacturer',
+        'partNumber',
+        '-asset',
+        'description',
+        'imageUrl',
+      ],
     })
     .exec()
   if (!asset) {
