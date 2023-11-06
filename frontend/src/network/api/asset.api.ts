@@ -6,6 +6,16 @@ export async function getAssets() {
   return response.data
 }
 
+export async function getAsset(assetId: string) {
+  const response = await api.get<Asset>(`/assets/${assetId}`)
+  return response.data
+}
+
+export async function getAllAssetsIds() {
+  const response = await api.get<string[]>('/assets/ids')
+  return response.data
+}
+
 interface CreateAssetValues {
   name: string
   description: string

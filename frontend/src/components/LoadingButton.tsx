@@ -11,7 +11,7 @@ export default function LoadingButton({
   ...props
 }: LoadingButtonProps & ComponentProps<'button'>) {
   return (
-    <button {...props} className="btn btn-accent mt-4">
+    <button {...props} className="btn btn-neutral mt-4">
       {isLoading && (
         <>
           <span className="loading loading-dots loading-sm"></span>{' '}

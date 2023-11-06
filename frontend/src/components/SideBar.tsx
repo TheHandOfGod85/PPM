@@ -37,20 +37,21 @@ export default function SideBar({ children }: NavBarProps) {
                 <FaHome /> Home
               </Link>
             </li>
+
             <li>
+              <Link
+                href={'/assets'}
+                className={router.pathname == '/assets' ? 'active' : ''}
+              >
+                <FaTools /> Assets
+              </Link>
+            </li>
+            <li className="absolute bottom-0 mb-4">
               <Link
                 href={'/about'}
                 className={router.pathname == '/about' ? 'active' : ''}
               >
                 <FaQuestion /> About
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={'/asset'}
-                className={router.pathname == '/asset' ? 'active' : ''}
-              >
-                <FaTools /> Assets
               </Link>
             </li>
           </ul>

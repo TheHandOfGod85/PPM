@@ -8,6 +8,11 @@ export const findAssetsHandler: RequestHandler = async (req, res) => {
   const allAsseets = await AssetModel.find().select('-__v').exec()
   res.status(200).json(allAsseets)
 }
+export const findAssetsIdsHandler: RequestHandler = async (req, res) => {
+  const results = await AssetModel.find().select('-__v _id').exec()
+  const ids = results.map((asset) => asset._id)
+  res.status(200).json(ids)
+}
 
 export const findAssetHandler: RequestHandler<
   IdAssetParams,

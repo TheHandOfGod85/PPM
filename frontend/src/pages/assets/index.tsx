@@ -26,10 +26,8 @@ export default function AssetPage({ assets }: AssetPageProps) {
       </Head>
       <div className="container mx-auto px-2">
         <h1 className=" text-center text-2xl font-extrabold mb-5">Assets</h1>
-        <Link href={'/asset/new-asset'}>
-          <button className="btn btn-neutral mb-2 btn-sm text-neutral-content no-underline hover:no-underline hover:text-slate-500">
-            new asset
-          </button>
+        <Link href={'/assets/new-asset'}>
+          <button className="btn btn-neutral mb-2 btn-sm">new asset</button>
         </Link>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-auto">
           {assets.map((asset) => (

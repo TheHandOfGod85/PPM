@@ -13,6 +13,8 @@ const router = express.Router()
 
 router.use('/:assetId/part', validateRequestSchema(idAssetValidator), partRoute)
 
+router.route('/ids').get(AssetController.findAssetsIdsHandler)
+
 router
   .route('/')
 
