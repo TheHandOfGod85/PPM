@@ -20,7 +20,7 @@ export const createPartHandler: RequestHandler<
   unknown
 > = async (req, res) => {
   const assetId = req.params.assetId
-  const asset = await AssetModel.findById(assetId)
+  const asset = await AssetModel.findOne({ _id: assetId })
   if (!asset) {
     throw createHttpError(404, `No asset found with ID ${assetId}`)
   }

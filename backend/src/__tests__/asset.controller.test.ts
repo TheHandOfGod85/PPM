@@ -27,7 +27,7 @@ const loginCredentials = {
   password: 'Pa$$0rd',
 }
 let authenticationCookie: any
-describe.skip('asset controller test suite', () => {
+describe('asset controller test suite', () => {
   beforeAll(connect)
   beforeEach(cleanData)
   afterAll(disconnect)

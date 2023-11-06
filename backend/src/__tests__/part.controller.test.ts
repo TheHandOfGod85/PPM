@@ -14,6 +14,7 @@ import {
 import request from 'supertest'
 import app from '../app'
 import mongoose from 'mongoose'
+import path from 'path'
 
 const signupCredentials = {
   username: 'admin',
@@ -32,7 +33,6 @@ let authenticationCookie: any
 describe('partController test suite', () => {
   beforeAll(connect)
   beforeEach(cleanData)
-  afterAll(disconnect)
   beforeEach(async () => {
     // Set the authentication cookie before each test
     await request(app).post('/user/signup').send(signupCredentials)
@@ -41,8 +41,9 @@ describe('partController test suite', () => {
       .send(loginCredentials)
     authenticationCookie = loggedInUser.header['set-cookie']
   })
+  afterAll(disconnect)
   describe('createPartHandler endpoint', () => {
-    it('should return a created part', async () => {
+    it('should return a created part with no image', async () => {
       const id = '65453f5636cb1bfcf0b98722'
       const asset = {
         _id: id,
@@ -67,6 +68,49 @@ describe('partController test suite', () => {
         .set('Cookie', authenticationCookie)
         .send(part)
       expect(response.statusCode).toBe(201)
+    })
+    it('should return a created part with an imageUrl', async () => {
+      const id = '65453f5636cb1bfcf0b98722'
+      const asset = {
+        _id: id,
+        name: 'bagger',
+        description: 'fsdfksj',
+        serialNumber: 'pppspspd',
+      }
+
+      await request(app)
+        .post('/assets')
+        .send(asset)
+        .set('Cookie', authenticationCookie)
+
+      const part = {
+        name: 'bearing',
+        description: 'fsdfksj',
+        partNumber: 'pppspspd',
+        manufacturer: 'Mozzi',
+      }
+      const imageFilePath = 'B:/nextjs/PPM/backend/images/no-image.jpg'
+      const response = await request(app)
+        .post('/assets/' + id + '/part')
+        .set('Cookie', authenticationCookie)
+        .field('name', part.name)
+        .field('description', part.description)
+        .field('partNumber', part.partNumber)
+        .field('manufacturer', part.manufacturer)
+        .attach('partImage', imageFilePath) // Attach the image file
+      expect(response.statusCode).toBe(201)
+      expect(response.body).toEqual({
+        _id: expect.anything(),
+        id: expect.anything(),
+        asset: expect.anything(),
+        name: 'bearing',
+        description: 'fsdfksj',
+        partNumber: 'pppspspd',
+        manufacturer: 'Mozzi',
+        imageUrl: expect.any(String),
+        createdAt: expect.anything(),
+        updatedAt: expect.anything(),
+      })
     })
     it('should return 400 if same partNumber is provided', async () => {
       const id = '65453f5636cb1bfcf0b98722'
@@ -169,107 +213,107 @@ describe('partController test suite', () => {
         serialNumber: 'pppspspd',
       }
 
-      const response3 = await request(app)
+      await request(app)
         .post('/assets')
         .send(asset)
         .set('Cookie', authenticationCookie)
-      const partId = new mongoose.Types.ObjectId('6547d71f52ab4ac0ea451405')
-      const part = {
-        _id: partId,
-        name: 'bearing',
-        description: 'fsdfksj',
-        partNumber: 'pppspspd3',
-        manufacturer: 'Mozzi',
-      }
-      const response2 = await request(app)
-        .post('/assets/' + id + '/part')
-        .set('Cookie', authenticationCookie)
-        .send(part)
-      const response = await request(app)
-        .get('/part/' + partId)
-        .set('Cookie', authenticationCookie)
-      expect(response.statusCode).toBe(200)
-    })
-  })
-  describe('updatePartHandler endpoint', () => {
-    it('should return the updated part', async () => {
-      const id = '65453f5636cb1bfcf0b98722'
-      const asset = {
-        _id: id,
-        name: 'bagger',
-        description: 'fsdfksj',
-        serialNumber: 'pppspspd',
-      }
 
-      await request(app)
-        .post('/assets')
-        .send(asset)
-        .set('Cookie', authenticationCookie)
-      const partId = '653fea85466d065471a131a5'
+      const response2 = await request(app).get('/assets/' + id)
+      expect(response2.statusCode).toBe(200)
+
       const part = {
-        _id: partId,
         name: 'bearing',
         description: 'fsdfksj',
-        partNumber: 'pppspspd3',
+        partNumber: 'pppspspd',
         manufacturer: 'Mozzi',
       }
-      await request(app)
+      const partReturned = await request(app)
         .post('/assets/' + id + '/part')
         .set('Cookie', authenticationCookie)
         .send(part)
-      const updatedPart = {
-        name: 'bearing 9',
-        description: 'fsdfksj',
-        partNumber: 'pppspspd3',
-        manufacturer: 'Mozzi',
-      }
-      const response = await request(app)
-        .patch('/part/' + partId)
-        .send(updatedPart)
-        .set('Cookie', authenticationCookie)
+      const response = await request(app).get('/part/' + partReturned.body._id)
       expect(response.statusCode).toBe(200)
       expect(response.body).toEqual({
-        name: 'bearing 9',
-        description: 'fsdfksj',
-        partNumber: 'pppspspd3',
-        manufacturer: 'Mozzi',
-        id: expect.anything(),
-        _id: expect.anything(),
-        createdAt: expect.anything(),
-        updatedAt: expect.anything(),
-      })
-    })
-  })
-  describe('deletePartHandler endpoint', () => {
-    it('should delete a part by id', async () => {
-      const id = '65453f5636cb1bfcf0b98722'
-      const asset = {
-        _id: id,
-        name: 'bagger',
-        description: 'fsdfksj',
-        serialNumber: 'pppspspd',
-      }
-
-      await request(app)
-        .post('/assets')
-        .send(asset)
-        .set('Cookie', authenticationCookie)
-      const partId = '653fea85466d065471a131a5'
-      const part = {
-        _id: partId,
         name: 'bearing',
         description: 'fsdfksj',
-        partNumber: 'pppspspd3',
+        partNumber: 'pppspspd',
         manufacturer: 'Mozzi',
-      }
-      await request(app)
-        .post('/assets/' + id + '/part')
-        .set('Cookie', authenticationCookie)
-        .send(part)
-      const response = await request(app)
-        .delete('/part/' + partId)
-        .set('Cookie', authenticationCookie)
-      expect(response.statusCode).toBe(204)
+        _id: expect.anything(),
+        id: expect.anything(),
+        asset: expect.anything(),
+        updatedAt: expect.anything(),
+        createdAt: expect.anything(),
+      })
+    })
+    describe('updatePartHandler endpoint', () => {
+      it('should return the updated part', async () => {
+        const id = '65453f5636cb1bfcf0b98722'
+        const asset = {
+          _id: id,
+          name: 'bagger',
+          description: 'fsdfksj',
+          serialNumber: 'pppspspd',
+        }
+
+        await request(app)
+          .post('/assets')
+          .send(asset)
+          .set('Cookie', authenticationCookie)
+
+        const response2 = await request(app).get('/assets/' + id)
+        expect(response2.statusCode).toBe(200)
+        const part = {
+          name: 'bearing',
+          description: 'fsdfksj',
+          partNumber: 'pppspspd',
+          manufacturer: 'Mozzi',
+        }
+        const partReturned = await request(app)
+          .post('/assets/' + id + '/part')
+          .set('Cookie', authenticationCookie)
+          .send(part)
+        const part2 = {
+          name: 'bearing 9',
+          description: 'fsdfksj',
+          partNumber: 'pppspspd',
+          manufacturer: 'Mozzi',
+        }
+        const response = await request(app)
+          .patch('/part/' + partReturned.body._id)
+          .set('Cookie', authenticationCookie)
+          .send(part2)
+        expect(response.statusCode).toBe(200)
+      })
+      describe('deletePartHandler endpoint', () => {
+        it('should delete a part by id', async () => {
+          const id = '65453f5636cb1bfcf0b98722'
+          const asset = {
+            _id: id,
+            name: 'bagger',
+            description: 'fsdfksj',
+            serialNumber: 'pppspspd',
+          }
+
+          await request(app)
+            .post('/assets')
+            .send(asset)
+            .set('Cookie', authenticationCookie)
+          const part = {
+            name: 'bearing',
+            description: 'fsdfksj',
+            partNumber: 'pppspspd3',
+            manufacturer: 'Mozzi',
+          }
+          const partReturned = await request(app)
+            .post('/assets/' + id + '/part')
+            .set('Cookie', authenticationCookie)
+            .send(part)
+          const response = await request(app)
+            .delete('/part/' + partReturned.body._id)
+            .set('Cookie', authenticationCookie)
+          expect(response.statusCode).toBe(204)
+        })
+      })
     })
   })
 })

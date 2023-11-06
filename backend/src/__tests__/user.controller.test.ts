@@ -15,7 +15,7 @@ import {
 } from '../__helpers__/mongodb.memory.test.helper'
 import app from '../app'
 
-describe.skip('user controller test suite', () => {
+describe('user controller test suite', () => {
   beforeAll(connect)
   beforeEach(cleanData)
   afterAll(disconnect)
