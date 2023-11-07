@@ -5,6 +5,12 @@ on: push
 jobs:
   tests:
     runs-on: ubuntu-latest
+    env:
+      MONGO_CONNECTION_STRING: ${{vars.MONGO_CONNECTION_STRING}}
+      WEBSITE_URL: ${{vars.WEBSITE_URL}}
+      SERVER_URL: ${{vars.SERVER_URL}}
+      NODE_ENV: ${{vars.NODE_ENV}}
+      SESSION_SECRET: ${{vars.SESSION_SECRET}}
 
     strategy:
       matrix:
