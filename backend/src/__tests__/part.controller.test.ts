@@ -1,20 +1,10 @@
 import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from '@jest/globals'
-import {
   cleanData,
   connect,
   disconnect,
 } from '../__helpers__/mongodb.memory.test.helper'
 import request from 'supertest'
 import app from '../app'
-import mongoose from 'mongoose'
-import path from 'path'
 
 const signupCredentials = {
   username: 'admin',
