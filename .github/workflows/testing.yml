@@ -32,9 +32,3 @@ jobs:
       - name: Run backend tests
         working-directory: backend
         run: npm test
-        env:
-          MONGO_CONNECTION_STRING: ${{secrets.MONGO_CONNECTION_STRING}}
-          WEBSITE_URL: ${{secrets.WEBSITE_URL}}
-          SERVER_URL: ${{secrets.SERVER_URL}}
-          NODE_ENV: ${{secrets.NODE_ENV}}
-          SESSION_SECRET: ${{secrets.SESSION_SECRET}}
