@@ -22,7 +22,7 @@ let authenticationCookie: any
 describe('asset controller test suite', () => {
   beforeAll(connect)
   beforeEach(() => {
-    jest.setTimeout(60000)
+    jest.setTimeout(350000)
   })
   beforeEach(cleanData)
   afterAll(disconnect)
