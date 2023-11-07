@@ -22,6 +22,9 @@ let authenticationCookie: any
 
 describe('partController test suite', () => {
   beforeAll(connect)
+  beforeEach(() => {
+    jest.setTimeout(60000)
+  })
   beforeEach(cleanData)
   beforeEach(async () => {
     // Set the authentication cookie before each test

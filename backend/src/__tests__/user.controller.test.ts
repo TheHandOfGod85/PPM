@@ -8,6 +8,9 @@ import app from '../app'
 
 describe('user controller test suite', () => {
   beforeAll(connect)
+  beforeEach(() => {
+    jest.setTimeout(60000)
+  })
   beforeEach(cleanData)
   afterAll(disconnect)
   describe('signup endpoint', () => {

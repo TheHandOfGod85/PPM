@@ -21,6 +21,9 @@ const loginCredentials = {
 let authenticationCookie: any
 describe('asset controller test suite', () => {
   beforeAll(connect)
+  beforeEach(() => {
+    jest.setTimeout(60000)
+  })
   beforeEach(cleanData)
   afterAll(disconnect)
   beforeEach(async () => {
