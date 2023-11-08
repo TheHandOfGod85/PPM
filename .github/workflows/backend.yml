@@ -25,16 +25,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build Docker Mongo Image
-        run: docker pull mongo
-
-      - name: Run Docker Mongo container
-        run: docker container run --name ppmtest --publish 27017:27017 -d mongo
-
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Load MongoDB binary cache
+        id: cache-mongodb-binaries
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: publish
 
       - name: Install backend dependencies
         working-directory: backend
