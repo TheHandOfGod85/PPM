@@ -1,0 +1,44 @@
+name: Integration tests
+
+on:
+  push:
+    branches: ['master', 'testing']
+  pull_request:
+    branches: ['master']
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      MONGO_CONNECTION_STRING: ${{vars.MONGO_CONNECTION_STRING}}
+      WEBSITE_URL: ${{vars.WEBSITE_URL}}
+      SERVER_URL: ${{vars.SERVER_URL}}
+      NODE_ENV: ${{vars.NODE_ENV}}
+      SESSION_SECRET: ${{vars.SESSION_SECRET}}
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker Mongo Image
+        run: docker pull mongo
+
+      - name: Run Docker Mongo container
+        run: docker container run --name ppmtest --publish 27017:27017 -d mongo
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test

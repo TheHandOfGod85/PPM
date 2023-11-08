@@ -1,6 +1,7 @@
 const baseTestDir = '<rootDir>/src'
 import type { Config } from 'jest'
 const config: Config = {
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   roots: ['<rootDir>/src'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
