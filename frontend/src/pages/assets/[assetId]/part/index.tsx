@@ -80,7 +80,7 @@ export default function CreatePartAsset() {
             />
             <FormInputField
               register={register('partImage')}
-              isFile
+              isFileStyle
               type="file"
               accept="image/png,image/jpeg"
             />

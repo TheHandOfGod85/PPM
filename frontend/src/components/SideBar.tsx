@@ -1,6 +1,12 @@
 import Link from 'next/link'
-import React, { ReactNode, useState } from 'react'
-import { FaAlignJustify, FaHome, FaQuestion, FaTools } from 'react-icons/fa'
+import React, { ReactNode } from 'react'
+import {
+  FaAlignJustify,
+  FaHome,
+  FaQuestion,
+  FaTools,
+  FaUserFriends,
+} from 'react-icons/fa'
 import { useRouter } from 'next/router'
 interface NavBarProps {
   children: ReactNode
@@ -27,7 +33,7 @@ export default function SideBar({ children }: NavBarProps) {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-60 min-h-full bg-base-200 text-base-content font-semibold text-lg">
+          <ul className="menu p-4 w-60 min-h-full bg-base-200 text-base-content font-semibold text-lg gap-2">
             {/* Sidebar content here */}
             <li>
               <Link
@@ -37,6 +43,15 @@ export default function SideBar({ children }: NavBarProps) {
                 <FaHome /> Home
               </Link>
             </li>
+            <li>
+              <Link
+                href={'/users'}
+                className={router.pathname == '/users' ? 'active' : ''}
+              >
+                <FaUserFriends /> Users
+              </Link>
+            </li>
+
             <div className="dropdown dropdown-hover">
               <label tabIndex={0} className="btn text-[1.1rem] normal-case">
                 <FaTools /> Asset

@@ -5,9 +5,10 @@ interface SignUpValues {
   username: string
   email: string
   password: string
+  role: string
 }
 
-export async function SignUpValues(credentials: SignUpValues) {
+export async function SignUp(credentials: SignUpValues) {
   const response = await api.post<User>('/user/signup', credentials)
   return response.data
 }

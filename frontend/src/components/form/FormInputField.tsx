@@ -5,7 +5,8 @@ interface FormInputFieldProps {
   label?: string
   textarea?: boolean
   error?: FieldError
-  isFile?: boolean
+  isFileStyle?: boolean
+  inputGroupElement?: JSX.Element
 }
 
 export default function FormInputField({
@@ -13,11 +14,12 @@ export default function FormInputField({
   label,
   textarea,
   error,
-  isFile,
+  isFileStyle,
+  inputGroupElement,
   ...props
 }: FormInputFieldProps & ComponentProps<'input'> & ComponentProps<'textarea'>) {
   return (
-    <div className="form-control w-full">
+    <div className="form-control">
       {label && (
         <label className="label">
           <span className="label-text">{label}</span>
@@ -28,7 +30,7 @@ export default function FormInputField({
           <textarea
             {...register}
             {...props}
-            className="textarea textarea-bordered textarea-md"
+            className="textarea textarea-bordered textarea-md w-full"
           ></textarea>
           {error && (
             <p className=" mt-2 ml-2 text-sm textarea-error">
@@ -38,18 +40,22 @@ export default function FormInputField({
         </>
       ) : (
         <>
-          <input
-            {...register}
-            {...props}
-            className={
-              isFile
-                ? 'file-input file-input-bordered file-input-md'
-                : 'input input-bordered input-md'
-            }
-          />
-          {error && (
-            <p className=" mt-2 ml-2 text-sm text-error">{error?.message}</p>
-          )}
+          <div className="input-group">
+            <input
+              {...register}
+              {...props}
+              className={
+                isFileStyle
+                  ? 'file-input file-input-bordered file-input-md w-full'
+                  : 'input input-bordered input-md w-full'
+              }
+              aria-describedby={inputGroupElement?.props.id}
+            />
+            {inputGroupElement}
+            {error && (
+              <p className=" mt-2 ml-2 text-sm text-error">{error?.message}</p>
+            )}
+          </div>
         </>
       )}
     </div>
