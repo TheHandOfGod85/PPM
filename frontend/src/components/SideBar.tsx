@@ -7,12 +7,25 @@ import {
   FaTools,
   FaUserFriends,
 } from 'react-icons/fa'
+import { FaArrowRightFromBracket } from 'react-icons/fa6'
 import { useRouter } from 'next/router'
 interface NavBarProps {
   children: ReactNode
 }
+import { logout } from '@/network/api/user.api'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 export default function SideBar({ children }: NavBarProps) {
   const router = useRouter()
+  const { mutateUser } = useAuthenticatedUser()
+  const onLogout = async () => {
+    try {
+      await logout()
+      mutateUser(undefined)
+      router.push('/')
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
     <>
       <div className="drawer lg:drawer-open">
@@ -87,6 +100,11 @@ export default function SideBar({ children }: NavBarProps) {
               >
                 <FaQuestion /> About
               </Link>
+            </li>
+            <li className="absolute bottom-8 mb-4">
+              <button type="button" onClick={onLogout}>
+                <FaArrowRightFromBracket /> Logout
+              </button>
             </li>
           </ul>
         </div>

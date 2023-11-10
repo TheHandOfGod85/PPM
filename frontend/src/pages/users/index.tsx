@@ -19,7 +19,7 @@ export default function UsersPage() {
           <FaUser /> New User
         </button>
       </div>
-      <SignUpModal onDismiss={() => {}} />
+      <SignUpModal />
     </>
   )
 }

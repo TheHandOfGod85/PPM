@@ -1,12 +1,10 @@
+import HomeLogin from '@/components/HomeLogin'
+import LoginModal from '@/components/auth/LoginModal'
 import { Inter } from 'next/font/google'
+import { FaArrowRightToBracket } from 'react-icons/fa6'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  return (
-    <div className="flex h-full flex-col justify-center items-center">
-      <h1 className="text-4xl mb-5 font-bold">Home</h1>
-      <span className="text-7xl">🏡</span>
-    </div>
-  )
+  return <HomeLogin />
 }

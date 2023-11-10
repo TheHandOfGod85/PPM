@@ -7,7 +7,8 @@ import { requireAuth } from '../middlewares/requireAuth'
 
 const router = express.Router()
 
-router.get('/me', requireAuth, UserController.getAuthenticatedUser)
+// router.get('/me', requireAuth, UserController.getAuthenticatedUser)
+router.get('/me', UserController.getAuthenticatedUser)
 
 router.post(
   '/signup',
