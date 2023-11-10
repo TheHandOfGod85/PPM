@@ -30,7 +30,7 @@ export default function SelectInputField({
         {...register}
         {...props}
       >
-        <option disabled selected>
+        <option disabled selected className="hidden">
           {optionTitle}
         </option>
         {option.map((opt, index) => (

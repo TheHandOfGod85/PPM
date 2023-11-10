@@ -16,7 +16,7 @@ interface SignUpFomrData {
   username: string
   email: string
   password: string
-  role: string
+  role?: string
 }
 export default function SignUpModal({ onDismiss }: SignUpModalProps) {
   const {
@@ -60,6 +60,7 @@ export default function SignUpModal({ onDismiss }: SignUpModalProps) {
               register={register('role')}
               option={roles}
               optionTitle="Role to assign?"
+              placeholder="Role"
               error={errors.role}
             />
             <PasswordInputField

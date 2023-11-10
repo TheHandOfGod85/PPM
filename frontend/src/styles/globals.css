@@ -27,3 +27,11 @@ a {
     font-weight: 800;
   }
 }
+
+.input-group :first-child {
+  @apply !rounded-tl-lg !rounded-bl-lg;
+}
+
+.input-group :last-child {
+  @apply !rounded-tr-lg !rounded-br-lg;
+}
