@@ -8,6 +8,7 @@ import {
 } from '../validation/asset.validator'
 import partRoute from '../routes/part.route'
 import { restrictTo } from '../middlewares/requireAuth'
+import { requireAuth } from '../middlewares/requireAuth'
 
 const router = express.Router()
 
@@ -18,10 +19,10 @@ router.route('/ids').get(AssetController.findAssetsIdsHandler)
 router
   .route('/')
 
-  .get(AssetController.findAssetsHandler)
+  .get(requireAuth, AssetController.findAssetsHandler)
   .post(
-    // restrictTo('admin'),
-
+    requireAuth,
+    restrictTo('admin'),
     validateRequestSchema(createAssetValidator),
     AssetController.createAssetHandler
   )
@@ -29,16 +30,19 @@ router
 router
   .route('/:assetId')
   .get(
+    requireAuth,
     validateRequestSchema(idAssetValidator),
     AssetController.findAssetHandler
   )
   .patch(
-    // restrictTo('admin'),
+    requireAuth,
+    restrictTo('admin'),
     validateRequestSchema(updateAssetvalidator),
     AssetController.findByIdAndUpdateAssetHandler
   )
   .delete(
-    // restrictTo('admin'),
+    requireAuth,
+    restrictTo('admin'),
     validateRequestSchema(idAssetValidator),
     AssetController.deleteAssetHandler
   )

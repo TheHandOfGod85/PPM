@@ -3,15 +3,17 @@ import * as UserController from '../controllers/user.controller'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
 import { signUpSchema } from '../validation/user.validator'
 import passport from 'passport'
-import { requireAuth } from '../middlewares/requireAuth'
+import { requireAuth, restrictTo } from '../middlewares/requireAuth'
 
 const router = express.Router()
 
-// router.get('/me', requireAuth, UserController.getAuthenticatedUser)
-router.get('/me', UserController.getAuthenticatedUser)
+router.get('/me', requireAuth, UserController.getAuthenticatedUser)
+// Used for testing purposes
+// router.get('/me', UserController.getAuthenticatedUser)
 
 router.post(
   '/signup',
+  restrictTo('admin'),
   validateRequestSchema(signUpSchema),
   UserController.signup
 )

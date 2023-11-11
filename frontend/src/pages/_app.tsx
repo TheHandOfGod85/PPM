@@ -7,11 +7,17 @@ import NextNProgress from 'nextjs-progressbar'
 import Home from '.'
 
 export default function App({ Component, pageProps }: AppProps) {
-  const { user, userError, userLoading, mutateUser } = useAuthenticatedUser()
+  const { user } = useAuthenticatedUser()
   return (
     <>
       <NextNProgress color="#37cdbe" />
-      {user ? <SideBar children={<Component {...pageProps} />} /> : <Home />}
+      {user ? (
+        <SideBar>
+          <Component {...pageProps} />
+        </SideBar>
+      ) : (
+        <Home />
+      )}
     </>
   )
 }

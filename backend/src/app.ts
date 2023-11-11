@@ -12,7 +12,6 @@ import session from 'express-session'
 import sessionConfig from './config/session'
 import passport from 'passport'
 import './config/passport'
-import { requireAuth } from './middlewares/requireAuth'
 
 const app = express()
 console.log('Environment in ' + env.NODE_ENV)
@@ -38,11 +37,9 @@ app.use(passport.authenticate('session'))
 
 app.use('/uploads/part-images', express.static('uploads/part-images'))
 
-// app.use('/assets', requireAuth, assetRoutes)
-app.use('/assets', assetRoutes)
-// app.use('/part', requireAuth, partRoute)
-app.use('/part', partRoute)
 app.use('/user', userRoute)
+app.use('/assets', assetRoutes)
+app.use('/part', partRoute)
 
 // not found request url error handling
 app.use((req, res, next) => next(createHttpError(404, 'Endpoint not found')))

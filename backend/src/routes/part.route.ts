@@ -8,18 +8,20 @@ import {
   idPartValidator,
 } from '../validation/part.validator'
 import { imageUpload } from '../middlewares/imageUpload'
-import { restrictTo } from '../middlewares/requireAuth'
+import { requireAuth, restrictTo } from '../middlewares/requireAuth'
 
 const router = express.Router({ mergeParams: true })
 
 router
   .route('/')
   .get(
+    requireAuth,
     validateRequestSchema(assetIdPartValidator),
     PartController.findPartsHandler
   )
   .post(
-    // restrictTo('admin'),
+    requireAuth,
+    restrictTo('admin'),
     imageUpload.single('partImage'),
     validateRequestSchema(createPartValidator),
     PartController.createPartHandler
@@ -27,14 +29,20 @@ router
 
 router
   .route('/:partId')
-  .get(validateRequestSchema(idPartValidator), PartController.findPartHandler)
+  .get(
+    requireAuth,
+    validateRequestSchema(idPartValidator),
+    PartController.findPartHandler
+  )
   .delete(
-    // restrictTo('admin'),
+    requireAuth,
+    restrictTo('admin'),
     validateRequestSchema(idPartValidator),
     PartController.deletePartHandler
   )
   .patch(
-    // restrictTo('admin'),
+    requireAuth,
+    restrictTo('admin'),
     validateRequestSchema(updatePartValidator),
     PartController.updatePartHandler
   )

@@ -16,11 +16,11 @@ import { logout } from '@/network/api/user.api'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 export default function SideBar({ children }: NavBarProps) {
   const router = useRouter()
-  const { mutateUser } = useAuthenticatedUser()
+  const { user, mutateUser } = useAuthenticatedUser()
   const onLogout = async () => {
     try {
       await logout()
-      mutateUser(undefined)
+      mutateUser(null)
       router.push('/')
     } catch (error) {
       console.error(error)
@@ -48,6 +48,13 @@ export default function SideBar({ children }: NavBarProps) {
           ></label>
           <ul className="menu p-4 w-60 min-h-full bg-base-200 text-base-content font-semibold text-lg gap-2">
             {/* Sidebar content here */}
+
+            {user && (
+              <h1 className="font-bold text-secondary">
+                Hello, {user?.displayName}
+              </h1>
+            )}
+
             <li>
               <Link
                 href={'/'}

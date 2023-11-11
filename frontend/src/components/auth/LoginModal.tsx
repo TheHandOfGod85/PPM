@@ -3,12 +3,17 @@ import * as UsersApi from '@/network/api/user.api'
 import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
 import LoadingButton from '../LoadingButton'
+import { useState } from 'react'
+import { UnathuorizedError } from '@/network/http-errors'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 interface SignUpFomrData {
   username: string
   password: string
 }
 export default function LoginModal() {
+  const { mutateUser } = useAuthenticatedUser()
+  const [errorText, setErrorText] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -16,11 +21,16 @@ export default function LoginModal() {
   } = useForm<SignUpFomrData>()
   async function onSubmit(credentials: SignUpFomrData) {
     try {
-      const newUser = await UsersApi.login(credentials)
-      alert(JSON.stringify(newUser))
+      setErrorText(null)
+      const user = await UsersApi.login(credentials)
+      mutateUser(user)
     } catch (error) {
-      console.error(error)
-      alert(error)
+      if (error instanceof UnathuorizedError) {
+        setErrorText('Invalid credentials')
+      } else {
+        console.error(error)
+        alert(error)
+      }
     }
   }
   return (
@@ -49,6 +59,24 @@ export default function LoginModal() {
             <LoadingButton type="submit" isLoading={isSubmitting}>
               Login
             </LoadingButton>
+            {errorText && (
+              <div className="alert alert-error mt-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>{errorText}</span>
+              </div>
+            )}
           </div>
         </form>
         <div className="modal-action"></div>
