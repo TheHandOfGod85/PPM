@@ -15,6 +15,11 @@ export const getAuthenticatedUser: RequestHandler = async (req, res) => {
   res.status(200).json(user)
 }
 
+export const getUsersHandler: RequestHandler = async (req, res) => {
+  const users = await UserModel.find().select('+email').exec()
+  res.status(200).json(users)
+}
+
 export const signup: RequestHandler<
   unknown,
   unknown,

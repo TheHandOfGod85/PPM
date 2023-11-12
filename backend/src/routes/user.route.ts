@@ -11,6 +11,13 @@ router.get('/me', requireAuth, UserController.getAuthenticatedUser)
 // Used for testing purposes
 // router.get('/me', UserController.getAuthenticatedUser)
 
+router.get(
+  '/allUsers',
+  requireAuth,
+  restrictTo('admin'),
+  UserController.getUsersHandler
+)
+
 router.post(
   '/signup',
   restrictTo('admin'),

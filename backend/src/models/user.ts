@@ -1,4 +1,4 @@
-import { InferSchemaType, Query, Schema, model } from 'mongoose'
+import { InferSchemaType, Schema, model } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 
 const userSchema = new Schema(

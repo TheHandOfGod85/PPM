@@ -63,14 +63,16 @@ export default function SideBar({ children }: NavBarProps) {
                 <FaHome /> Home
               </Link>
             </li>
-            <li>
-              <Link
-                href={'/users'}
-                className={router.pathname == '/users' ? 'active' : ''}
-              >
-                <FaUserFriends /> Users
-              </Link>
-            </li>
+            {user?.role === 'admin' && (
+              <li>
+                <Link
+                  href={'/users'}
+                  className={router.pathname == '/users' ? 'active' : ''}
+                >
+                  <FaUserFriends /> Users
+                </Link>
+              </li>
+            )}
 
             <div className="dropdown dropdown-hover">
               <label tabIndex={0} className="btn text-[1.1rem] normal-case">
