@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { SignUpBody } from '../validation/user.validator'
+import { SignUpBody, UpdateUserBody } from '../validation/user.validator'
 import UserModel from '../models/user'
 import createHttpError from 'http-errors'
 import bcrypt from 'bcrypt'
@@ -59,4 +59,40 @@ export const logOut: RequestHandler = (req, res) => {
     if (error) throw error
     res.sendStatus(200)
   })
+}
+
+export const updateUserHandler: RequestHandler<
+  unknown,
+  unknown,
+  UpdateUserBody,
+  unknown
+> = async (req, res) => {
+  const { username, displayName, about } = req.body
+  const authenticatedUser = req.user?._id
+  assertIsDefined(authenticatedUser)
+  if (username) {
+    const existingUsername = await UserModel.findOne({ username })
+      .collation({
+        locale: 'en',
+        strength: 2,
+      })
+      .exec()
+
+    if (existingUsername) {
+      throw createHttpError(409, 'Username already taken')
+    }
+  }
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    authenticatedUser,
+    {
+      $set: {
+        ...(username && { username }),
+        ...(about && { about }),
+        ...(displayName && { displayName }),
+      },
+    },
+    { new: true }
+  ).exec()
+
+  res.status(200).json(updatedUser)
 }

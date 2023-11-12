@@ -1,7 +1,7 @@
 import express from 'express'
 import * as UserController from '../controllers/user.controller'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
-import { signUpSchema } from '../validation/user.validator'
+import { signUpSchema, updateUserValidator } from '../validation/user.validator'
 import passport from 'passport'
 import { requireAuth, restrictTo } from '../middlewares/requireAuth'
 
@@ -29,5 +29,12 @@ router.post('/login', passport.authenticate('local'), (req, res) =>
 )
 
 router.post('/logout', UserController.logOut)
+
+router.patch(
+  '/updateMe',
+  requireAuth,
+  validateRequestSchema(updateUserValidator),
+  UserController.updateUserHandler
+)
 
 export default router

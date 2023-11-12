@@ -13,9 +13,9 @@ passport.deserializeUser((user: Express.User, cb) => {
 })
 
 passport.use(
-  new LocalStrategy(async (username, password, cb) => {
+  new LocalStrategy(async (email, password, cb) => {
     try {
-      const existingUser = await UserModel.findOne({ username })
+      const existingUser = await UserModel.findOne({ email })
         .select('+email +password')
         .exec()
       if (!existingUser || !existingUser.password) {
