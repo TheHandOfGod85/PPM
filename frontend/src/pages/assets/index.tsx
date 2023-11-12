@@ -1,15 +1,16 @@
 import { Asset } from '@/models/asset'
-import { GetServerSideProps } from 'next'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import React from 'react'
 import * as AssetApi from '@/network/api/asset.api'
 import AssetsEntry from '@/components/AssetsEntry'
 import Link from 'next/link'
 
-export const getServerSideProps: GetServerSideProps<
-  AssetPageProps
-> = async () => {
-  const assets = await AssetApi.getAssets()
+export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
+  context: GetServerSidePropsContext
+) => {
+  const { cookie } = context.req.headers
+  const assets = await AssetApi.getAssets(cookie)
   return { props: { assets } }
 }
 

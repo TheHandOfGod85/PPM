@@ -20,7 +20,6 @@ export default function SignUpModal() {
   const modal = document.getElementById('signup_modal') as HTMLFormElement
   const resetDialog = () => {
     setErrorText(null)
-    reset()
   }
   const { mutateUser } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)

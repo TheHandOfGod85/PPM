@@ -1,28 +1,23 @@
 import { Asset } from '@/models/asset'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetStaticPaths,
+  GetStaticProps,
+} from 'next'
 import * as AssetApi from '@/network/api/asset.api'
 import Link from 'next/link'
 import AssetsEntry from '@/components/AssetsEntry'
 import GoBackButton from '@/components/GoBackButton'
 import Image from 'next/image'
-import { useState } from 'react'
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const ids = await AssetApi.getAllAssetsIds()
-  //here the params must have the same name of the file in the brackets []
-  const paths = ids.map((assetId) => ({ params: { assetId } }))
-  return {
-    paths,
-    fallback: 'blocking',
-  }
-}
-
-export const getStaticProps: GetStaticProps<AssetSingleProps> = async ({
-  params,
-}) => {
-  const assetId = params?.assetId?.toString()
+export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
+  context: GetServerSidePropsContext
+) => {
+  const { cookie } = context.req.headers
+  const assetId = context.params?.assetId?.toString()
   if (!assetId) throw Error('Id is missing')
-  const asset = await AssetApi.getAsset(assetId)
+  const asset = await AssetApi.getAsset(assetId, cookie)
   return { props: { asset } }
 }
 
