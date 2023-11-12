@@ -1,31 +1,49 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as AssetApi from '@/network/api/asset.api'
 import FormInputField from '@/components/form/FormInputField'
 import LoadingButton from '@/components/LoadingButton'
 import { useRouter } from 'next/router'
 import GoBackButton from '@/components/GoBackButton'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { requiredStringSchema } from '@/utils/validation'
+import ErrorText from '@/components/ErrorText'
+import { BadRequestError, ConflictError } from '@/network/http-errors'
 
-interface CreateAssetFormData {
-  name: string
-  description: string
-  serialNumber: string
-}
+const validationSchema = yup.object({
+  name: requiredStringSchema,
+  description: yup.string(),
+  serialNumber: requiredStringSchema,
+})
+
+type CreateAssetFormData = yup.InferType<typeof validationSchema>
 
 export default function CreateNewAsset() {
+  const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
-  } = useForm<CreateAssetFormData>()
+  } = useForm<CreateAssetFormData>({
+    resolver: yupResolver(validationSchema),
+  })
   async function onSubmit(input: CreateAssetFormData) {
     try {
+      setErrorText(null)
       const response = await AssetApi.createAsset(input)
       await router.push(`/assets/${response._id}`)
-    } catch (error: any) {
-      console.error(error.message)
-      alert(error)
+    } catch (error) {
+      if (error instanceof ConflictError || error instanceof BadRequestError) {
+        reset()
+        setErrorText(error.message)
+      } else {
+        console.error(error)
+        reset()
+        alert(error)
+      }
     }
   }
   return (
@@ -35,7 +53,7 @@ export default function CreateNewAsset() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="join join-vertical w-full gap-5">
             <FormInputField
-              register={register('name', { required: 'Name Required' })}
+              register={register('name')}
               placeholder="Asset name"
               maxLength={100}
               error={errors.name}
@@ -47,13 +65,12 @@ export default function CreateNewAsset() {
               maxLength={500}
             />
             <FormInputField
-              register={register('serialNumber', {
-                required: 'Serial Number Required',
-              })}
+              register={register('serialNumber')}
               placeholder="Asset serial number"
               maxLength={500}
               error={errors.serialNumber}
             />
+            {errorText && <ErrorText errorText={errorText} />}
           </div>
           <div className="flex flex-row items-center justify-between">
             <LoadingButton isLoading={isSubmitting} type="submit">

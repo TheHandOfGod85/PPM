@@ -7,15 +7,22 @@ import LoadingButton from '../LoadingButton'
 import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
 import SelectInputField from '../form/SelectInputField'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { emailSchema, passwordSchema, usernameSchema } from '@/utils/validation'
+import ErrorText from '../ErrorText'
 
 const roles = ['admin', 'user']
 
-interface SignUpFomrData {
-  username: string
-  email: string
-  password: string
-  role?: string
-}
+const validationSchema = yup.object({
+  username: usernameSchema.required('Required'),
+  email: emailSchema.required('Required'),
+  password: passwordSchema.required('Required'),
+  role: yup.string().oneOf(roles, 'Please provide a role'),
+})
+
+type SignUpFormData = yup.InferType<typeof validationSchema>
+
 export default function SignUpModal() {
   const modal = document.getElementById('signup_modal') as HTMLFormElement
   const resetDialog = () => {
@@ -28,8 +35,10 @@ export default function SignUpModal() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<SignUpFomrData>()
-  async function onSubmit(credentials: SignUpFomrData) {
+  } = useForm<SignUpFormData>({
+    resolver: yupResolver(validationSchema),
+  })
+  async function onSubmit(credentials: SignUpFormData) {
     try {
       setErrorText(null)
       const newUser = await UsersApi.SignUp(credentials)
@@ -91,24 +100,7 @@ export default function SignUpModal() {
             <LoadingButton type="submit" isLoading={isSubmitting}>
               Create user
             </LoadingButton>
-            {errorText && (
-              <div className="alert alert-error mt-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="stroke-current shrink-0 h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{errorText}</span>
-              </div>
-            )}
+            {errorText && <ErrorText errorText={errorText} />}
           </div>
         </form>
       </div>

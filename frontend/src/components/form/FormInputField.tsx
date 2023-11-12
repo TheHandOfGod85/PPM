@@ -52,10 +52,10 @@ export default function FormInputField({
               aria-describedby={inputGroupElement?.props.id}
             />
             {inputGroupElement}
-            {error && (
-              <p className=" mt-2 ml-2 text-sm text-error">{error?.message}</p>
-            )}
           </div>
+          {error && (
+            <p className=" mt-2 ml-2 text-sm text-error">{error?.message}</p>
+          )}
         </>
       )}
     </div>

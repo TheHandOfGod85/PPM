@@ -23,10 +23,10 @@ export async function getAllAssetsIds() {
 
 interface CreatePartValues {
   name: string
-  description: string
+  description?: string
   partNumber: string
   manufacturer: string
-  partImage: File
+  partImage?: File
 }
 
 export async function createPartAsset(
@@ -43,7 +43,7 @@ export async function createPartAsset(
 
 interface CreateAssetValues {
   name: string
-  description: string
+  description?: string
   serialNumber: string
 }
 export async function createAsset(input: CreateAssetValues) {

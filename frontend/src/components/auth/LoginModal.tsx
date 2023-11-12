@@ -6,20 +6,31 @@ import LoadingButton from '../LoadingButton'
 import { useState } from 'react'
 import { UnathuorizedError } from '@/network/http-errors'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { requiredStringSchema } from '@/utils/validation'
 
-interface SignUpFomrData {
-  username: string
-  password: string
-}
+const validationSchema = yup.object({
+  username: requiredStringSchema,
+  password: requiredStringSchema,
+})
+
+type LoginFormData = yup.InferType<typeof validationSchema>
+
 export default function LoginModal() {
   const { mutateUser } = useAuthenticatedUser()
+
   const [errorText, setErrorText] = useState<string | null>(null)
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignUpFomrData>()
-  async function onSubmit(credentials: SignUpFomrData) {
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(validationSchema),
+  })
+
+  async function onSubmit(credentials: LoginFormData) {
     try {
       setErrorText(null)
       const user = await UsersApi.login(credentials)
@@ -33,6 +44,7 @@ export default function LoginModal() {
       }
     }
   }
+
   return (
     <dialog id="signup_modal" className="modal modal-bottom sm:modal-middle">
       <div className="modal-box">
