@@ -1,15 +1,13 @@
-import { Asset } from '@/models/asset'
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  GetStaticPaths,
-  GetStaticProps,
-} from 'next'
-import * as AssetApi from '@/network/api/asset.api'
-import Link from 'next/link'
 import AssetsEntry from '@/components/AssetsEntry'
 import GoBackButton from '@/components/GoBackButton'
+import { Asset } from '@/models/asset'
+import * as AssetApi from '@/network/api/asset.api'
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext
+} from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
   context: GetServerSidePropsContext
