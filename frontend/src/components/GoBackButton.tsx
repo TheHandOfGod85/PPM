@@ -1,13 +1,25 @@
 import Link from 'next/link'
-import React from 'react'
+import React, { ComponentProps } from 'react'
 interface GoBackButtonProps {
-  href: string
+  href?: string
+  buttonName?: string
 }
 
-export default function GoBackButton({ href }: GoBackButtonProps) {
-  return (
+export default function GoBackButton({
+  href,
+  buttonName,
+  ...props
+}: GoBackButtonProps & ComponentProps<'button'>) {
+  const isHref = href ? (
     <Link href={href}>
-      <button className="btn btn-primary mt-2 btn-sm">go back</button>
+      <button {...props} className="btn btn-primary mt-2 btn-sm">
+        {buttonName ? buttonName : 'go back'}
+      </button>
     </Link>
+  ) : (
+    <button {...props} className="btn btn-primary mt-2 btn-sm">
+      {buttonName ? buttonName : 'go back'}
+    </button>
   )
+  return isHref
 }

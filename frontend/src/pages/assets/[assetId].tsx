@@ -2,21 +2,32 @@ import AssetsEntry from '@/components/AssetsEntry'
 import GoBackButton from '@/components/GoBackButton'
 import { Asset } from '@/models/asset'
 import * as AssetApi from '@/network/api/asset.api'
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext
-} from 'next'
+import { BadRequestError, NotFoundError } from '@/network/http-errors'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
 export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
   context: GetServerSidePropsContext
 ) => {
-  const { cookie } = context.req.headers
-  const assetId = context.params?.assetId?.toString()
-  if (!assetId) throw Error('Id is missing')
-  const asset = await AssetApi.getAsset(assetId, cookie)
-  return { props: { asset } }
+  try {
+    const { cookie } = context.req.headers
+    const assetId = context.params?.assetId?.toString()
+    if (!assetId) throw Error('Id is missing')
+    const asset = await AssetApi.getAsset(assetId, cookie)
+    return { props: { asset } }
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      return { notFound: true }
+    } else if (error instanceof BadRequestError) {
+      const referer = '/assets' || '/'
+      return {
+        redirect: { destination: referer, permanent: false },
+      }
+    } else {
+      throw error
+    }
+  }
 }
 
 interface AssetSingleProps {
