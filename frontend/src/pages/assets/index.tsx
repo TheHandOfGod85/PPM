@@ -1,40 +1,45 @@
-import { Asset, AssetsPage } from '@/models/asset'
+import AssetsEntry from '@/components/AssetsEntry'
+import PaginationBar from '@/components/PaginationBar'
+import { AssetsPage } from '@/models/asset'
+import * as AssetApi from '@/network/api/asset.api'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-import React from 'react'
-import * as AssetApi from '@/network/api/asset.api'
-import AssetsEntry from '@/components/AssetsEntry'
 import Link from 'next/link'
-import { stringify } from 'querystring'
-import PaginationBar from '@/components/PaginationBar'
 import { useRouter } from 'next/router'
+import { stringify } from 'querystring'
 
 export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
   context: GetServerSidePropsContext
 ) => {
   const { cookie } = context.req.headers
-  const page = parseInt(context.query.page?.toString() || '1')
-  if (page < 1) {
-    context.query.page = '1'
-    return {
-      redirect: {
-        destination: '/assets?' + stringify(context.query),
-        permanent: false,
-      },
+  const filter = context.query.name as string
+  if (filter) {
+    const data = await AssetApi.getAssets(undefined, filter, cookie)
+    return { props: { data } }
+  } else {
+    const page = parseInt(context.query.page?.toString() || '1')
+    if (page < 1) {
+      context.query.page = '1'
+      return {
+        redirect: {
+          destination: '/assets?' + stringify(context.query),
+          permanent: false,
+        },
+      }
     }
-  }
-  const data = await AssetApi.getAssets(cookie, page)
+    const data = await AssetApi.getAssets(page, undefined, cookie)
 
-  if (data.totalPages > 0 && page > data.totalPages) {
-    context.query.page = data.totalPages.toString()
-    return {
-      redirect: {
-        destination: '/assets?' + stringify(context.query),
-        permanent: false,
-      },
+    if (data.totalPages > 0 && page > data.totalPages) {
+      context.query.page = data.totalPages.toString()
+      return {
+        redirect: {
+          destination: '/assets?' + stringify(context.query),
+          permanent: false,
+        },
+      }
     }
+    return { props: { data } }
   }
-  return { props: { data } }
 }
 
 interface AssetPageProps {
