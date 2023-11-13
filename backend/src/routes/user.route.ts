@@ -20,6 +20,7 @@ router.get(
 
 router.post(
   '/signup',
+  requireAuth,
   restrictTo('admin'),
   validateRequestSchema(signUpSchema),
   UserController.signup
