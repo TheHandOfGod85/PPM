@@ -6,7 +6,7 @@ import { FaArrowRightToBracket } from 'react-icons/fa6'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const { user, userError, userLoading, mutateUser } = useAuthenticatedUser()
+  const { user } = useAuthenticatedUser()
   return (
     <div className="flex h-full flex-col justify-center items-center">
       <h1 className="text-4xl mb-5 font-bold">Home</h1>

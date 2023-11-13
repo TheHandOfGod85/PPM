@@ -31,7 +31,7 @@ export default function AssetsEntry({
       <h2 className="card-title text-accent text-2xl font-bold">{name}</h2>
     )
   return (
-    <div className="card bg-neutral shadow-2xl">
+    <div className="card lg:card-side bg-neutral shadow-2xl">
       <div className="card-body">
         {customClasses}
         <h3 className="text-lg text-accent-focus ">

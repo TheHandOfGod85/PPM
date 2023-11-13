@@ -9,3 +9,9 @@ export interface Asset {
   createdAt: string
   updatedAt: string
 }
+
+export interface AssetsPage {
+  assets: Asset[]
+  page: number
+  totalPages: number
+}

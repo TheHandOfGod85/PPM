@@ -35,3 +35,8 @@ a {
 .input-group :last-child {
   @apply !rounded-tr-lg !rounded-br-lg;
 }
+
+.join .join-item:not(:first-child):not(:last-child),
+.join *:not(:first-child):not(:last-child) .join-item {
+  border-radius: 0.5rem;
+}

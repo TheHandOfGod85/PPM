@@ -1,15 +1,15 @@
-import { Asset } from '@/models/asset'
+import { Asset, AssetsPage } from '@/models/asset'
 import { Part } from '@/models/part'
 import api from '@/network/axiosInstance'
 
-export async function getAssets(cookie?: any) {
-  const response = await api.get<Asset[]>('/assets', {
+export async function getAssets(cookie?: string, page: number = 1) {
+  const response = await api.get<AssetsPage>(`/assets?page=${page}`, {
     headers: { Cookie: cookie },
   })
   return response.data
 }
 
-export async function getAsset(assetId: string, cookie?: any) {
+export async function getAsset(assetId: string, cookie?: string) {
   const response = await api.get<Asset>(`/assets/${assetId}`, {
     headers: { Cookie: cookie },
   })
