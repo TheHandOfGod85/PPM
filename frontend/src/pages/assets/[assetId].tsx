@@ -6,6 +6,11 @@ import { BadRequestError, NotFoundError } from '@/network/http-errors'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { stringify } from 'querystring'
+import * as PartApi from '@/network/api/part.api'
+import { PartsPage } from '@/models/part'
+import PaginationBar from '@/components/PaginationBar'
+import { useRouter } from 'next/router'
 
 export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
   context: GetServerSidePropsContext
@@ -14,8 +19,31 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
     const { cookie } = context.req.headers
     const assetId = context.params?.assetId?.toString()
     if (!assetId) throw Error('Id is missing')
-    const asset = await AssetApi.getAsset(assetId, cookie)
-    return { props: { asset } }
+    const page = parseInt(context.query.page?.toString() || '1')
+    if (page < 1) {
+      context.query.page = '1'
+      return {
+        redirect: {
+          destination: `/assets${assetId}/part?` + stringify(context.query),
+          permanent: false,
+        },
+      }
+    }
+    const getAssetQuery = AssetApi.getAsset(assetId, cookie)
+    const getPartsData = PartApi.getPartsByAssetId(page, assetId, cookie)
+    const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
+
+    if (data.totalPages > 0 && page > data.totalPages) {
+      context.query.page = data.totalPages.toString()
+      return {
+        redirect: {
+          destination: `/assets${assetId}/part?` + stringify(context.query),
+          permanent: false,
+        },
+      }
+    }
+
+    return { props: { asset, data } }
   } catch (error) {
     if (error instanceof NotFoundError) {
       return { notFound: true }
@@ -32,9 +60,14 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
 
 interface AssetSingleProps {
   asset: Asset
+  data: PartsPage
 }
 
-export default function AssetSingle({ asset }: AssetSingleProps) {
+export default function AssetSingle({
+  asset,
+  data: { page, parts, totalPages },
+}: AssetSingleProps) {
+  const router = useRouter()
   return (
     <>
       <div className="container mx-auto max-w-[1000px] px-2">
@@ -55,7 +88,7 @@ export default function AssetSingle({ asset }: AssetSingleProps) {
               </tr>
             </thead>
             <tbody>
-              {asset.parts.map((part) => (
+              {parts.map((part) => (
                 <tr key={part._id}>
                   <td className="whitespace-nowrap">{part.name}</td>
                   <td>
@@ -94,7 +127,18 @@ export default function AssetSingle({ asset }: AssetSingleProps) {
             </tbody>
           </table>
         </div>
-        <GoBackButton href="/assets" />
+        <div className="flex justify-between">
+          <PaginationBar
+            currentPage={page}
+            pageCount={totalPages}
+            onPageItemClicked={(page) => {
+              router.push({
+                query: { ...router.query, page },
+              })
+            }}
+          />
+          <GoBackButton href="/assets" />
+        </div>
       </div>
     </>
   )

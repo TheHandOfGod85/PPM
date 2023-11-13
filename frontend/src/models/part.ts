@@ -7,3 +7,9 @@ export interface Part {
   imageUrl: string
   asset: string
 }
+
+export interface PartsPage {
+  parts: Part[]
+  page: number
+  totalPages: number
+}

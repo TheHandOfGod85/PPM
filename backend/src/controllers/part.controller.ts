@@ -1,5 +1,6 @@
 import {
   AssetIdPartParams,
+  GetPartsQuery,
   IdPartParams,
   PartBody,
   UpdatePartParams,
@@ -59,16 +60,33 @@ export const findPartsHandler: RequestHandler<
   AssetIdPartParams,
   unknown,
   unknown,
-  unknown
+  GetPartsQuery
 > = async (req, res) => {
+  const page = parseInt(req.query.page || '1')
+  const pageSize = 3
   let filter = {}
   if (req.params.assetId) filter = { asset: req.params.assetId }
   const asset = await AssetModel.findOne({ _id: req.params.assetId })
   if (!asset) {
     throw createHttpError(404, `No asset found with ID ${req.params.assetId}`)
   }
-  const allParts = await PartModel.find(filter).select({ asset: 0 })
-  res.status(200).json(allParts)
+  const getPartsQuery = await PartModel.find(filter)
+    .sort({ _id: -1 })
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+    .select({ asset: 0 })
+    .exec()
+  const countPartsQuery = PartModel.countDocuments().exec()
+  const [parts, totalparts] = await Promise.all([
+    getPartsQuery,
+    countPartsQuery,
+  ])
+  const totalPages = Math.ceil(totalparts / pageSize)
+  res.status(200).json({
+    parts,
+    page,
+    totalPages,
+  })
 }
 
 export const deletePartHandler: RequestHandler<

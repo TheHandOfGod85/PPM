@@ -12,8 +12,8 @@ import { useRouter } from 'next/router'
 export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
   context: GetServerSidePropsContext
 ) => {
-  const page = parseInt(context.query.page?.toString() || '1')
   const { cookie } = context.req.headers
+  const page = parseInt(context.query.page?.toString() || '1')
   if (page < 1) {
     context.query.page = '1'
     return {

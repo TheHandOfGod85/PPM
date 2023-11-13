@@ -46,3 +46,11 @@ export type UpdatePartParams = yup.InferType<
   typeof updatePartValidator
 >['params']
 //###############################################################
+
+export const queryPartValidator = yup.object({
+  query: yup.object({
+    page: yup.string(),
+  }),
+})
+
+export type GetPartsQuery = yup.InferType<typeof queryPartValidator>['query']
