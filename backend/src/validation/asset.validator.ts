@@ -29,6 +29,7 @@ export const queryAssetValidator = yup.object({
   query: yup.object({
     // id: objectIdSchema,
     page: yup.string(),
+    filter: yup.string(),
   }),
 })
 

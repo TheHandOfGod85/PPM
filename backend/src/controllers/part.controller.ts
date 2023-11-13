@@ -13,6 +13,7 @@ import 'express-async-errors'
 import mongoose from 'mongoose'
 import sharp from 'sharp'
 import env from '../env'
+import { APIfeatures } from '../utils/apiFeatures'
 
 export const createPartHandler: RequestHandler<
   AssetIdPartParams,
@@ -62,29 +63,26 @@ export const findPartsHandler: RequestHandler<
   unknown,
   GetPartsQuery
 > = async (req, res) => {
-  const page = parseInt(req.query.page || '1')
-  const pageSize = 3
   let filter = {}
   if (req.params.assetId) filter = { asset: req.params.assetId }
   const asset = await AssetModel.findOne({ _id: req.params.assetId })
   if (!asset) {
     throw createHttpError(404, `No asset found with ID ${req.params.assetId}`)
   }
-  const getPartsQuery = await PartModel.find(filter)
-    .sort({ _id: -1 })
-    .skip((page - 1) * pageSize)
-    .limit(pageSize)
-    .select({ asset: 0 })
-    .exec()
-  const countPartsQuery = PartModel.countDocuments().exec()
+  const getPartsQuery = new APIfeatures(PartModel.find(), req.query, filter)
+    .filtering()
+    .sort()
+    .paginate()
+  const countPartsQuery = PartModel.countDocuments(filter).exec()
   const [parts, totalparts] = await Promise.all([
-    getPartsQuery,
+    getPartsQuery.query,
     countPartsQuery,
   ])
-  const totalPages = Math.ceil(totalparts / pageSize)
+
+  const totalPages = Math.ceil(totalparts / getPartsQuery.pageSize)
   res.status(200).json({
     parts,
-    page,
+    page: getPartsQuery.page,
     totalPages,
   })
 }

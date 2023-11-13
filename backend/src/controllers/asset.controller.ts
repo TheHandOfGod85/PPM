@@ -1,9 +1,10 @@
-import { GetAssetsQuery } from './../validation/asset.validator'
 import { RequestHandler } from 'express'
-import AssetModel from '../models/asset'
-import { AssetBody, IdAssetParams } from '../validation/asset.validator'
-import createHttpError from 'http-errors'
 import 'express-async-errors'
+import createHttpError from 'http-errors'
+import AssetModel from '../models/asset'
+import { APIfeatures } from '../utils/apiFeatures'
+import { AssetBody, IdAssetParams } from '../validation/asset.validator'
+import { GetAssetsQuery } from './../validation/asset.validator'
 
 export const findAssetsHandler: RequestHandler<
   unknown,
@@ -11,23 +12,20 @@ export const findAssetsHandler: RequestHandler<
   unknown,
   GetAssetsQuery
 > = async (req, res) => {
-  const page = parseInt(req.query.page || '1')
-  const pageSize = 3
-  const getAssetsQuery = AssetModel.find()
-    .sort({ _id: -1 })
-    .skip((page - 1) * pageSize)
-    .limit(pageSize)
-    .select('-__v')
-    .exec()
+  const getAssetsQuery = new APIfeatures(AssetModel.find(), req.query)
+    .filtering()
+    .sort()
+    .paginate()
+
   const countAssetsQuery = AssetModel.countDocuments().exec()
   const [assets, totalAssets] = await Promise.all([
-    getAssetsQuery,
+    getAssetsQuery.query,
     countAssetsQuery,
   ])
-  const totalPages = Math.ceil(totalAssets / pageSize)
+  const totalPages = Math.ceil(totalAssets / getAssetsQuery.pageSize)
   res.status(200).json({
     assets,
-    page,
+    page: getAssetsQuery.page,
     totalPages,
   })
 }
