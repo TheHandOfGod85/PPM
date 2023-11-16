@@ -10,10 +10,11 @@ import PartModel from '../models/part'
 import AssetModel from '../models/asset'
 import createHttpError from 'http-errors'
 import 'express-async-errors'
-import mongoose from 'mongoose'
+import mongoose, { Model } from 'mongoose'
 import sharp from 'sharp'
 import env from '../env'
 import { APIfeatures } from '../utils/apiFeatures'
+import { search } from '../utils/search'
 
 export const createPartHandler: RequestHandler<
   AssetIdPartParams,
@@ -69,21 +70,19 @@ export const findPartsHandler: RequestHandler<
   if (!asset) {
     throw createHttpError(404, `No asset found with ID ${req.params.assetId}`)
   }
-  const getPartsQuery = new APIfeatures(PartModel.find(), req.query, filter)
-    .filtering()
-    .sort()
-    .paginate()
-  const countPartsQuery = PartModel.countDocuments(filter).exec()
-  const [parts, totalparts] = await Promise.all([
-    getPartsQuery.query,
-    countPartsQuery,
-  ])
 
-  const totalPages = Math.ceil(totalparts / getPartsQuery.pageSize)
+  const getPartsQuery = await search(
+    PartModel as Model<unknown>,
+    req.query,
+    3,
+    filter
+  )
+  const parts = await getPartsQuery.result
+
   res.status(200).json({
     parts,
     page: getPartsQuery.page,
-    totalPages,
+    totalPages: getPartsQuery.totalpages,
   })
 }
 

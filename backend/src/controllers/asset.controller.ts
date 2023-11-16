@@ -2,9 +2,10 @@ import { RequestHandler } from 'express'
 import 'express-async-errors'
 import createHttpError from 'http-errors'
 import AssetModel from '../models/asset'
-import { APIfeatures } from '../utils/apiFeatures'
 import { AssetBody, IdAssetParams } from '../validation/asset.validator'
 import { GetAssetsQuery } from './../validation/asset.validator'
+import { search } from '../utils/search'
+import { Model } from 'mongoose'
 
 export const findAssetsHandler: RequestHandler<
   unknown,
@@ -12,21 +13,13 @@ export const findAssetsHandler: RequestHandler<
   unknown,
   GetAssetsQuery
 > = async (req, res) => {
-  const getAssetsQuery = new APIfeatures(AssetModel.find(), req.query)
-    .filtering()
-    .sort()
-    .paginate()
+  const getAssetsQuery = await search(AssetModel as Model<unknown>, req.query)
+  const assets = await getAssetsQuery.result
 
-  const countAssetsQuery = AssetModel.countDocuments().exec()
-  const [assets, totalAssets] = await Promise.all([
-    getAssetsQuery.query,
-    countAssetsQuery,
-  ])
-  const totalPages = Math.ceil(totalAssets / getAssetsQuery.pageSize)
   res.status(200).json({
     assets,
     page: getAssetsQuery.page,
-    totalPages,
+    totalPages: getAssetsQuery.totalpages,
   })
 }
 export const findAssetsIdsHandler: RequestHandler = async (req, res) => {

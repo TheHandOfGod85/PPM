@@ -33,7 +33,7 @@ assetSchema.pre<Query<unknown, Asset>>(/^find/, function (next) {
   next()
 })
 
-type Asset = InferSchemaType<typeof assetSchema>
+export type Asset = InferSchemaType<typeof assetSchema>
 
 assetSchema.plugin(uniqueValidator, { message: 'Expected to be unique.' })
 

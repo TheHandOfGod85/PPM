@@ -50,7 +50,7 @@ export type UpdatePartParams = yup.InferType<
 export const queryPartValidator = yup.object({
   query: yup.object({
     page: yup.string(),
-    filter: yup.string(),
+    search: yup.string(),
   }),
 })
 

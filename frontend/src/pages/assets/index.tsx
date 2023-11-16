@@ -1,5 +1,6 @@
 import AssetsEntry from '@/components/AssetsEntry'
 import PaginationBar from '@/components/PaginationBar'
+import Search from '@/components/Search'
 import { AssetsPage } from '@/models/asset'
 import * as AssetApi from '@/network/api/asset.api'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
@@ -12,7 +13,7 @@ export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
   context: GetServerSidePropsContext
 ) => {
   const { cookie } = context.req.headers
-  const filter = context.query.name as string
+  const filter = context.query.search as string
   if (filter) {
     const data = await AssetApi.getAssets(undefined, filter, cookie)
     return { props: { data } }
@@ -58,9 +59,13 @@ export default function AssetPage({
       </Head>
       <div className="container mx-auto px-2">
         <h1 className="title">Assets</h1>
-        <Link href={'/assets/new-asset'}>
-          <button className="btn btn-neutral mb-2 btn-sm">new asset</button>
-        </Link>
+        <div className="flex justify-between items-center mb-3">
+          <Link href={'/assets/new-asset'}>
+            <button className="btn btn-neutral mb-2 btn-sm">new asset</button>
+          </Link>
+          <Search />
+          <div></div>
+        </div>
         {assets.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-auto">
             {assets.map((asset) => (
