@@ -12,6 +12,7 @@ export async function search(
   const skip = (page - 1) * limit
   let totalItems: number = 0
   let result: FilterQuery<unknown> | undefined
+
   const pipeline: PipelineStage[] = [
     { $skip: skip },
     { $limit: limit },
@@ -24,7 +25,7 @@ export async function search(
     }))
     if (filter) {
       pipeline.unshift({
-        $match: filter,
+        $match: filter!,
       })
     }
     pipeline.splice(1, 0, {
