@@ -69,7 +69,12 @@ export const findPartsHandler: RequestHandler<
   if (!asset) {
     throw createHttpError(404, `No asset found with ID ${req.params.assetId}`)
   }
-  const getPartsQuery = await search(PartModel as Model<unknown>, req.query)
+  const getPartsQuery = await search(
+    PartModel as Model<unknown>,
+    req.query,
+    3,
+    filter
+  )
   const parts = await getPartsQuery.result
 
   res.status(200).json({

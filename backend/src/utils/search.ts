@@ -1,11 +1,10 @@
 import { FilterQuery, Model, PipelineStage } from 'mongoose'
 type QueryObject = Record<string, string>
-type Filter = Record<string, string> | undefined
 export async function search(
   model: Model<unknown>,
   query: QueryObject,
   limit: number = 3,
-  filter?: Filter
+  filter?: QueryObject
 ) {
   const paths = Object.keys(model.schema.paths)
   const filteredPaths = paths.filter((path) => path !== '_id')
@@ -13,24 +12,31 @@ export async function search(
   const skip = (page - 1) * limit
   let totalItems: number = 0
   let result: FilterQuery<unknown> | undefined
-
   const pipeline: PipelineStage[] = [
     { $skip: skip },
     { $limit: limit },
-    { $sort: { _id: -1 } },
+    // { $sort: { _id: -1 } },
   ]
 
   if (query.search) {
     const orExpression = filteredPaths.map((path) => ({
       [path]: { $regex: query.search, $options: 'i' },
     }))
-    pipeline.unshift({
+    if (filter) {
+      pipeline.unshift({
+        $match: filter,
+      })
+    }
+    pipeline.splice(1, 0, {
       $match: {
         $or: orExpression,
       },
     })
     result = await model.aggregate(pipeline)
     totalItems = result.length
+  } else if (filter) {
+    result = await model.find(filter).skip(skip).limit(limit).sort('_id')
+    totalItems = await model.countDocuments(filter)
   } else {
     result = await model.find().skip(skip).limit(limit).sort('_id')
     totalItems = await model.countDocuments()
