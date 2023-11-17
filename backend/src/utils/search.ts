@@ -23,6 +23,11 @@ export async function search(
     const orExpression = filteredPaths.map((path) => ({
       [path]: { $regex: query.search, $options: 'i' },
     }))
+    if (filter) {
+      pipeline.unshift({
+        $match: filter,
+      })
+    }
     pipeline.splice(1, 0, {
       $match: {
         $or: orExpression,
