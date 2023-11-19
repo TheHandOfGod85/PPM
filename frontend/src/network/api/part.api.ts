@@ -7,9 +7,9 @@ export async function getPartsByAssetId(
   filter?: string,
   cookie?: string
 ) {
-  if (filter) {
+  if (filter && page) {
     const response = await api.get<PartsPage>(
-      `/assets/${assetId}/part?search=${filter}`,
+      `/assets/${assetId}/part?search=${filter}&page=${page}`,
       { headers: { Cookie: cookie } }
     )
     return response.data

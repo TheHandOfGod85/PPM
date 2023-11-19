@@ -17,6 +17,7 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
   context: GetServerSidePropsContext
 ) => {
   try {
+    const page = parseInt(context.query.page?.toString() || '1')
     const { cookie } = context.req.headers
     const assetId = context.params?.assetId?.toString()
     if (!assetId) throw Error('Id is missing')
@@ -25,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
     if (filter) {
       const getAssetQuery = AssetApi.getAsset(assetId, cookie)
       const getPartsData = PartApi.getPartsByAssetId(
-        undefined,
+        page,
         assetId,
         filter,
         cookie
@@ -33,7 +34,6 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
       const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
       return { props: { asset, data, assetId } }
     } else {
-      const page = parseInt(context.query.page?.toString() || '1')
       if (page < 1) {
         context.query.page = '1'
         return {
@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
       const getPartsData = PartApi.getPartsByAssetId(
         page,
         assetId,
-        undefined,
+        filter,
         cookie
       )
       const [asset, data] = await Promise.all([getAssetQuery, getPartsData])

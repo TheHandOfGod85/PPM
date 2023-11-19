@@ -13,12 +13,12 @@ export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
   context: GetServerSidePropsContext
 ) => {
   const { cookie } = context.req.headers
+  const page = parseInt(context.query.page?.toString() || '1')
   const filter = context.query.search as string
   if (filter) {
-    const data = await AssetApi.getAssets(undefined, filter, cookie)
+    const data = await AssetApi.getAssets(page, filter, cookie)
     return { props: { data } }
   } else {
-    const page = parseInt(context.query.page?.toString() || '1')
     if (page < 1) {
       context.query.page = '1'
       return {
@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
         },
       }
     }
-    const data = await AssetApi.getAssets(page, undefined, cookie)
+    const data = await AssetApi.getAssets(page, filter, cookie)
 
     if (data.totalPages > 0 && page > data.totalPages) {
       context.query.page = data.totalPages.toString()

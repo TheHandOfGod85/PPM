@@ -7,10 +7,13 @@ export async function getAssets(
   filter?: string,
   cookie?: string
 ) {
-  if (filter) {
-    const response = await api.get<AssetsPage>(`/assets?search=${filter}`, {
-      headers: { Cookie: cookie },
-    })
+  if (filter && page) {
+    const response = await api.get<AssetsPage>(
+      `/assets?search=${filter}&page=${page}`,
+      {
+        headers: { Cookie: cookie },
+      }
+    )
     return response.data
   }
   const response = await api.get<AssetsPage>(`/assets?page=${page}`, {
