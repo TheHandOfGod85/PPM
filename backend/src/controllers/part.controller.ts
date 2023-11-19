@@ -64,7 +64,8 @@ export const findPartsHandler: RequestHandler<
   GetPartsQuery
 > = async (req, res) => {
   let filter = {}
-  if (req.params.assetId) filter = { asset: req.params.assetId }
+  if (req.params.assetId)
+    filter = { asset: new mongoose.Types.ObjectId(req.params.assetId) }
   const asset = await AssetModel.findOne({ _id: req.params.assetId })
   if (!asset) {
     throw createHttpError(404, `No asset found with ID ${req.params.assetId}`)
