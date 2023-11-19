@@ -2,15 +2,19 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
-export default function Search() {
+interface SearchPartsProps {
+  id?: string
+}
+
+export default function SearchParts({ id }: SearchPartsProps) {
   const [text, setText] = useState('')
   const [query] = useDebounce(text, 700)
   const router = useRouter()
   useEffect(() => {
     if (!query) {
-      router.push('/assets')
+      router.push(`/assets/${id}`)
     } else {
-      router.push(`/assets?search=${query}`)
+      router.push(`/assets/${id}?search=${query}`)
     }
   }, [query])
   return (

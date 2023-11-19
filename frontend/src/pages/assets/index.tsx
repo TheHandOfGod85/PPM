@@ -1,6 +1,6 @@
 import AssetsEntry from '@/components/AssetsEntry'
 import PaginationBar from '@/components/PaginationBar'
-import Search from '@/components/Search'
+import SearchAssets from '@/components/SearchAssets'
 import { AssetsPage } from '@/models/asset'
 import * as AssetApi from '@/network/api/asset.api'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
@@ -63,7 +63,7 @@ export default function AssetPage({
           <Link href={'/assets/new-asset'}>
             <button className="btn btn-neutral mb-2 btn-sm">new asset</button>
           </Link>
-          <Search />
+          <SearchAssets />
           <div></div>
         </div>
         {assets.length > 0 && (

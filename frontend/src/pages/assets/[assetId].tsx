@@ -11,6 +11,7 @@ import * as PartApi from '@/network/api/part.api'
 import { PartsPage } from '@/models/part'
 import PaginationBar from '@/components/PaginationBar'
 import { useRouter } from 'next/router'
+import SearchParts from '@/components/SearchParts'
 
 export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
   context: GetServerSidePropsContext
@@ -19,31 +20,50 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
     const { cookie } = context.req.headers
     const assetId = context.params?.assetId?.toString()
     if (!assetId) throw Error('Id is missing')
-    const page = parseInt(context.query.page?.toString() || '1')
-    if (page < 1) {
-      context.query.page = '1'
-      return {
-        redirect: {
-          destination: `/assets${assetId}/part?` + stringify(context.query),
-          permanent: false,
-        },
-      }
-    }
-    const getAssetQuery = AssetApi.getAsset(assetId, cookie)
-    const getPartsData = PartApi.getPartsByAssetId(page, assetId, cookie)
-    const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
 
-    if (data.totalPages > 0 && page > data.totalPages) {
-      context.query.page = data.totalPages.toString()
-      return {
-        redirect: {
-          destination: `/assets${assetId}/part?` + stringify(context.query),
-          permanent: false,
-        },
+    const filter = context.query.search as string
+    if (filter) {
+      const getAssetQuery = AssetApi.getAsset(assetId, cookie)
+      const getPartsData = PartApi.getPartsByAssetId(
+        undefined,
+        assetId,
+        filter,
+        cookie
+      )
+      const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
+      return { props: { asset, data, assetId } }
+    } else {
+      const page = parseInt(context.query.page?.toString() || '1')
+      if (page < 1) {
+        context.query.page = '1'
+        return {
+          redirect: {
+            destination: `/assets/${assetId}?` + stringify(context.query),
+            permanent: false,
+          },
+        }
       }
-    }
+      const getAssetQuery = AssetApi.getAsset(assetId, cookie)
+      const getPartsData = PartApi.getPartsByAssetId(
+        page,
+        assetId,
+        undefined,
+        cookie
+      )
+      const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
 
-    return { props: { asset, data } }
+      if (data.totalPages > 0 && page > data.totalPages) {
+        context.query.page = data.totalPages.toString()
+        return {
+          redirect: {
+            destination: `/assets/${assetId}?` + stringify(context.query),
+            permanent: false,
+          },
+        }
+      }
+
+      return { props: { asset, data, assetId } }
+    }
   } catch (error) {
     if (error instanceof NotFoundError) {
       return { notFound: true }
@@ -61,11 +81,13 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
 interface AssetSingleProps {
   asset: Asset
   data: PartsPage
+  assetId: string
 }
 
 export default function AssetSingle({
   asset,
   data: { page, parts, totalPages },
+  assetId,
 }: AssetSingleProps) {
   const router = useRouter()
   return (
@@ -77,6 +99,9 @@ export default function AssetSingle({
         </Link>
         <AssetsEntry asset={asset} />
         <div className="overflow-x-auto mt-9 mb-3">
+          <div className="flex items-center justify-center my-3">
+            <SearchParts id={assetId} />
+          </div>
           <table className="table tab-md">
             <thead>
               <tr>
