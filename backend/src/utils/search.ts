@@ -25,6 +25,7 @@ export async function search(
       { $match: filter },
       { $skip: skip },
       { $limit: limit },
+      { $sort: { _id: -1 } },
     ])
     totalItems = await model.countDocuments({
       $text: {
@@ -34,7 +35,7 @@ export async function search(
       },
     })
   } else if (filter) {
-    result = await model.find(filter).skip(skip).limit(limit).sort('_id')
+    result = await model.find(filter).skip(skip).limit(limit).sort({ _id: -1 })
     totalItems = await model.countDocuments(filter)
   } else if (query.search) {
     result = await model
@@ -47,6 +48,7 @@ export async function search(
       })
       .skip(skip)
       .limit(limit)
+      .sort({ _id: -1 })
     totalItems = await model.countDocuments({
       $text: {
         $search: query.search,
@@ -55,7 +57,7 @@ export async function search(
       },
     })
   } else {
-    result = await model.find().skip(skip).limit(limit).sort('_id')
+    result = await model.find().skip(skip).limit(limit).sort({ _id: -1 })
     totalItems = await model.countDocuments()
   }
 
