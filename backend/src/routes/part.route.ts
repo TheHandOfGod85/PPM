@@ -43,6 +43,7 @@ router
   .patch(
     requireAuth,
     restrictTo('admin'),
+    imageUpload.single('partImage'),
     validateRequestSchema(updatePartValidator),
     PartController.updatePartHandler
   )

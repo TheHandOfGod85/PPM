@@ -14,6 +14,7 @@ import mongoose, { Model } from 'mongoose'
 import sharp from 'sharp'
 import env from '../env'
 import { search } from '../utils/search'
+import fs from 'fs'
 
 export const createPartHandler: RequestHandler<
   AssetIdPartParams,
@@ -91,10 +92,16 @@ export const deletePartHandler: RequestHandler<
   unknown,
   unknown
 > = async (req, res) => {
-  const part = await PartModel.findByIdAndDelete(req.params.partId)
+  const { partId } = req.params
+  const part = await PartModel.findById(partId).exec()
   if (!part) {
     throw createHttpError(404, `No part found with ID ${req.params.partId}`)
   }
+  if (part.imageUrl?.startsWith(env.SERVER_URL)) {
+    const imagePath = part.imageUrl.split(env.SERVER_URL)[1].split('?')[0]
+    fs.unlinkSync(`.${imagePath}`)
+  }
+  await part.deleteOne()
   res.sendStatus(204)
 }
 
@@ -105,15 +112,31 @@ export const updatePartHandler: RequestHandler<
   unknown
 > = async (req, res) => {
   const { partId } = req.params
-  const part = await PartModel.findByIdAndUpdate({ _id: partId }, req.body, {
-    new: true,
-    runValidators: true,
-    select: { asset: 0 },
-  })
+  const { name, manufacturer, partNumber, description } = req.body
+  const partImage = req.file
+  const part = await PartModel.findById(partId).exec()
   if (!part) {
     throw createHttpError(404, `No part found with Id ${partId}`)
   }
-  res.status(200).json(part)
+  if (part.imageUrl) {
+    const previousImagePath = part.imageUrl
+      .replace(`${env.SERVER_URL}`, '')
+      .split('?')[0]
+    fs.unlinkSync(`.${previousImagePath}`)
+  }
+  part.name = name
+  part.description = description
+  part.manufacturer = manufacturer
+  part.partNumber = partNumber
+  if (partImage) {
+    const fileName = partImage?.originalname.replace(/\.[^/.]+$/, '')
+    const partImagePath = `/uploads/part-images/${fileName}-${partId}.png`
+    await sharp(partImage?.buffer).resize(700, 450).toFile(`./${partImagePath}`)
+    part.imageUrl =
+      env.SERVER_URL + partImagePath + '?lastupdated=' + Date.now()
+  }
+  await part.save()
+  res.sendStatus(200)
 }
 export const findPartHandler: RequestHandler<
   IdPartParams,

@@ -40,6 +40,7 @@ export const updatePartValidator = yup.object({
     partId: objectIdSchema.required(),
   }),
   body: partBodySchema,
+  partImage: imageFileSchema,
 })
 
 export type UpdatePartParams = yup.InferType<

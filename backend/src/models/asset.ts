@@ -1,6 +1,8 @@
 import { InferSchemaType, Query, Schema, model } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import PartModel from './part'
+import env from '../env'
+import fs from 'fs'
 
 const assetSchema = new Schema(
   {
@@ -23,9 +25,15 @@ assetSchema.virtual('parts', {
 })
 
 assetSchema.pre('deleteOne', { document: true }, async function (next) {
-  if (this._id) {
-    await PartModel.deleteMany({ asset: this._id })
+  const parts = await PartModel.find({ asset: this._id })
+  for (const part of parts) {
+    // Delete the part's image if it exists and starts with the specified server URL
+    if (part.imageUrl?.startsWith(env.SERVER_URL)) {
+      const imagePath = part.imageUrl.split(env.SERVER_URL)[1].split('?')[0]
+      fs.unlinkSync(`.${imagePath}`)
+    }
   }
+  await PartModel.deleteMany({ asset: this._id })
   next()
 })
 assetSchema.pre<Query<unknown, Asset>>(/^find/, function (next) {
