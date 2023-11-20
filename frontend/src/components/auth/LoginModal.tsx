@@ -75,7 +75,6 @@ export default function LoginModal() {
             {errorText && <ErrorText errorText={errorText} />}
           </div>
         </form>
-        <div className="modal-action"></div>
       </div>
     </dialog>
   )

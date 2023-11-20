@@ -11,6 +11,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { emailSchema, passwordSchema, usernameSchema } from '@/utils/validation'
 import ErrorText from '../ErrorText'
+import { useRouter } from 'next/router'
 
 const roles = ['admin', 'user']
 
@@ -24,10 +25,7 @@ const validationSchema = yup.object({
 type SignUpFormData = yup.InferType<typeof validationSchema>
 
 export default function SignUpModal() {
-  const modal = document.getElementById('signup_modal') as HTMLFormElement
-  const resetDialog = () => {
-    setErrorText(null)
-  }
+  const router = useRouter()
   const { mutateUser } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const {
@@ -43,9 +41,7 @@ export default function SignUpModal() {
       setErrorText(null)
       const newUser = await UsersApi.SignUp(credentials)
       mutateUser(newUser)
-      if (modal) {
-        modal.close()
-      }
+      router.reload()
       reset()
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
@@ -59,20 +55,15 @@ export default function SignUpModal() {
   return (
     <dialog id="signup_modal" className="modal modal-bottom sm:modal-middle">
       <div className="modal-box">
-        <div className="modal-action">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button
-              onClick={resetDialog}
-              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            >
-              ✕
-            </button>
-          </form>
-        </div>
-        <h3 className="font-bold text-lg">New user registration</h3>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form method="dialog">
+          {/* if there is a button in form, it will close the modal */}
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            ✕
+          </button>
+        </form>
+        <form method="dialog" onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="join join-vertical w-full gap-3 mt-2 p-4">
+            <h3 className="font-bold text-lg">New user registration</h3>
             <FormInputField
               register={register('username')}
               placeholder="Username"
@@ -97,9 +88,11 @@ export default function SignUpModal() {
               type="password"
               error={errors.password}
             />
-            <LoadingButton type="submit" isLoading={isSubmitting}>
-              Create user
-            </LoadingButton>
+            <div className="modal-action justify-start">
+              <LoadingButton type="submit" isLoading={isSubmitting}>
+                Create user
+              </LoadingButton>
+            </div>
             {errorText && <ErrorText errorText={errorText} />}
           </div>
         </form>

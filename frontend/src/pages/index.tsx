@@ -1,5 +1,6 @@
 import LoginModal from '@/components/auth/LoginModal'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import { openModal } from '@/utils/utils'
 import { Inter } from 'next/font/google'
 import { FaArrowRightToBracket } from 'react-icons/fa6'
 
@@ -14,13 +15,7 @@ export default function Home() {
       {!user && (
         <button
           className="btn btn-accent normal-case"
-          onClick={() => {
-            if (document) {
-              ;(
-                document.getElementById('signup_modal') as HTMLFormElement
-              ).showModal()
-            }
-          }}
+          onClick={() => openModal('signup_modal')}
         >
           <FaArrowRightToBracket /> Login
         </button>

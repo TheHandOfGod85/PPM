@@ -3,7 +3,7 @@ import { User } from '@/models/user'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import { FaUser } from 'react-icons/fa'
 import * as UserApi from '@/network/api/user.api'
-import { formatDate } from '@/utils/utils'
+import { formatDate, openModal } from '@/utils/utils'
 
 export const getServerSideProps: GetServerSideProps<UsersPageProps> = async (
   context: GetServerSidePropsContext
@@ -24,13 +24,7 @@ export default function UsersPage({ users }: UsersPageProps) {
       <div className="container mx-auto px-2">
         <button
           className="btn btn-accent normal-case"
-          onClick={() => {
-            if (document) {
-              ;(
-                document.getElementById('signup_modal') as HTMLFormElement
-              ).showModal()
-            }
-          }}
+          onClick={() => openModal('signup_modal')}
         >
           <FaUser /> New User
         </button>
