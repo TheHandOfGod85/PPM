@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import * as AssetApi from '@/network/api/asset.api'
-import FormInputField from '@/components/form/FormInputField'
-import LoadingButton from '@/components/LoadingButton'
-import { useRouter } from 'next/router'
-import GoBackButton from '@/components/GoBackButton'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { requiredStringSchema } from '@/utils/validation'
 import ErrorText from '@/components/ErrorText'
+import GoBackButton from '@/components/GoBackButton'
+import LoadingButton from '@/components/LoadingButton'
+import FormInputField from '@/components/form/FormInputField'
+import useUnsavedChangesWarning from '@/hooks/useUnsavedChangesWarning'
+import * as AssetApi from '@/network/api/asset.api'
 import { BadRequestError, ConflictError } from '@/network/http-errors'
+import { requiredStringSchema } from '@/utils/validation'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
 
 const validationSchema = yup.object({
   name: requiredStringSchema,
@@ -26,7 +27,7 @@ export default function CreateNewAsset() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<CreateAssetFormData>({
     resolver: yupResolver(validationSchema),
   })
@@ -46,6 +47,8 @@ export default function CreateNewAsset() {
       }
     }
   }
+
+  useUnsavedChangesWarning(isDirty && !isSubmitting)
   return (
     <>
       <div className="container mx-auto max-w-[1000px] px-2">
