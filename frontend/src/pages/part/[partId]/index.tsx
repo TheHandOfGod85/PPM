@@ -2,6 +2,7 @@ import ErrorText from '@/components/ErrorText'
 import GoBackButton from '@/components/GoBackButton'
 import PopUpConfirm from '@/components/PopUpConfirm'
 import FormInputField from '@/components/form/FormInputField'
+import useUnsavedChangesWarning from '@/hooks/useUnsavedChangesWarning'
 import { Part } from '@/models/part'
 import * as PartApi from '@/network/api/part.api'
 import { BadRequestError, NotFoundError } from '@/network/http-errors'
@@ -90,6 +91,7 @@ export default function EditPart({ part }: EditPartProps) {
       partNumber: part.partNumber,
     },
   })
+  useUnsavedChangesWarning(isDirty && !isSubmitting)
   return (
     <>
       <div className="container mx-auto max-w-[1000px] px-2">

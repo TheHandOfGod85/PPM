@@ -26,7 +26,6 @@ export default function CreatePartAsset() {
   const router = useRouter()
   const assetId = router.query.assetId?.toString()
   if (!assetId) throw Error('Asset Id missing')
-  console.log(assetId)
   const {
     register,
     handleSubmit,
