@@ -7,6 +7,7 @@ import { openModal } from '@/utils/utils'
 import { useRouter } from 'next/router'
 import * as PartApi from '@/network/api/part.api'
 import { useState } from 'react'
+import Link from 'next/link'
 
 interface PartsTableProps {
   parts: Part[]
@@ -21,6 +22,7 @@ export default function PartsTable({ parts }: PartsTableProps) {
       return (
         <div className="flex gap-1">
           <button
+            className="btn btn-warning btn-xs"
             onClick={() => {
               setDeletePartId(partId)
               openModal(`delete_part`)
@@ -28,9 +30,9 @@ export default function PartsTable({ parts }: PartsTableProps) {
           >
             <FaTrash />
           </button>
-          <button onClick={() => router.push(`/part/${partId}`)}>
+          <Link className="btn btn-info btn-xs" href={`/part/${partId}`}>
             <FaEdit />
-          </button>
+          </Link>
         </div>
       )
     } else {
@@ -45,12 +47,9 @@ export default function PartsTable({ parts }: PartsTableProps) {
           >
             Delete
           </button>
-          <button
-            onClick={() => router.push(`/part/${partId}`)}
-            className="btn btn-info btn-sm"
-          >
+          <Link className="btn btn-info btn-sm" href={`/part/${partId}`}>
             Edit
-          </button>
+          </Link>
         </div>
       )
     }
