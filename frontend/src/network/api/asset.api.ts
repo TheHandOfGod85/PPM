@@ -1,5 +1,4 @@
 import { Asset, AssetsPage } from '@/models/asset'
-import { Part } from '@/models/part'
 import api from '@/network/axiosInstance'
 
 export async function getAssets(
@@ -34,25 +33,7 @@ export async function getAllAssetsIds() {
   return response.data
 }
 
-interface CreatePartValues {
-  name: string
-  description?: string
-  partNumber: string
-  manufacturer: string
-  partImage?: File
-}
 
-export async function createPartAsset(
-  input: CreatePartValues,
-  assetId: string
-) {
-  const formData = new FormData()
-  Object.entries(input).forEach(([key, value]) => {
-    formData.append(key, value)
-  })
-  const response = await api.post<Part>(`/assets/${assetId}/part`, formData)
-  return response.data
-}
 
 interface CreateAssetValues {
   name: string

@@ -5,7 +5,9 @@ export interface Part {
   description: string
   manufacturer: string
   imageUrl: string
-  asset: string
+  asset: {
+    _id: string
+  }
 }
 
 export interface PartsPage {

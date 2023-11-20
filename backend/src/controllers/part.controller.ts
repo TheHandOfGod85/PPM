@@ -118,7 +118,7 @@ export const updatePartHandler: RequestHandler<
   if (!part) {
     throw createHttpError(404, `No part found with Id ${partId}`)
   }
-  if (part.imageUrl) {
+  if (part.imageUrl && partImage) {
     const previousImagePath = part.imageUrl
       .replace(`${env.SERVER_URL}`, '')
       .split('?')[0]

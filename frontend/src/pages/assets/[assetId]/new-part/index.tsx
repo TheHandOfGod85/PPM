@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
-import * as AssetApi from '@/network/api/asset.api'
+import * as PartApi from '@/network/api/part.api'
 import FormInputField from '@/components/form/FormInputField'
 import LoadingButton from '@/components/LoadingButton'
 import GoBackButton from '@/components/GoBackButton'
@@ -24,7 +24,9 @@ type CreatePartFormData = yup.InferType<typeof validationSchema>
 export default function CreatePartAsset() {
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
-  const { assetId } = router.query
+  const assetId = router.query.assetId?.toString()
+  if (!assetId) throw Error('Asset Id missing')
+  console.log(assetId)
   const {
     register,
     handleSubmit,
@@ -42,28 +44,17 @@ export default function CreatePartAsset() {
   }: CreatePartFormData) {
     try {
       setErrorText(null)
-      let imageFile = partImage as File | FileList | undefined
-
-      // Check if it's a FileList and extract the first file
-      if (imageFile instanceof FileList) {
-        imageFile = imageFile[0]
-      }
-
-      if (typeof assetId === 'string') {
-        await AssetApi.createPartAsset(
-          {
-            name,
-            description,
-            manufacturer,
-            partNumber,
-            partImage: imageFile,
-          },
-          assetId
-        )
-        router.push(`/assets/${assetId}`)
-      } else {
-        throw Error('Invalid assetId')
-      }
+      await PartApi.createPartAsset(
+        {
+          name,
+          description,
+          manufacturer,
+          partNumber,
+          partImage: partImage?.item(0) || undefined,
+        },
+        assetId!
+      )
+      router.push(`/assets/${assetId}`)
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
         reset()
