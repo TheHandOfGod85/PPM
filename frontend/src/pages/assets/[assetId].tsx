@@ -7,18 +7,21 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
 import { stringify } from 'querystring'
 import * as PartApi from '@/network/api/part.api'
+import { getAuthenticatedUser } from '@/network/api/user.api'
 import { PartsPage } from '@/models/part'
 import PaginationBar from '@/components/PaginationBar'
 import { useRouter } from 'next/router'
 import SearchParts from '@/components/SearchParts'
 import PartsTable from '@/components/parts/PartsTable'
+import { User } from '@/models/user'
 
 export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
   context: GetServerSidePropsContext
 ) => {
   try {
-    const page = parseInt(context.query.page?.toString() || '1')
     const { cookie } = context.req.headers
+    const user = await getAuthenticatedUser(cookie)
+    const page = parseInt(context.query.page?.toString() || '1')
     const assetId = context.params?.assetId?.toString()
     if (!assetId) throw Error('Id is missing')
 
@@ -32,7 +35,7 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
         cookie
       )
       const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
-      return { props: { asset, data, assetId } }
+      return { props: { asset, data, assetId, user } }
     } else {
       if (page < 1) {
         context.query.page = '1'
@@ -62,7 +65,7 @@ export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
         }
       }
 
-      return { props: { asset, data, assetId } }
+      return { props: { asset, data, assetId, user } }
     }
   } catch (error) {
     if (error instanceof NotFoundError) {
@@ -82,21 +85,26 @@ interface AssetSingleProps {
   asset: Asset
   data: PartsPage
   assetId: string
+  user: User
 }
 
 export default function AssetSingle({
   asset,
   data: { page, parts, totalPages },
   assetId,
+  user,
 }: AssetSingleProps) {
   const router = useRouter()
   return (
     <>
       <div className="container mx-auto max-w-[1000px] px-2">
         <h1 className="title">Asset details</h1>
-        <Link href={`/assets/${asset._id}/new-part`}>
-          <button className="btn btn-neutral mb-2 btn-sm">new part</button>
-        </Link>
+        {user.role === 'admin' && (
+          <Link href={`/assets/${asset._id}/new-part`}>
+            <button className="btn btn-neutral mb-2 btn-sm">new part</button>
+          </Link>
+        )}
+
         <AssetsEntry asset={asset} />
         <div className="overflow-x-auto mt-9 mb-3">
           <div className="flex items-center justify-center my-3">

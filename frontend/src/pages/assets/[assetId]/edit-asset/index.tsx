@@ -14,13 +14,23 @@ import ErrorText from '@/components/ErrorText'
 import { openModal } from '@/utils/utils'
 import GoBackButton from '@/components/GoBackButton'
 import PopUpConfirm from '@/components/PopUpConfirm'
+import { getAuthenticatedUser } from '@/network/api/user.api'
 
 export const getServerSideProps: GetServerSideProps<EditAssetProps> = async (
   context
 ) => {
   try {
-    const assetId = context.params?.assetId?.toString()
     const { cookie } = context.req.headers
+    const user = await getAuthenticatedUser(cookie)
+    if (user.role !== 'admin') {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      }
+    }
+    const assetId = context.params?.assetId?.toString()
     if (!assetId) throw Error('Asset id missing')
     const asset = await AssetApi.getAsset(assetId, cookie)
     return { props: { asset } }

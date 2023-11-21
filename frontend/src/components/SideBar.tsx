@@ -90,16 +90,18 @@ export default function SideBar({ children }: NavBarProps) {
                     Assets List
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href={'/assets/new-asset'}
-                    className={
-                      router.pathname == '/assets/new-asset' ? 'active' : ''
-                    }
-                  >
-                    New Asset
-                  </Link>
-                </li>
+                {user?.role === 'admin' && (
+                  <li>
+                    <Link
+                      href={'/assets/new-asset'}
+                      className={
+                        router.pathname == '/assets/new-asset' ? 'active' : ''
+                      }
+                    >
+                      New Asset
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
             <li className="absolute bottom-0 mb-4">

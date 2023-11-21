@@ -7,6 +7,8 @@ import { FaEdit, FaTrash } from 'react-icons/fa'
 import { useMediaQuery } from 'react-responsive'
 import PopUpConfirm from './PopUpConfirm'
 import * as AssetApi from '@/network/api/asset.api'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+
 interface AssetsEntryProps {
   asset: Asset
 }
@@ -14,6 +16,7 @@ interface AssetsEntryProps {
 export default function AssetsEntry({
   asset: { name, description, createdAt, updatedAt, serialNumber, _id },
 }: AssetsEntryProps) {
+  const { user } = useAuthenticatedUser()
   const createdUpdatedAt =
     updatedAt > createdAt ? (
       <>
@@ -24,44 +27,46 @@ export default function AssetsEntry({
     )
   const isMobile = useMediaQuery({ maxWidth: 640 })
   const generateButtons = (assetId: string) => {
-    if (isMobile) {
-      return (
-        <div className="flex gap-1">
-          <button
-            className="btn btn-warning btn-xs"
-            onClick={() => {
-              openModal(`asset_delete`)
-            }}
-          >
-            <FaTrash />
-          </button>
-          <Link
-            className="btn btn-info btn-xs"
-            href={`/assets/${assetId}/edit-asset`}
-          >
-            <FaEdit />
-          </Link>
-        </div>
-      )
-    } else {
-      return (
-        <div className="flex gap-1">
-          <button
-            onClick={() => {
-              openModal(`asset_delete`)
-            }}
-            className="btn btn-warning btn-sm"
-          >
-            Delete
-          </button>
-          <Link
-            className="btn btn-info btn-sm"
-            href={`/assets/${assetId}/edit-asset`}
-          >
-            Edit
-          </Link>
-        </div>
-      )
+    if (router.pathname === '/assets' && user?.role === 'admin') {
+      if (isMobile) {
+        return (
+          <div className="flex gap-1">
+            <button
+              className="btn btn-warning btn-xs"
+              onClick={() => {
+                openModal(`asset_delete`)
+              }}
+            >
+              <FaTrash />
+            </button>
+            <Link
+              className="btn btn-info btn-xs"
+              href={`/assets/${assetId}/edit-asset`}
+            >
+              <FaEdit />
+            </Link>
+          </div>
+        )
+      } else {
+        return (
+          <div className="flex gap-1">
+            <button
+              onClick={() => {
+                openModal(`asset_delete`)
+              }}
+              className="btn btn-warning btn-sm"
+            >
+              Delete
+            </button>
+            <Link
+              className="btn btn-info btn-sm"
+              href={`/assets/${assetId}/edit-asset`}
+            >
+              Edit
+            </Link>
+          </div>
+        )
+      }
     }
   }
   const router = useRouter()
@@ -96,7 +101,7 @@ export default function AssetsEntry({
           <span className="text-info">{createdUpdatedAt}</span>
         </div>
         <div className="card-actions justify-end p-4">
-          {router.pathname === '/assets' && generateButtons(_id)}
+          {generateButtons(_id)}
         </div>
       </div>
       <PopUpConfirm

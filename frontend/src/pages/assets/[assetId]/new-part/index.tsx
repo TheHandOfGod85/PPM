@@ -10,6 +10,7 @@ import { fileSchema, requiredStringSchema } from '@/utils/validation'
 import { useState } from 'react'
 import { BadRequestError, ConflictError } from '@/network/http-errors'
 import ErrorText from '@/components/ErrorText'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 const validationSchema = yup.object({
   name: requiredStringSchema,
@@ -22,6 +23,7 @@ const validationSchema = yup.object({
 type CreatePartFormData = yup.InferType<typeof validationSchema>
 
 export default function CreatePartAsset() {
+  const { user } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
   const assetId = router.query.assetId?.toString()
@@ -64,6 +66,10 @@ export default function CreatePartAsset() {
         alert(error)
       }
     }
+  }
+  if (user?.role !== 'admin') {
+    router.push('/')
+    return null
   }
   return (
     <>

@@ -23,8 +23,10 @@ export async function login(credentials: LoginValues) {
   return response.data
 }
 
-export async function getAuthenticatedUser() {
-  const response = await api.get<User>('/user/me')
+export async function getAuthenticatedUser(cookie?: string) {
+  const response = await api.get<User>('/user/me', {
+    headers: { Cookie: cookie },
+  })
   return response.data
 }
 

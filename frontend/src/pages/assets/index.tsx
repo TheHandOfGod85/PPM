@@ -2,7 +2,9 @@ import AssetsEntry from '@/components/AssetsEntry'
 import PaginationBar from '@/components/PaginationBar'
 import SearchAssets from '@/components/SearchAssets'
 import { AssetsPage } from '@/models/asset'
+import { User } from '@/models/user'
 import * as AssetApi from '@/network/api/asset.api'
+import { getAuthenticatedUser } from '@/network/api/user.api'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -13,11 +15,12 @@ export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
   context: GetServerSidePropsContext
 ) => {
   const { cookie } = context.req.headers
+  const user = await getAuthenticatedUser(cookie)
   const page = parseInt(context.query.page?.toString() || '1')
   const filter = context.query.search as string
   if (filter) {
     const data = await AssetApi.getAssets(page, filter, cookie)
-    return { props: { data } }
+    return { props: { data, user } }
   } else {
     if (page < 1) {
       context.query.page = '1'
@@ -39,18 +42,39 @@ export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
         },
       }
     }
-    return { props: { data } }
+    return { props: { data, user } }
   }
 }
 
 interface AssetPageProps {
   data: AssetsPage
+  user: User
 }
 
 export default function AssetPage({
   data: { assets, page, totalPages },
+  user,
 }: AssetPageProps) {
   const router = useRouter()
+  const navbar = () => {
+    if (user.role === 'admin') {
+      return (
+        <div className="flex justify-between items-center mb-3">
+          <Link href={'/assets/new-asset'}>
+            <button className="btn btn-neutral mb-2 btn-sm">new asset</button>
+          </Link>
+          <SearchAssets />
+          <div></div>
+        </div>
+      )
+    } else {
+      return (
+        <div className="flex justify-center mb-3 items-center">
+          <SearchAssets />
+        </div>
+      )
+    }
+  }
   return (
     <>
       <Head>
@@ -59,13 +83,7 @@ export default function AssetPage({
       </Head>
       <div className="container mx-auto px-2">
         <h1 className="title">Assets</h1>
-        <div className="flex justify-between items-center mb-3">
-          <Link href={'/assets/new-asset'}>
-            <button className="btn btn-neutral mb-2 btn-sm">new asset</button>
-          </Link>
-          <SearchAssets />
-          <div></div>
-        </div>
+        {navbar()}
         {assets.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-auto">
             {assets.map((asset) => (

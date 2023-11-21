@@ -9,6 +9,15 @@ export const getServerSideProps: GetServerSideProps<UsersPageProps> = async (
   context: GetServerSidePropsContext
 ) => {
   const { cookie } = context.req.headers
+  const user = await UserApi.getAuthenticatedUser(cookie)
+  if (user.role !== 'admin') {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
   const users = await UserApi.getAllUsers(cookie)
   return { props: { users } }
 }

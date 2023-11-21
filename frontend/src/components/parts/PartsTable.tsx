@@ -8,50 +8,54 @@ import { useRouter } from 'next/router'
 import * as PartApi from '@/network/api/part.api'
 import { useState } from 'react'
 import Link from 'next/link'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 interface PartsTableProps {
   parts: Part[]
 }
 
 export default function PartsTable({ parts }: PartsTableProps) {
+  const { user } = useAuthenticatedUser()
   const [deletePartId, setDeletePartId] = useState('')
   const router = useRouter()
   const isMobile = useMediaQuery({ maxWidth: 640 })
   const generateButtons = (partId: string) => {
-    if (isMobile) {
-      return (
-        <div className="flex gap-1">
-          <button
-            className="btn btn-warning btn-xs"
-            onClick={() => {
-              setDeletePartId(partId)
-              openModal(`delete_part`)
-            }}
-          >
-            <FaTrash />
-          </button>
-          <Link className="btn btn-info btn-xs" href={`/edit-part/${partId}`}>
-            <FaEdit />
-          </Link>
-        </div>
-      )
-    } else {
-      return (
-        <div className="flex flex-col gap-1">
-          <button
-            onClick={() => {
-              setDeletePartId(partId)
-              openModal(`delete_part`)
-            }}
-            className="btn btn-warning btn-sm"
-          >
-            Delete
-          </button>
-          <Link className="btn btn-info btn-sm" href={`/edit-part/${partId}`}>
-            Edit
-          </Link>
-        </div>
-      )
+    if (user?.role === 'admin') {
+      if (isMobile) {
+        return (
+          <div className="flex gap-1">
+            <button
+              className="btn btn-warning btn-xs"
+              onClick={() => {
+                setDeletePartId(partId)
+                openModal(`delete_part`)
+              }}
+            >
+              <FaTrash />
+            </button>
+            <Link className="btn btn-info btn-xs" href={`/edit-part/${partId}`}>
+              <FaEdit />
+            </Link>
+          </div>
+        )
+      } else {
+        return (
+          <div className="flex flex-col gap-1">
+            <button
+              onClick={() => {
+                setDeletePartId(partId)
+                openModal(`delete_part`)
+              }}
+              className="btn btn-warning btn-sm"
+            >
+              Delete
+            </button>
+            <Link className="btn btn-info btn-sm" href={`/edit-part/${partId}`}>
+              Edit
+            </Link>
+          </div>
+        )
+      }
     }
   }
 

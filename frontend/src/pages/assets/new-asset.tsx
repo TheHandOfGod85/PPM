@@ -2,6 +2,7 @@ import ErrorText from '@/components/ErrorText'
 import GoBackButton from '@/components/GoBackButton'
 import LoadingButton from '@/components/LoadingButton'
 import FormInputField from '@/components/form/FormInputField'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import useUnsavedChangesWarning from '@/hooks/useUnsavedChangesWarning'
 import * as AssetApi from '@/network/api/asset.api'
 import { BadRequestError, ConflictError } from '@/network/http-errors'
@@ -22,6 +23,7 @@ type CreateAssetFormData = yup.InferType<typeof validationSchema>
 
 export default function CreateNewAsset() {
   const [errorText, setErrorText] = useState<string | null>(null)
+  const { user } = useAuthenticatedUser()
   const router = useRouter()
   const {
     register,
@@ -48,6 +50,10 @@ export default function CreateNewAsset() {
   }
 
   useUnsavedChangesWarning(isDirty && !isSubmitting)
+  if (user?.role !== 'admin') {
+    router.push('/')
+    return null
+  }
   return (
     <>
       <div className="container mx-auto max-w-[1000px] px-2">

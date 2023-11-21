@@ -4,7 +4,9 @@ import PopUpConfirm from '@/components/PopUpConfirm'
 import FormInputField from '@/components/form/FormInputField'
 import useUnsavedChangesWarning from '@/hooks/useUnsavedChangesWarning'
 import { Part } from '@/models/part'
+import { User } from '@/models/user'
 import * as PartApi from '@/network/api/part.api'
+import { getAuthenticatedUser } from '@/network/api/user.api'
 import { BadRequestError, NotFoundError } from '@/network/http-errors'
 import { openModal } from '@/utils/utils'
 import { fileSchema, requiredStringSchema } from '@/utils/validation'
@@ -19,8 +21,17 @@ export const getServerSideProps: GetServerSideProps<EditPartProps> = async (
   context: GetServerSidePropsContext
 ) => {
   try {
-    const partId = context.params?.partId?.toString()
     const { cookie } = context.req.headers
+    const user = await getAuthenticatedUser(cookie)
+    if (user.role !== 'admin') {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      }
+    }
+    const partId = context.params?.partId?.toString()
     if (!partId) throw Error('Part id missing')
     const part = await PartApi.getPartById(partId, cookie)
     return { props: { part } }
