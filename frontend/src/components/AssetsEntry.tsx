@@ -99,9 +99,9 @@ export default function AssetsEntry({
             <span>{description}</span>
           </p>
           <span className="text-info">{createdUpdatedAt}</span>
-        </div>
-        <div className="card-actions justify-end p-4">
-          {generateButtons(_id)}
+          <div className="card-actions justify-end p-4">
+            {generateButtons(_id)}
+          </div>
         </div>
       </div>
       <PopUpConfirm
