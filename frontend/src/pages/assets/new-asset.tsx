@@ -34,11 +34,10 @@ export default function CreateNewAsset() {
   async function onSubmit(input: CreateAssetFormData) {
     try {
       setErrorText(null)
-      const response = await AssetApi.createAsset(input)
-      await router.push(`/assets/${response._id}`)
+      await AssetApi.createAsset(input)
+      router.push(`/assets/`)
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
-        reset()
         setErrorText(error.message)
       } else {
         console.error(error)

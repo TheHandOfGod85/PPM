@@ -15,3 +15,14 @@ export function openModal(modalId: string) {
     console.error(`Modal with id ${modalId} not found.`)
   }
 }
+export function closeModal(modalId: string) {
+  const modalElement = document.getElementById(
+    modalId
+  ) as HTMLFormElement | null
+
+  if (modalElement) {
+    modalElement.close()
+  } else {
+    console.error(`Modal with id ${modalId} not found.`)
+  }
+}

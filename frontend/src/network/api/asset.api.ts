@@ -33,8 +33,6 @@ export async function getAllAssetsIds() {
   return response.data
 }
 
-
-
 interface CreateAssetValues {
   name: string
   description?: string
@@ -43,4 +41,18 @@ interface CreateAssetValues {
 export async function createAsset(input: CreateAssetValues) {
   const response = await api.post<Asset>('/assets', input)
   return response.data
+}
+
+export async function deleteAsset(assetId: string) {
+  await api.delete(`/assets/${assetId}`)
+}
+
+interface UpdateAssetValues {
+  name: string
+  description?: string
+  serialNumber: string
+}
+
+export async function editAsset(input: UpdateAssetValues, assetId: string) {
+  await api.patch(`/assets/${assetId}`, input)
 }

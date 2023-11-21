@@ -30,7 +30,7 @@ export default function PartsTable({ parts }: PartsTableProps) {
           >
             <FaTrash />
           </button>
-          <Link className="btn btn-info btn-xs" href={`/part/${partId}`}>
+          <Link className="btn btn-info btn-xs" href={`/edit-part/${partId}`}>
             <FaEdit />
           </Link>
         </div>
@@ -47,7 +47,7 @@ export default function PartsTable({ parts }: PartsTableProps) {
           >
             Delete
           </button>
-          <Link className="btn btn-info btn-sm" href={`/part/${partId}`}>
+          <Link className="btn btn-info btn-sm" href={`/edit-part/${partId}`}>
             Edit
           </Link>
         </div>
@@ -58,7 +58,7 @@ export default function PartsTable({ parts }: PartsTableProps) {
   async function onDeletePart(partId: string) {
     try {
       await PartApi.deletePartAsset(partId)
-      router.reload()
+      router.replace(router.asPath)
     } catch (error) {
       console.error(error)
       alert(error)

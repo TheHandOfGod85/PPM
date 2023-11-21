@@ -45,6 +45,8 @@ const validationSchema = yup.object({
 type EdiPartFormData = yup.InferType<typeof validationSchema>
 
 export default function EditPart({ part }: EditPartProps) {
+  const [errorText, setErrorText] = useState<string | null>(null)
+  const router = useRouter()
   async function onSubmit({
     manufacturer,
     name,
@@ -75,8 +77,6 @@ export default function EditPart({ part }: EditPartProps) {
       }
     }
   }
-  const [errorText, setErrorText] = useState<string | null>(null)
-  const router = useRouter()
   const {
     register,
     handleSubmit,

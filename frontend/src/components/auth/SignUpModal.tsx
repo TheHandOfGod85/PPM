@@ -12,6 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { emailSchema, passwordSchema, usernameSchema } from '@/utils/validation'
 import ErrorText from '../ErrorText'
 import { useRouter } from 'next/router'
+import { closeModal } from '@/utils/utils'
 
 const roles = ['admin', 'user']
 
@@ -41,7 +42,8 @@ export default function SignUpModal() {
       setErrorText(null)
       const newUser = await UsersApi.SignUp(credentials)
       mutateUser(newUser)
-      router.reload()
+      closeModal('signup_modal')
+      router.replace(router.asPath)
       reset()
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
