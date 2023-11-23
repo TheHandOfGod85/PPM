@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import { objectIdSchema } from '../utils/validators'
 const usernameValidator = yup
   .string()
   .max(20)
@@ -11,14 +12,25 @@ const passwordValidator = yup
   .matches(/^(?!.* )/)
   .min(6)
 //###############################################################
+// export const singupParamsValidator = yup.object({
+//   params: yup.object({
+//     verificationCode: yup.string().required(),
+//     userId: objectIdSchema.required(),
+//   }),
+// })
+// export type SignupParams = yup.InferType<typeof singupParamsValidator>['params']
+
+//###############################################################
 export const signUpSchema = yup.object({
   body: yup.object({
     username: usernameValidator,
-    email: emailValidator.required(),
+    // email: emailValidator.required(),
     displayName: yup.string(),
     about: yup.string(),
     password: passwordValidator.required(),
-    role: yup.string().required(),
+    // role: yup.string().required(),
+    verificationCode: yup.string().required(),
+    userId: objectIdSchema.required(),
   }),
 })
 export type SignUpBody = yup.InferType<typeof signUpSchema>['body']
@@ -34,4 +46,15 @@ export const updateUserValidator = yup.object({
 
 export type UpdateUserBody = yup.InferType<typeof updateUserValidator>['body']
 
+//###############################################################
+
+export const sendRegistrationValidator = yup.object({
+  body: yup.object({
+    email: emailValidator.required(),
+    role: yup.string().required(),
+  }),
+})
+export type SendRegistrationBody = yup.InferType<
+  typeof sendRegistrationValidator
+>['body']
 //###############################################################

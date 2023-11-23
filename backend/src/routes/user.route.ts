@@ -1,7 +1,11 @@
 import express from 'express'
 import * as UserController from '../controllers/user.controller'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
-import { signUpSchema, updateUserValidator } from '../validation/user.validator'
+import {
+  sendRegistrationValidator,
+  signUpSchema,
+  updateUserValidator,
+} from '../validation/user.validator'
 import passport from 'passport'
 import { requireAuth, restrictTo } from '../middlewares/requireAuth'
 
@@ -20,8 +24,6 @@ router.get(
 
 router.post(
   '/signup',
-  requireAuth,
-  restrictTo('admin'),
   validateRequestSchema(signUpSchema),
   UserController.signup
 )
@@ -36,6 +38,14 @@ router.patch(
   requireAuth,
   validateRequestSchema(updateUserValidator),
   UserController.updateUserHandler
+)
+
+router.post(
+  '/send-registration',
+  requireAuth,
+  restrictTo('admin'),
+  validateRequestSchema(sendRegistrationValidator),
+  UserController.sendRegistration
 )
 
 export default router

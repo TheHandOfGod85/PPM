@@ -3,6 +3,7 @@ import { Strategy as LocalStrategy } from 'passport-local'
 import UserModel from '../models/user'
 import bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
+import createHttpError from 'http-errors'
 
 passport.serializeUser((user, cb) => {
   cb(null, { _id: user._id, role: user.role })
@@ -27,6 +28,9 @@ passport.use(
       )
       if (!passwordMatch) {
         return cb(null, false)
+      }
+      if (!existingUser.verified) {
+        throw createHttpError(401, 'Please verify your email')
       }
       const user = existingUser.toObject()
       delete user.password
