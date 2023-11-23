@@ -4,7 +4,7 @@ import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
 import LoadingButton from '../LoadingButton'
 import { useState } from 'react'
-import { UnathuorizedError } from '@/network/http-errors'
+import { UnauthorisedError } from '@/network/http-errors'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -37,7 +37,7 @@ export default function LoginModal() {
       const user = await UsersApi.login(credentials)
       mutateUser(user)
     } catch (error) {
-      if (error instanceof UnathuorizedError) {
+      if (error instanceof UnauthorisedError) {
         setErrorText('Invalid credentials')
       } else {
         console.error(error)

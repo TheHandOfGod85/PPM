@@ -1,15 +1,30 @@
 import { User } from '@/models/user'
 import api from '@/network/axiosInstance'
 
-interface SignUpValues {
-  username: string
-  email: string
-  password: string
-  role?: string
+export async function sendRegistration(email: string, role: string) {
+  await api.post('/user/send-registration', {
+    email,
+    role,
+  })
 }
 
-export async function SignUp(credentials: SignUpValues) {
-  const response = await api.post<User>('/user/signup', credentials)
+interface SignUpValues {
+  username: string
+  password: string
+  about?: string
+  displayName?: string
+}
+
+export async function SignUp(
+  credentials: SignUpValues,
+  userId: string | undefined,
+  verificationCode: string | undefined
+) {
+  const response = await api.post<User>('/user/signup', {
+    ...credentials,
+    userId,
+    verificationCode,
+  })
   return response.data
 }
 

@@ -12,38 +12,34 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { emailSchema, passwordSchema, usernameSchema } from '@/utils/validation'
 import ErrorText from '../ErrorText'
 import { useRouter } from 'next/router'
-import { closeModal } from '@/utils/utils'
+import { closeModal, openModal } from '@/utils/utils'
+import AlertDaisy from '../Alert'
 
 const roles = ['admin', 'user']
 
 const validationSchema = yup.object({
-  username: usernameSchema.required('Required'),
   email: emailSchema.required('Required'),
-  password: passwordSchema.required('Required'),
-  role: yup.string().oneOf(roles, 'Please provide a role'),
+  role: yup.string().oneOf(roles, 'Please provide a role').required('Required'),
 })
 
-type SignUpFormData = yup.InferType<typeof validationSchema>
+type SendRegistrationFormData = yup.InferType<typeof validationSchema>
 
 export default function SignUpModal() {
-  const router = useRouter()
-  const { mutateUser } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<SignUpFormData>({
+  } = useForm<SendRegistrationFormData>({
     resolver: yupResolver(validationSchema),
   })
-  async function onSubmit(credentials: SignUpFormData) {
+  async function onSubmit({ email, role }: SendRegistrationFormData) {
     try {
       setErrorText(null)
-      const newUser = await UsersApi.SignUp(credentials)
-      mutateUser(newUser)
-      closeModal('signup_modal')
-      router.replace(router.asPath)
+      await UsersApi.sendRegistration(email, role)
+      closeModal('send_registration_modal')
+      openModal('alert')
       reset()
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
@@ -55,50 +51,45 @@ export default function SignUpModal() {
     }
   }
   return (
-    <dialog id="signup_modal" className="modal modal-bottom sm:modal-middle">
-      <div className="modal-box">
-        <form method="dialog">
-          {/* if there is a button in form, it will close the modal */}
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-            ✕
-          </button>
-        </form>
-        <form method="dialog" onSubmit={handleSubmit(onSubmit)} noValidate>
-          <div className="join join-vertical w-full gap-3 mt-2 p-4">
-            <h3 className="font-bold text-lg">New user registration</h3>
-            <FormInputField
-              register={register('username')}
-              placeholder="Username"
-              error={errors.username}
-            />
-            <FormInputField
-              register={register('email')}
-              placeholder="Email"
-              error={errors.email}
-              type="email"
-            />
-            <SelectInputField
-              register={register('role')}
-              option={roles}
-              optionTitle="Role to assign?"
-              placeholder="Role"
-              error={errors.role}
-            />
-            <PasswordInputField
-              register={register('password')}
-              placeholder="Password"
-              type="password"
-              error={errors.password}
-            />
-            <div className="modal-action justify-start">
-              <LoadingButton type="submit" isLoading={isSubmitting}>
-                Create user
-              </LoadingButton>
+    <>
+      <dialog
+        id="send_registration_modal"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <div className="modal-box">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <form method="dialog" onSubmit={handleSubmit(onSubmit)} noValidate>
+            <div className="join join-vertical w-full gap-3 mt-2 p-4">
+              <h3 className="font-bold text-lg">New user send registration</h3>
+              <FormInputField
+                register={register('email')}
+                placeholder="Email"
+                error={errors.email}
+                type="email"
+              />
+              <SelectInputField
+                register={register('role')}
+                option={roles}
+                optionTitle="Role to assign?"
+                placeholder="Role"
+                error={errors.role}
+              />
+              <div className="modal-action justify-start">
+                <LoadingButton type="submit" isLoading={isSubmitting}>
+                  Send link
+                </LoadingButton>
+              </div>
+              {errorText && <ErrorText errorText={errorText} />}
             </div>
-            {errorText && <ErrorText errorText={errorText} />}
-          </div>
-        </form>
-      </div>
-    </dialog>
+          </form>
+        </div>
+      </dialog>
+      <AlertDaisy message="Email sent successfully!" />
+    </>
   )
 }

@@ -22,7 +22,7 @@ export async function sendVerificationCode(
       subject: 'Your verification email',
       html: `<p>This is your verification email, it will expire in 1 day</p><br/>
       <p>Please click the link below to verify your email and register your account</p><br/>
-      <strong>${url}/user/${userId}/registration/${verificationCode}</strong>`,
+      <a>${url}/users/${userId}/signup/${verificationCode}</a>`,
     })
   } catch (error) {
     console.error('Error sending verification email:', error)

@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import * as UserApi from '@/network/api/user.api'
-import { UnathuorizedError } from '@/network/http-errors'
+import { UnauthorisedError } from '@/network/http-errors'
 
 export default function useAuthenticatedUser() {
   const {
@@ -12,7 +12,7 @@ export default function useAuthenticatedUser() {
     try {
       return await UserApi.getAuthenticatedUser()
     } catch (error) {
-      if (error instanceof UnathuorizedError) {
+      if (error instanceof UnauthorisedError) {
         return null
       } else {
         throw error

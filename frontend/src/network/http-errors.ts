@@ -12,7 +12,7 @@ export class BadRequestError extends HttpError {}
 /**
  * Status code : 401
  */
-export class UnathuorizedError extends HttpError {}
+export class UnauthorisedError extends HttpError {}
 /**
  * Status code : 404
  */

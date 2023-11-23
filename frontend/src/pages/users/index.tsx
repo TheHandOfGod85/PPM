@@ -1,25 +1,39 @@
 import SignUpModal from '@/components/auth/SignUpModal'
 import { User } from '@/models/user'
+import * as UserApi from '@/network/api/user.api'
+import { UnauthorisedError } from '@/network/http-errors'
+import { formatDate, openModal } from '@/utils/utils'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import { FaUser } from 'react-icons/fa'
-import * as UserApi from '@/network/api/user.api'
-import { formatDate, openModal } from '@/utils/utils'
 
 export const getServerSideProps: GetServerSideProps<UsersPageProps> = async (
   context: GetServerSidePropsContext
 ) => {
-  const { cookie } = context.req.headers
-  const user = await UserApi.getAuthenticatedUser(cookie)
-  if (user.role !== 'admin') {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
+  try {
+    const { cookie } = context.req.headers
+    const user = await UserApi.getAuthenticatedUser(cookie)
+    if (user.role !== 'admin') {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      }
+    }
+    const users = await UserApi.getAllUsers(cookie)
+    return { props: { users, user } }
+  } catch (error) {
+    if (error instanceof UnauthorisedError) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      }
+    } else {
+      throw error
     }
   }
-  const users = await UserApi.getAllUsers(cookie)
-  return { props: { users } }
 }
 
 interface UsersPageProps {
@@ -33,7 +47,7 @@ export default function UsersPage({ users }: UsersPageProps) {
       <div className="container mx-auto px-2">
         <button
           className="btn btn-accent normal-case"
-          onClick={() => openModal('signup_modal')}
+          onClick={() => openModal('send_registration_modal')}
         >
           <FaUser /> New User
         </button>

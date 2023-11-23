@@ -4,7 +4,7 @@ import {
   ConflictError,
   NotFoundError,
   TooManyRequestsError,
-  UnathuorizedError,
+  UnauthorisedError,
 } from './http-errors'
 
 const axiosInstance = axios.create({
@@ -23,7 +23,7 @@ axiosInstance.interceptors.response.use(
         case 400:
           throw new BadRequestError(errorMessage)
         case 401:
-          throw new UnathuorizedError(errorMessage)
+          throw new UnauthorisedError(errorMessage)
         case 404:
           throw new NotFoundError(errorMessage)
         case 409:

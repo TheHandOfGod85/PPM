@@ -1,5 +1,3 @@
-import { UseFormHandleSubmit } from 'react-hook-form'
-
 interface PopUpConfirmProps {
   onSubmit?: () => void
   title: string
@@ -23,7 +21,7 @@ export default function PopUpConfirm({
         <h3 className="font-bold text-lg">{title}</h3>
         <p className="py-4">{infoMessage}</p>
         <div className="modal-action justify-start">
-          <div className='flex'>
+          <div className="flex">
             <form method="dialog" onSubmit={onSubmit}>
               <button type="submit" className="btn btn-warning btn-sm mr-1">
                 {button1}
