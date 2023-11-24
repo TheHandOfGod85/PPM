@@ -116,7 +116,11 @@ export default function CreatePartAsset() {
             {errorText && <ErrorText errorText={errorText} />}
           </div>
           <div className="flex flex-row items-center justify-between">
-            <LoadingButton isLoading={isSubmitting} type="submit">
+            <LoadingButton
+              isLoading={isSubmitting}
+              className="mt-3"
+              type="submit"
+            >
               Create part
             </LoadingButton>
             <div></div>
