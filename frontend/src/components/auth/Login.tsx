@@ -18,7 +18,7 @@ const validationSchema = yup.object({
 
 type LoginFormData = yup.InferType<typeof validationSchema>
 
-export default function LoginModal() {
+export default function Login() {
   const { mutateUser } = useAuthenticatedUser()
 
   const [errorText, setErrorText] = useState<string | null>(null)
@@ -47,35 +47,36 @@ export default function LoginModal() {
   }
 
   return (
-    <dialog id="signup_modal" className="modal modal-bottom sm:modal-middle">
-      <div className="modal-box">
-        <form method="dialog">
-          {/* if there is a button in form, it will close the modal */}
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-            ✕
-          </button>
-        </form>
-        <h3 className="font-bold text-lg">Login</h3>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <div className="join join-vertical w-full gap-3 mt-2 p-4">
-            <FormInputField
-              register={register('username')}
-              placeholder="Email"
-              error={errors.username}
-            />
-            <PasswordInputField
-              register={register('password')}
-              placeholder="Password"
-              type="password"
-              error={errors.password}
-            />
-            <LoadingButton type="submit" isLoading={isSubmitting}>
-              Login
-            </LoadingButton>
-            {errorText && <ErrorText errorText={errorText} />}
-          </div>
-        </form>
+    <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
+      <h1 className="title">Welcome - PPM System</h1>
+      <div className="card bg-neutral shadow-2xl w-full">
+        <div className="card-body">
+          <h3 className="card-title">Login</h3>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <div className="join join-vertical w-full gap-3 mt-2 p-4">
+              <FormInputField
+                register={register('username')}
+                placeholder="Email"
+                error={errors.username}
+              />
+              <PasswordInputField
+                register={register('password')}
+                placeholder="Password"
+                type="password"
+                error={errors.password}
+              />
+              <LoadingButton
+                type="submit"
+                className="btn-accent"
+                isLoading={isSubmitting}
+              >
+                Login
+              </LoadingButton>
+              {errorText && <ErrorText errorText={errorText} />}
+            </div>
+          </form>
+        </div>
       </div>
-    </dialog>
+    </div>
   )
 }

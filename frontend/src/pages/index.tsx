@@ -1,27 +1,37 @@
-import LoginModal from '@/components/auth/LoginModal'
+import Login from '@/components/auth/Login'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
-import { openModal } from '@/utils/utils'
 import { Inter } from 'next/font/google'
-import { FaArrowRightToBracket } from 'react-icons/fa6'
+import Head from 'next/head'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const { user } = useAuthenticatedUser()
   return (
-    <div className="flex h-full flex-col justify-center items-center">
-      <h1 className="text-4xl mb-5 font-bold">Home</h1>
-      <span className="text-7xl mb-5">🏡</span>
-      {!user && (
-        <button
-          className="btn btn-accent normal-case"
-          onClick={() => openModal('signup_modal')}
-        >
-          <FaArrowRightToBracket /> Login
-        </button>
+    <>
+      <Head>
+        <title>Home - PPM System</title>
+        <meta name="description" content="home page" />
+      </Head>
+      {user ? (
+        <>
+          <h1 className="title">PPM System</h1>
+          <div className="grid grid-cols-2 m-2 gap-3">
+            <div className="card bg-neutral shadow-2xl">
+              <div className="card-body">
+                <h2 className="card-title">Parts Statistics</h2>
+              </div>
+            </div>
+            <div className="card bg-neutral shadow-2xl">
+              <div className="card-body">
+                <h2 className="card-title">PPM`s Statistics</h2>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <Login />
       )}
-
-      <LoginModal />
-    </div>
+    </>
   )
 }

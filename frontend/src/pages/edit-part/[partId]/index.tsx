@@ -12,6 +12,7 @@ import { openModal } from '@/utils/utils'
 import { fileSchema, requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -105,6 +106,10 @@ export default function EditPart({ part }: EditPartProps) {
   useUnsavedChangesWarning(isDirty && !isSubmitting)
   return (
     <>
+      <Head>
+        <title>Edit part - PPM System</title>
+        <meta name="description" content="Edit part page" />
+      </Head>
       <div className="container mx-auto max-w-[1000px] px-2">
         <h1 className="title">Edit part</h1>
         <form>

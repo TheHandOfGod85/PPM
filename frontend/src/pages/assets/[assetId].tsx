@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import SearchParts from '@/components/SearchParts'
 import PartsTable from '@/components/parts/PartsTable'
 import { User } from '@/models/user'
+import Head from 'next/head'
 
 export const getServerSideProps: GetServerSideProps<AssetSingleProps> = async (
   context: GetServerSidePropsContext
@@ -97,6 +98,10 @@ export default function AssetSingle({
   const router = useRouter()
   return (
     <>
+      <Head>
+        <title>Asset details - PPM System</title>
+        <meta name="description" content="Asset details page" />
+      </Head>
       <div className="container mx-auto max-w-[1000px] px-2">
         <h1 className="title">Asset details</h1>
         {user.role === 'admin' && (

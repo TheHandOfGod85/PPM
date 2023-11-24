@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { BadRequestError, ConflictError } from '@/network/http-errors'
 import ErrorText from '@/components/ErrorText'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import Head from 'next/head'
 
 const validationSchema = yup.object({
   name: requiredStringSchema,
@@ -73,6 +74,10 @@ export default function CreatePartAsset() {
   }
   return (
     <>
+      <Head>
+        <title>New part - PPM System</title>
+        <meta name="description" content="New part page" />
+      </Head>
       <div className="container mx-auto max-w-[1000px] px-2">
         <h1 className="title">Create new part</h1>
         <form onSubmit={handleSubmit(onSubmit)}>

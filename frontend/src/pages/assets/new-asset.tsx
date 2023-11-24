@@ -8,6 +8,7 @@ import * as AssetApi from '@/network/api/asset.api'
 import { BadRequestError, ConflictError } from '@/network/http-errors'
 import { requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -56,6 +57,10 @@ export default function CreateNewAsset() {
   }
   return (
     <>
+      <Head>
+        <title>New asset - PPM System</title>
+        <meta name="description" content="New asset page" />
+      </Head>
       <div className="container mx-auto max-w-[1000px] px-2">
         <h1 className="title">Create new asset</h1>
         <form onSubmit={handleSubmit(onSubmit)}>

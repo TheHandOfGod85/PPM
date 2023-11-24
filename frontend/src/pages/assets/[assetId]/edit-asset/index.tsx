@@ -15,6 +15,7 @@ import { openModal } from '@/utils/utils'
 import GoBackButton from '@/components/GoBackButton'
 import PopUpConfirm from '@/components/PopUpConfirm'
 import { getAuthenticatedUser } from '@/network/api/user.api'
+import Head from 'next/head'
 
 export const getServerSideProps: GetServerSideProps<EditAssetProps> = async (
   context
@@ -97,6 +98,10 @@ export default function EditAsset({ asset }: EditAssetProps) {
   useUnsavedChangesWarning(isDirty && !isSubmitting)
   return (
     <>
+      <Head>
+        <title>Edit asset - PPM System</title>
+        <meta name="description" content="Edit asset page" />
+      </Head>
       <div className="container mx-auto max-w-[1000px] px-2">
         <h1 className="title">Edit asset</h1>
         <form>

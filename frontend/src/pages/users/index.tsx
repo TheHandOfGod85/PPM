@@ -4,6 +4,7 @@ import * as UserApi from '@/network/api/user.api'
 import { UnauthorisedError } from '@/network/http-errors'
 import { formatDate, openModal } from '@/utils/utils'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
+import Head from 'next/head'
 import { FaUser } from 'react-icons/fa'
 
 export const getServerSideProps: GetServerSideProps<UsersPageProps> = async (
@@ -43,6 +44,10 @@ interface UsersPageProps {
 export default function UsersPage({ users }: UsersPageProps) {
   return (
     <>
+      <Head>
+        <title>Users - PPM System</title>
+        <meta name="description" content="users page" />
+      </Head>
       <h1 className="title">Users Page</h1>
       <div className="container mx-auto px-2">
         <button

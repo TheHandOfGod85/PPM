@@ -50,41 +50,45 @@ export default function SignUp() {
     }
   }
   return (
-    <div className="container mx-auto">
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className="flex flex-col h-screen justify-center max-w-4xl mx-auto px-2">
-          <div className="join join-vertical gap-3">
-            <h3 className="font-bold text-lg">New user registration</h3>
-            <FormInputField
-              register={register('username')}
-              placeholder="Username"
-              error={errors.username}
-            />
-            <FormInputField
-              register={register('displayName')}
-              placeholder="Diplayname"
-              error={errors.displayName}
-            />
-            <FormInputField
-              register={register('about')}
-              placeholder="About"
-              error={errors.about}
-            />
-            <PasswordInputField
-              register={register('password')}
-              placeholder="Password"
-              type="password"
-              error={errors.password}
-            />
-            <div className="modal-action justify-start">
-              <LoadingButton type="submit" isLoading={isSubmitting}>
+    <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
+      <div className="card bg-neutral shadow-2xl w-full ">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className="card-body">
+            <h3 className="card-title">New user registration</h3>
+            <div className="join join-vertical gap-3">
+              <FormInputField
+                register={register('username')}
+                placeholder="Username"
+                error={errors.username}
+              />
+              <FormInputField
+                register={register('displayName')}
+                placeholder="Diplayname"
+                error={errors.displayName}
+              />
+              <FormInputField
+                register={register('about')}
+                placeholder="About"
+                error={errors.about}
+              />
+              <PasswordInputField
+                register={register('password')}
+                placeholder="Password"
+                type="password"
+                error={errors.password}
+              />
+              <LoadingButton
+                type="submit"
+                className="btn-accent"
+                isLoading={isSubmitting}
+              >
                 Register
               </LoadingButton>
+              {errorText && <ErrorText errorText={errorText} />}
             </div>
-            {errorText && <ErrorText errorText={errorText} />}
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   )
 }
