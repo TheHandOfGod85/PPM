@@ -24,11 +24,9 @@ const passwordValidator = yup
 export const signUpSchema = yup.object({
   body: yup.object({
     username: usernameValidator,
-    // email: emailValidator.required(),
     displayName: yup.string(),
     about: yup.string(),
     password: passwordValidator.required(),
-    // role: yup.string().required(),
     verificationCode: yup.string().required(),
     userId: objectIdSchema.required(),
   }),
@@ -56,5 +54,26 @@ export const sendRegistrationValidator = yup.object({
 })
 export type SendRegistrationBody = yup.InferType<
   typeof sendRegistrationValidator
+>['body']
+//###############################################################
+export const requestResetPasswordvalidator = yup.object({
+  body: yup.object({
+    email: emailValidator.required(),
+  }),
+})
+export type RequestResetPasswordBody = yup.InferType<
+  typeof requestResetPasswordvalidator
+>['body']
+//###############################################################
+
+export const resetPasswordValidator = yup.object({
+  body: yup.object({
+    email: emailValidator.required(),
+    password: passwordValidator.required(),
+    verificationCode: yup.string().required(),
+  }),
+})
+export type ResetPasswordBody = yup.InferType<
+  typeof resetPasswordValidator
 >['body']
 //###############################################################

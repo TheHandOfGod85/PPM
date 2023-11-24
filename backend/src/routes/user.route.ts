@@ -2,6 +2,8 @@ import express from 'express'
 import * as UserController from '../controllers/user.controller'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
 import {
+  requestResetPasswordvalidator,
+  resetPasswordValidator,
   sendRegistrationValidator,
   signUpSchema,
   updateUserValidator,
@@ -48,4 +50,14 @@ router.post(
   UserController.sendRegistration
 )
 
+router.post(
+  '/reset-password-code',
+  validateRequestSchema(requestResetPasswordvalidator),
+  UserController.requestResetPasswordCode
+)
+router.post(
+  '/reset-password',
+  validateRequestSchema(resetPasswordValidator),
+  UserController.resetPassword
+)
 export default router

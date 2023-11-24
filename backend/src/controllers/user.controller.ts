@@ -1,5 +1,7 @@
 import { RequestHandler } from 'express'
 import {
+  RequestResetPasswordBody,
+  ResetPasswordBody,
   SendRegistrationBody,
   SignUpBody,
   UpdateUserBody,
@@ -11,7 +13,9 @@ import bcrypt from 'bcrypt'
 import assertIsDefined from '../utils/assertDefined'
 import 'express-async-errors'
 import crypto from 'crypto'
-import { sendVerificationCode } from '../utils/email'
+import { sendPasswordResetCode, sendVerificationCode } from '../utils/email'
+import PasswordResetToken from '../models/password-reset-token'
+import { destroyAllActiveSessionsForUser } from '../utils/auth'
 
 export const getAuthenticatedUser: RequestHandler = async (req, res) => {
   const authenticatedUser = req.user
@@ -112,11 +116,11 @@ export const signup: RequestHandler<
   assertIsDefined(result)
   const newUser = result.toObject()
   delete newUser.password
-  // req.logIn(newUser, (error) => {
-  //   if (error) throw error
-  //   res.status(201).json(newUser)
-  // })
-  res.status(201).json(newUser)
+  req.logIn(newUser, (error) => {
+    if (error) throw error
+    res.status(201).json(newUser)
+  })
+  // res.status(201).json(newUser)
 }
 
 export const logOut: RequestHandler = (req, res) => {
@@ -160,4 +164,62 @@ export const updateUserHandler: RequestHandler<
   ).exec()
 
   res.status(200).json(updatedUser)
+}
+
+export const requestResetPasswordCode: RequestHandler<
+  unknown,
+  unknown,
+  RequestResetPasswordBody,
+  unknown
+> = async (req, res) => {
+  const { email } = req.body
+  const user = await UserModel.findOne({ email })
+    .collation({
+      locale: 'en',
+      strength: 2,
+    })
+    .exec()
+  if (!user) {
+    throw createHttpError(404, `User with email ${email} does not exist.`)
+  }
+  const result = await PasswordResetToken.create({
+    userId: user._id.toString(),
+    verificationToken: crypto.randomBytes(32).toString('hex'),
+  })
+  await sendPasswordResetCode(email, result.verificationToken)
+  res.sendStatus(200)
+}
+export const resetPassword: RequestHandler<
+  unknown,
+  unknown,
+  ResetPasswordBody,
+  unknown
+> = async (req, res) => {
+  const { email, password: newPasswordRow, verificationCode } = req.body
+  const existingUser = await UserModel.findOne({ email })
+    .select('+email')
+    .collation({ locale: 'en', strength: 2 })
+    .exec()
+  if (!existingUser) {
+    throw createHttpError(404, 'User not found.')
+  }
+  const passwordResetToken = await PasswordResetToken.findOne({
+    userId: existingUser._id,
+    verificationToken: verificationCode,
+  }).exec()
+  if (!passwordResetToken) {
+    throw createHttpError(400, 'Verification code incorrect or expired.')
+  } else {
+    await passwordResetToken.deleteOne()
+  }
+  await destroyAllActiveSessionsForUser(existingUser._id.toString())
+  const newPasswordHashed = await bcrypt.hash(newPasswordRow as string, 10)
+  existingUser.password = newPasswordHashed
+  const user = existingUser.toObject()
+  delete user.password
+  await existingUser.save()
+  req.logIn(user, (error) => {
+    if (error) throw error
+    res.status(200).json(user)
+  })
 }
