@@ -95,6 +95,18 @@ export default function UsersPage({ users }: UsersPageProps) {
       }
     }
   }
+
+  const calculateDaysRemaining = (createdAt: string) => {
+    const expirationDays = 7 // Change this to the desired expiration period
+    const createdDate = new Date(createdAt)
+    // Add expirationDays to the createdDate
+    createdDate.setDate(createdDate.getDate() + expirationDays)
+    const currentDate = new Date()
+    const timeDifference = createdDate.getTime() - currentDate.getTime()
+    const daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24))
+
+    return daysRemaining > 0 ? `${daysRemaining} days` : 'Expired'
+  }
   return (
     <>
       <Head>
@@ -118,6 +130,8 @@ export default function UsersPage({ users }: UsersPageProps) {
                 <th>Create At</th>
                 <th>Role</th>
                 <th>Verified</th>
+                <th>Expiring verification</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -132,6 +146,11 @@ export default function UsersPage({ users }: UsersPageProps) {
                   <td>{formatDate(user.createdAt)}</td>
                   <td>{user.role}</td>
                   <td>{user.verified ? 'Yes' : 'No'}</td>
+                  <td>
+                    {user.token && user.token.length > 0
+                      ? calculateDaysRemaining(user.token[0].createdAt)
+                      : 'N/A'}
+                  </td>
                   <td>{generateButtons(user._id)}</td>
                 </tr>
               ))}

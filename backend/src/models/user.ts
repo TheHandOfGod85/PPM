@@ -11,8 +11,14 @@ const userSchema = new Schema(
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     verified: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 )
+
+userSchema.virtual('token', {
+  ref: 'Token',
+  localField: '_id',
+  foreignField: 'userId',
+})
 
 type User = InferSchemaType<typeof userSchema>
 userSchema.plugin(uniqueValidator, { message: 'Expected to be unique.' })

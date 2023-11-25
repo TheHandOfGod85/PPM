@@ -28,7 +28,13 @@ export const getAuthenticatedUser: RequestHandler = async (req, res) => {
 }
 
 export const getUsersHandler: RequestHandler = async (req, res) => {
-  const users = await UserModel.find().select('+email').exec()
+  const users = await UserModel.find()
+    .select('+email')
+    .populate({
+      path: 'token',
+      select: ['createdAt'],
+    })
+    .exec()
   res.status(200).json(users)
 }
 
@@ -42,6 +48,10 @@ export const sendRegistration: RequestHandler<
 
   const user = await UserModel.findOne({ email })
   if (user) {
+    const token = await TokenModel.findOne({ userId: user._id })
+    if (token) {
+      token.deleteOne()
+    }
     const tokenModel = await TokenModel.create({
       userId: user._id,
       token: crypto.randomBytes(32).toString('hex'),
