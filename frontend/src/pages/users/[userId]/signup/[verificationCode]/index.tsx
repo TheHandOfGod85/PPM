@@ -2,6 +2,7 @@ import ErrorText from '@/components/ErrorText'
 import LoadingButton from '@/components/LoadingButton'
 import FormInputField from '@/components/form/FormInputField'
 import PasswordInputField from '@/components/form/PasswordInputField'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import * as UsersApi from '@/network/api/user.api'
 import { BadRequestError, ConflictError } from '@/network/http-errors'
 import { passwordSchema, usernameSchema } from '@/utils/validation'
@@ -21,6 +22,7 @@ const validationSchema = yup.object({
 type SignUpFormData = yup.InferType<typeof validationSchema>
 
 export default function SignUp() {
+  const { user } = useAuthenticatedUser()
   const router = useRouter()
   const userId = router.query.userId?.toString()
   const verificationCode = router.query.verificationCode?.toString()
@@ -49,46 +51,51 @@ export default function SignUp() {
       }
     }
   }
-  return (
-    <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
-      <div className="card bg-neutral shadow-2xl w-full ">
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <div className="card-body">
-            <h3 className="card-title">New user registration</h3>
-            <div className="join join-vertical gap-3">
-              <FormInputField
-                register={register('username')}
-                placeholder="Username"
-                error={errors.username}
-              />
-              <FormInputField
-                register={register('displayName')}
-                placeholder="Diplayname"
-                error={errors.displayName}
-              />
-              <FormInputField
-                register={register('about')}
-                placeholder="About"
-                error={errors.about}
-              />
-              <PasswordInputField
-                register={register('password')}
-                placeholder="Password"
-                type="password"
-                error={errors.password}
-              />
-              <LoadingButton
-                type="submit"
-                className="btn-accent"
-                isLoading={isSubmitting}
-              >
-                Register
-              </LoadingButton>
-              {errorText && <ErrorText errorText={errorText} />}
+
+  if (user) {
+    router.push('/')
+  } else {
+    return (
+      <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
+        <div className="card bg-neutral shadow-2xl w-full ">
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <div className="card-body">
+              <h3 className="card-title">New user registration</h3>
+              <div className="join join-vertical gap-3">
+                <FormInputField
+                  register={register('username')}
+                  placeholder="Username"
+                  error={errors.username}
+                />
+                <FormInputField
+                  register={register('displayName')}
+                  placeholder="Diplayname"
+                  error={errors.displayName}
+                />
+                <FormInputField
+                  register={register('about')}
+                  placeholder="About"
+                  error={errors.about}
+                />
+                <PasswordInputField
+                  register={register('password')}
+                  placeholder="Password"
+                  type="password"
+                  error={errors.password}
+                />
+                <LoadingButton
+                  type="submit"
+                  className="btn-accent"
+                  isLoading={isSubmitting}
+                >
+                  Register
+                </LoadingButton>
+                {errorText && <ErrorText errorText={errorText} />}
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }

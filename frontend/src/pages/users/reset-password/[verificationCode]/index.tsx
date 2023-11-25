@@ -24,6 +24,7 @@ const validationSchema = yup.object({
 type ResetPasswordFormData = yup.InferType<typeof validationSchema>
 
 export default function ResetPassword() {
+  const { user } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const { mutateUser } = useAuthenticatedUser()
   const router = useRouter()
@@ -53,42 +54,45 @@ export default function ResetPassword() {
       }
     }
   }
-
-  return (
-    <>
-      <Head>
-        <title>Reset password</title>
-        <meta name="description" content="Reset password request page" />
-      </Head>
-      <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
-        <div className="card bg-neutral shadow-2xl w-full">
-          <div className="card-body">
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              <div className="join join-vertical w-full gap-3 mt-2 p-4">
-                <h3 className="card-title">Reset password</h3>
-                <FormInputField
-                  register={register('email')}
-                  placeholder="Email"
-                  error={errors.email}
-                />
-                <PasswordInputField
-                  register={register('password')}
-                  placeholder="Password"
-                  error={errors.password}
-                />
-                <LoadingButton
-                  type="submit"
-                  className="btn-accent"
-                  isLoading={isSubmitting}
-                >
-                  Send
-                </LoadingButton>
-                {errorText && <ErrorText errorText={errorText} />}
-              </div>
-            </form>
+  if (user) {
+    router.push('/')
+  } else {
+    return (
+      <>
+        <Head>
+          <title>Reset password</title>
+          <meta name="description" content="Reset password request page" />
+        </Head>
+        <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
+          <div className="card bg-neutral shadow-2xl w-full">
+            <div className="card-body">
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <div className="join join-vertical w-full gap-3 mt-2 p-4">
+                  <h3 className="card-title">Reset password</h3>
+                  <FormInputField
+                    register={register('email')}
+                    placeholder="Email"
+                    error={errors.email}
+                  />
+                  <PasswordInputField
+                    register={register('password')}
+                    placeholder="Password"
+                    error={errors.password}
+                  />
+                  <LoadingButton
+                    type="submit"
+                    className="btn-accent"
+                    isLoading={isSubmitting}
+                  >
+                    Send
+                  </LoadingButton>
+                  {errorText && <ErrorText errorText={errorText} />}
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </>
-  )
+      </>
+    )
+  }
 }

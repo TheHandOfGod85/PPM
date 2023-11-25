@@ -15,28 +15,39 @@ export default function App({ Component, pageProps }: AppProps) {
   const { user, userLoading } = useAuthenticatedUser()
   const router = useRouter()
 
-  const renderContent = userLoading ? (
-    <LoadingSpinner />
-  ) : user === null &&
-    router.pathname === `/users/[userId]/signup/[verificationCode]` ? (
-    <SignUp />
-  ) : user === null && router.pathname === `/users/reset-password-request` ? (
-    <RequestPasswordRequest />
-  ) : user === null &&
-    router.pathname === `/users/reset-password/[verificationCode]` ? (
-    <ResetPassword />
-  ) : user === null ? (
-    <Home />
-  ) : (
-    <SideBar>
-      <Component {...pageProps} />
-    </SideBar>
-  )
+  const renderContent = () => {
+    if (userLoading) {
+      return <LoadingSpinner />
+    } else if (
+      user === null &&
+      router.pathname === `/users/[userId]/signup/[verificationCode]`
+    ) {
+      return <SignUp />
+    } else if (
+      user === null &&
+      router.pathname === `/users/reset-password-request`
+    ) {
+      return <RequestPasswordRequest />
+    } else if (
+      user === null &&
+      router.pathname === `/users/reset-password/[verificationCode]`
+    ) {
+      return <ResetPassword />
+    } else if (user === null) {
+      return <Home />
+    } else {
+      return (
+        <SideBar>
+          <Component {...pageProps} />
+        </SideBar>
+      )
+    }
+  }
 
   return (
     <>
       <NextNProgress color="#37cdbe" />
-      {renderContent}
+      {renderContent()}
     </>
   )
 }

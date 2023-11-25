@@ -11,6 +11,8 @@ import ErrorText from '@/components/ErrorText'
 import Head from 'next/head'
 import AlertDaisy from '@/components/Alert'
 import { openModal } from '@/utils/utils'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import { useRouter } from 'next/router'
 
 const validationSchema = yup.object({
   email: emailSchema.required(),
@@ -18,6 +20,8 @@ const validationSchema = yup.object({
 type RequestPasswordFormData = yup.InferType<typeof validationSchema>
 
 export default function RequestPasswordRequest() {
+  const { user } = useAuthenticatedUser()
+  const router = useRouter()
   const [errorText, setErrorText] = useState<string | null>(null)
   const {
     register,
@@ -42,37 +46,41 @@ export default function RequestPasswordRequest() {
     }
   }
 
-  return (
-    <>
-      <Head>
-        <title>Reset password request</title>
-        <meta name="description" content="Reset password request page" />
-      </Head>
-      <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
-        <div className="card bg-neutral shadow-2xl w-full">
-          <div className="card-body">
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              <div className="join join-vertical w-full gap-3 mt-2 p-4">
-                <h3 className="card-title">Reset password request</h3>
-                <FormInputField
-                  register={register('email')}
-                  placeholder="Email"
-                  error={errors.email}
-                />
-                <LoadingButton
-                  type="submit"
-                  className="btn-accent"
-                  isLoading={isSubmitting}
-                >
-                  Send
-                </LoadingButton>
-                {errorText && <ErrorText errorText={errorText} />}
-              </div>
-            </form>
+  if (user) {
+    router.push('/')
+  } else {
+    return (
+      <>
+        <Head>
+          <title>Reset password request</title>
+          <meta name="description" content="Reset password request page" />
+        </Head>
+        <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
+          <div className="card bg-neutral shadow-2xl w-full">
+            <div className="card-body">
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <div className="join join-vertical w-full gap-3 mt-2 p-4">
+                  <h3 className="card-title">Reset password request</h3>
+                  <FormInputField
+                    register={register('email')}
+                    placeholder="Email"
+                    error={errors.email}
+                  />
+                  <LoadingButton
+                    type="submit"
+                    className="btn-accent"
+                    isLoading={isSubmitting}
+                  >
+                    Send
+                  </LoadingButton>
+                  {errorText && <ErrorText errorText={errorText} />}
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-      <AlertDaisy message="Email sent, please check your inbox" />
-    </>
-  )
+        <AlertDaisy message="Email sent, please check your inbox" />
+      </>
+    )
+  }
 }
