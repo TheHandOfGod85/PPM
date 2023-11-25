@@ -8,6 +8,8 @@ import Home from '.'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { useRouter } from 'next/router'
 import SignUp from './users/[userId]/signup/[verificationCode]/index'
+import RequestPasswordRequest from './users/reset-password-request'
+import ResetPassword from './users/reset-password/[verificationCode]'
 
 export default function App({ Component, pageProps }: AppProps) {
   const { user, userLoading } = useAuthenticatedUser()
@@ -18,6 +20,11 @@ export default function App({ Component, pageProps }: AppProps) {
   ) : user === null &&
     router.pathname === `/users/[userId]/signup/[verificationCode]` ? (
     <SignUp />
+  ) : user === null && router.pathname === `/users/reset-password-request` ? (
+    <RequestPasswordRequest />
+  ) : user === null &&
+    router.pathname === `/users/reset-password/[verificationCode]` ? (
+    <ResetPassword />
   ) : user === null ? (
     <Home />
   ) : (

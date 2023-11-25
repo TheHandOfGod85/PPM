@@ -10,6 +10,8 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { requiredStringSchema } from '@/utils/validation'
 import ErrorText from '../ErrorText'
+import Link from 'next/link'
+import Head from 'next/head'
 
 const validationSchema = yup.object({
   username: requiredStringSchema,
@@ -47,36 +49,48 @@ export default function Login() {
   }
 
   return (
-    <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
-      <h1 className="title">Welcome - PPM System</h1>
-      <div className="card bg-neutral shadow-2xl w-full">
-        <div className="card-body">
-          <h3 className="card-title">Login</h3>
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <div className="join join-vertical w-full gap-3 mt-2 p-4">
-              <FormInputField
-                register={register('username')}
-                placeholder="Email"
-                error={errors.username}
-              />
-              <PasswordInputField
-                register={register('password')}
-                placeholder="Password"
-                type="password"
-                error={errors.password}
-              />
-              <LoadingButton
-                type="submit"
-                className="btn-accent"
-                isLoading={isSubmitting}
-              >
-                Login
-              </LoadingButton>
-              {errorText && <ErrorText errorText={errorText} />}
-            </div>
-          </form>
+    <>
+      <Head>
+        <title>Login</title>
+        <meta name="description" content="Login page" />
+      </Head>
+      <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
+        <h1 className="title">Welcome - PPM System</h1>
+        <div className="card bg-neutral shadow-2xl w-full">
+          <div className="card-body">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+              <div className="join join-vertical w-full gap-3 mt-2 p-4">
+                <h3 className="card-title">Login</h3>
+                <FormInputField
+                  register={register('username')}
+                  placeholder="Email"
+                  error={errors.username}
+                />
+                <PasswordInputField
+                  register={register('password')}
+                  placeholder="Password"
+                  type="password"
+                  error={errors.password}
+                />
+                <Link
+                  className="text-right hover:text-accent-focus"
+                  href={'/users/reset-password-request'}
+                >
+                  Forgot password?
+                </Link>
+                <LoadingButton
+                  type="submit"
+                  className="btn-accent"
+                  isLoading={isSubmitting}
+                >
+                  Login
+                </LoadingButton>
+                {errorText && <ErrorText errorText={errorText} />}
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
