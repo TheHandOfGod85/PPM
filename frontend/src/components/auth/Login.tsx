@@ -72,12 +72,6 @@ export default function Login() {
                   type="password"
                   error={errors.password}
                 />
-                <Link
-                  className="text-right hover:text-accent-focus"
-                  href={'/users/reset-password-request'}
-                >
-                  Forgot password?
-                </Link>
                 <LoadingButton
                   type="submit"
                   className="btn-accent"
@@ -85,6 +79,12 @@ export default function Login() {
                 >
                   Login
                 </LoadingButton>
+                <Link
+                  className="text-right hover:text-accent-focus underline"
+                  href={'/users/reset-password-request'}
+                >
+                  Forgot password?
+                </Link>
                 {errorText && <ErrorText errorText={errorText} />}
               </div>
             </form>

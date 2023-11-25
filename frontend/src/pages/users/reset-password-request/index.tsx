@@ -13,6 +13,7 @@ import AlertDaisy from '@/components/Alert'
 import { openModal } from '@/utils/utils'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const validationSchema = yup.object({
   email: emailSchema.required(),
@@ -73,6 +74,12 @@ export default function RequestPasswordRequest() {
                   >
                     Send
                   </LoadingButton>
+                  <Link
+                    className="text-end underline hover:text-accent-focus"
+                    href={'/'}
+                  >
+                    Login
+                  </Link>
                   {errorText && <ErrorText errorText={errorText} />}
                 </div>
               </form>
