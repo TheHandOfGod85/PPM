@@ -1,11 +1,16 @@
+import PopUpConfirm from '@/components/PopUpConfirm'
 import SignUpModal from '@/components/auth/SignUpModal'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { User } from '@/models/user'
 import * as UserApi from '@/network/api/user.api'
 import { UnauthorisedError } from '@/network/http-errors'
 import { formatDate, openModal } from '@/utils/utils'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-import { FaUser } from 'react-icons/fa'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { FaTrash, FaUser } from 'react-icons/fa'
+import { useMediaQuery } from 'react-responsive'
 
 export const getServerSideProps: GetServerSideProps<UsersPageProps> = async (
   context: GetServerSidePropsContext
@@ -42,6 +47,54 @@ interface UsersPageProps {
 }
 
 export default function UsersPage({ users }: UsersPageProps) {
+  const { user } = useAuthenticatedUser()
+  const isMobile = useMediaQuery({ maxWidth: 640 })
+  const [deleteUserId, setDeleteUserId] = useState('')
+  const router = useRouter()
+
+  async function onDeleteUser(userId: string) {
+    try {
+      await UserApi.removeUser(userId)
+      router.replace(router.asPath)
+    } catch (error) {
+      console.error(error)
+      alert(error)
+    }
+  }
+
+  const generateButtons = (userId: string) => {
+    if (user?.role === 'admin' && user._id !== userId) {
+      if (isMobile) {
+        return (
+          <div className="flex gap-1">
+            <button
+              className="btn btn-warning btn-xs"
+              onClick={() => {
+                setDeleteUserId(userId)
+                openModal(`delete_part`)
+              }}
+            >
+              <FaTrash />
+            </button>
+          </div>
+        )
+      } else {
+        return (
+          <div className="flex flex-col gap-1">
+            <button
+              onClick={() => {
+                setDeleteUserId(userId)
+                openModal(`remove_user`)
+              }}
+              className="btn btn-warning btn-sm"
+            >
+              Delete
+            </button>
+          </div>
+        )
+      }
+    }
+  }
   return (
     <>
       <Head>
@@ -64,6 +117,7 @@ export default function UsersPage({ users }: UsersPageProps) {
                 <th>Username</th>
                 <th>Create At</th>
                 <th>Role</th>
+                <th>Verified</th>
               </tr>
             </thead>
             <tbody>
@@ -77,6 +131,8 @@ export default function UsersPage({ users }: UsersPageProps) {
                   </td>
                   <td>{formatDate(user.createdAt)}</td>
                   <td>{user.role}</td>
+                  <td>{user.verified ? 'Yes' : 'No'}</td>
+                  <td>{generateButtons(user._id)}</td>
                 </tr>
               ))}
             </tbody>
@@ -84,6 +140,14 @@ export default function UsersPage({ users }: UsersPageProps) {
         </div>
       </div>
       <SignUpModal />
+      <PopUpConfirm
+        id="remove_user"
+        title={'Remove user'}
+        infoMessage={'Are you sure you want to delete?'}
+        buttonSubmit="Yes"
+        button2="No"
+        onSubmit={() => onDeleteUser(deleteUserId)}
+      />
     </>
   )
 }

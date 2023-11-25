@@ -5,6 +5,7 @@ export interface User {
   displayName: string
   about: string
   role: string
+  verified: boolean
   createdAt: string
   updatedAt: string
 }

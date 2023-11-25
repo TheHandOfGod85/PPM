@@ -77,3 +77,12 @@ export type ResetPasswordBody = yup.InferType<
   typeof resetPasswordValidator
 >['body']
 //###############################################################
+
+export const removeUserValidator = yup.object({
+  params: yup.object({
+    userId: objectIdSchema.required(),
+  }),
+})
+export type RemoveUserParams = yup.InferType<
+  typeof removeUserValidator
+>['params']

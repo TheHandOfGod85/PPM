@@ -1,21 +1,22 @@
+import bcrypt from 'bcrypt'
+import crypto from 'crypto'
 import { RequestHandler } from 'express'
+import 'express-async-errors'
+import createHttpError from 'http-errors'
+import PasswordResetToken from '../models/password-reset-token'
+import TokenModel from '../models/token'
+import UserModel from '../models/user'
+import assertIsDefined from '../utils/assertDefined'
+import { destroyAllActiveSessionsForUser } from '../utils/auth'
+import { sendPasswordResetCode, sendVerificationCode } from '../utils/email'
 import {
+  RemoveUserParams,
   RequestResetPasswordBody,
   ResetPasswordBody,
   SendRegistrationBody,
   SignUpBody,
   UpdateUserBody,
 } from '../validation/user.validator'
-import UserModel from '../models/user'
-import TokenModel from '../models/token'
-import createHttpError from 'http-errors'
-import bcrypt from 'bcrypt'
-import assertIsDefined from '../utils/assertDefined'
-import 'express-async-errors'
-import crypto from 'crypto'
-import { sendPasswordResetCode, sendVerificationCode } from '../utils/email'
-import PasswordResetToken from '../models/password-reset-token'
-import { destroyAllActiveSessionsForUser } from '../utils/auth'
 
 export const getAuthenticatedUser: RequestHandler = async (req, res) => {
   const authenticatedUser = req.user
@@ -222,4 +223,23 @@ export const resetPassword: RequestHandler<
     if (error) throw error
     res.status(200).json(user)
   })
+}
+
+export const removeUser: RequestHandler<
+  RemoveUserParams,
+  unknown,
+  unknown,
+  unknown
+> = async (req, res) => {
+  const { userId } = req.params
+  const user = await UserModel.findById(userId).exec()
+  if (!user) {
+    throw createHttpError(404, 'User not found')
+  }
+  const verificationToken = await TokenModel.findOne({ userId })
+  if (verificationToken) {
+    verificationToken.deleteOne()
+  }
+  await user.deleteOne()
+  res.sendStatus(204)
 }

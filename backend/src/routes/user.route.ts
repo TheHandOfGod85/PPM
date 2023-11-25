@@ -2,6 +2,7 @@ import express from 'express'
 import * as UserController from '../controllers/user.controller'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
 import {
+  removeUserValidator,
   requestResetPasswordvalidator,
   resetPasswordValidator,
   sendRegistrationValidator,
@@ -59,5 +60,13 @@ router.post(
   '/reset-password',
   validateRequestSchema(resetPasswordValidator),
   UserController.resetPassword
+)
+
+router.delete(
+  '/remove/:userId',
+  requireAuth,
+  restrictTo('admin'),
+  validateRequestSchema(removeUserValidator),
+  UserController.removeUser
 )
 export default router

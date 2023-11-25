@@ -1,19 +1,17 @@
-import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import * as UsersApi from '@/network/api/user.api'
 import { BadRequestError, ConflictError } from '@/network/http-errors'
+import { closeModal, openModal } from '@/utils/utils'
+import { emailSchema } from '@/utils/validation'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import AlertDaisy from '../Alert'
+import ErrorText from '../ErrorText'
 import LoadingButton from '../LoadingButton'
 import FormInputField from '../form/FormInputField'
-import PasswordInputField from '../form/PasswordInputField'
 import SelectInputField from '../form/SelectInputField'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { emailSchema, passwordSchema, usernameSchema } from '@/utils/validation'
-import ErrorText from '../ErrorText'
-import { useRouter } from 'next/router'
-import { closeModal, openModal } from '@/utils/utils'
-import AlertDaisy from '../Alert'
 
 const roles = ['admin', 'user']
 
@@ -26,6 +24,7 @@ type SendRegistrationFormData = yup.InferType<typeof validationSchema>
 
 export default function SignUpModal() {
   const [errorText, setErrorText] = useState<string | null>(null)
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -38,6 +37,7 @@ export default function SignUpModal() {
     try {
       setErrorText(null)
       await UsersApi.sendRegistration(email, role)
+      router.replace(router.asPath)
       closeModal('send_registration_modal')
       openModal('alert')
       reset()

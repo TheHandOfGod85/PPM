@@ -75,3 +75,7 @@ export async function resetPassword(
   })
   return response.data
 }
+
+export async function removeUser(userId: string) {
+  await api.delete(`/user/remove/${userId}`)
+}
