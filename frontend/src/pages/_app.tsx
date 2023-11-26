@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import SignUp from './users/[userId]/signup/[verificationCode]/index'
 import RequestPasswordRequest from './users/reset-password-request'
 import ResetPassword from './users/reset-password/[verificationCode]'
+import Head from 'next/head'
 
 export default function App({ Component, pageProps }: AppProps) {
   const { user, userLoading } = useAuthenticatedUser()
@@ -46,6 +47,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <Head>
+        <link rel="icon" href="/images/favicon.ico" />
+      </Head>
       <NextNProgress color="#37cdbe" />
       {renderContent()}
     </>

@@ -13,7 +13,11 @@ export default function LoadingButton({
   ...props
 }: LoadingButtonProps & ComponentProps<'button'>) {
   return (
-    <button {...props} className={`${className} btn `}>
+    <button
+      {...props}
+      disabled={isLoading || props.disabled}
+      className={`${className} btn `}
+    >
       {isLoading && (
         <>
           <span className="loading loading-dots loading-sm"></span>{' '}
