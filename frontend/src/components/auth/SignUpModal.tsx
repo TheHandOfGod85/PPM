@@ -1,5 +1,9 @@
 import * as UsersApi from '@/network/api/user.api'
-import { BadRequestError, ConflictError } from '@/network/http-errors'
+import {
+  BadRequestError,
+  ConflictError,
+  TooManyRequestsError,
+} from '@/network/http-errors'
 import { closeModal, openModal } from '@/utils/utils'
 import { emailSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -44,6 +48,8 @@ export default function SignUpModal() {
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
         setErrorText(error.message)
+      } else if (error instanceof TooManyRequestsError) {
+        setErrorText('Too many requests, please try later.')
       } else {
         console.error(error)
         alert(error)

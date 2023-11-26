@@ -1,4 +1,8 @@
-import { NotFoundError, UnauthorisedError } from '@/network/http-errors'
+import {
+  NotFoundError,
+  TooManyRequestsError,
+  UnauthorisedError,
+} from '@/network/http-errors'
 import { emailSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
@@ -40,6 +44,8 @@ export default function RequestPasswordRequest() {
     } catch (error) {
       if (error instanceof NotFoundError) {
         setErrorText('Invalid email')
+      } else if (error instanceof TooManyRequestsError) {
+        setErrorText('Too many requests, please try later.')
       } else {
         console.error(error)
         alert(error)

@@ -4,7 +4,7 @@ import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
 import LoadingButton from '../LoadingButton'
 import { useState } from 'react'
-import { UnauthorisedError } from '@/network/http-errors'
+import { TooManyRequestsError, UnauthorisedError } from '@/network/http-errors'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -41,6 +41,8 @@ export default function Login() {
     } catch (error) {
       if (error instanceof UnauthorisedError) {
         setErrorText('Invalid credentials')
+      } else if (error instanceof TooManyRequestsError) {
+        setErrorText('Too many requests, please try later.')
       } else {
         console.error(error)
         alert(error)

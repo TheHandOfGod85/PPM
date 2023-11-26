@@ -11,6 +11,10 @@ import {
 } from '../validation/user.validator'
 import passport from 'passport'
 import { requireAuth, restrictTo } from '../middlewares/requireAuth'
+import {
+  loginRateLimit,
+  requestVerificationCodeLimit,
+} from '../middlewares/rate-limit'
 
 const router = express.Router()
 
@@ -30,8 +34,11 @@ router.post(
   validateRequestSchema(signUpSchema),
   UserController.signup
 )
-router.post('/login', passport.authenticate('local'), (req, res) =>
-  res.status(200).json(req.user)
+router.post(
+  '/login',
+  loginRateLimit,
+  passport.authenticate('local'),
+  (req, res) => res.status(200).json(req.user)
 )
 
 router.post('/logout', UserController.logOut)
@@ -47,12 +54,14 @@ router.post(
   '/send-registration',
   requireAuth,
   restrictTo('admin'),
+  requestVerificationCodeLimit,
   validateRequestSchema(sendRegistrationValidator),
   UserController.sendRegistration
 )
 
 router.post(
   '/reset-password-code',
+  requestVerificationCodeLimit,
   validateRequestSchema(requestResetPasswordvalidator),
   UserController.requestResetPasswordCode
 )
