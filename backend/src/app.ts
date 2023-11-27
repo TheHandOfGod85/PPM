@@ -16,6 +16,7 @@ import './config/passport'
 const app = express()
 
 console.log('Environment in ' + env.NODE_ENV)
+console.log('Environment in ' + env.WEBSITE_URL)
 
 // developement logging
 if (env.NODE_ENV === 'production') {
