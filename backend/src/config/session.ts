@@ -4,6 +4,7 @@ import env from '../env'
 import crypto from 'crypto'
 import RedisStore from 'connect-redis'
 import redisClient from './redisClient'
+import { CookieOptions } from 'express'
 
 // const store =
 //   env.NODE_ENV === 'production'
@@ -14,13 +15,18 @@ import redisClient from './redisClient'
 //         mongoUrl: env.MONGO_CONNECTION_STRING,
 //       })
 
+const cookieConfig: CookieOptions = {
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+}
+if (env.NODE_ENV === 'production') {
+  cookieConfig.secure = true
+}
+
 const sessionConfig: SessionOptions = {
   secret: env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  },
+  cookie: cookieConfig,
   rolling: true,
   store: new RedisStore({
     client: redisClient,
