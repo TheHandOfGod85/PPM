@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon src/server.ts",
-    "start:prod": " SET NODE_ENV=production & node dist/src/server.js",
-    "build": "rm -rf dist/ && tsc",
+    "start": "nodemon src/server.ts",
     "lint": "eslint . --ext .ts",
     "test": "jest"
   },
