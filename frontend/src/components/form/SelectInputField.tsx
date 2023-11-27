@@ -29,8 +29,9 @@ export default function SelectInputField({
         className="select select-bordered w-full select-input-md"
         {...register}
         {...props}
+        defaultValue={optionTitle}
       >
-        <option disabled selected className="hidden">
+        <option disabled value="" className="hidden">
           {optionTitle}
         </option>
         {option.map((opt, index) => (
