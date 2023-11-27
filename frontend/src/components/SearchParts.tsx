@@ -16,7 +16,7 @@ export default function SearchParts({ id }: SearchPartsProps) {
     } else {
       router.push(`/assets/${id}?search=${query}`)
     }
-  }, [query])
+  }, [query, router, id])
   return (
     <input
       value={text}
