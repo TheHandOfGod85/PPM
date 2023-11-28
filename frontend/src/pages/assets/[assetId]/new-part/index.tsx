@@ -1,17 +1,17 @@
-import { useRouter } from 'next/router'
-import { useForm } from 'react-hook-form'
-import * as PartApi from '@/network/api/part.api'
-import FormInputField from '@/components/form/FormInputField'
-import LoadingButton from '@/components/LoadingButton'
-import GoBackButton from '@/components/GoBackButton'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { fileSchema, requiredStringSchema } from '@/utils/validation'
-import { useState } from 'react'
-import { BadRequestError, ConflictError } from '@/network/http-errors'
 import ErrorText from '@/components/ErrorText'
-import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import GoBackButton from '@/components/GoBackButton'
+import LoadingButton from '@/components/LoadingButton'
+import FormInputField from '@/components/form/FormInputField'
+import { useUser } from '@/contexts/AuthProvider'
+import * as PartApi from '@/network/api/part.api'
+import { BadRequestError, ConflictError } from '@/network/http-errors'
+import { fileSchema, requiredStringSchema } from '@/utils/validation'
+import { yupResolver } from '@hookform/resolvers/yup'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
 
 const validationSchema = yup.object({
   name: requiredStringSchema,
@@ -24,7 +24,7 @@ const validationSchema = yup.object({
 type CreatePartFormData = yup.InferType<typeof validationSchema>
 
 export default function CreatePartAsset() {
-  const { user } = useAuthenticatedUser()
+  const { user } = useUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
   const assetId = router.query.assetId?.toString()
@@ -68,10 +68,12 @@ export default function CreatePartAsset() {
       }
     }
   }
-  if (user?.role !== 'admin') {
-    router.push('/')
-    return null
-  }
+  useEffect(() => {
+    if (user?.role !== 'admin') {
+      router.push('/') // Redirect asynchronously
+    }
+    return () => {}
+  }, [user, router])
   return (
     <>
       <Head>

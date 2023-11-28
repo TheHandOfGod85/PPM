@@ -1,6 +1,6 @@
 /* eslint-disable react/no-children-prop */
 import SideBar from '@/components/SideBar'
-import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+// import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import NextNProgress from 'nextjs-progressbar'
@@ -11,6 +11,8 @@ import SignUp from './users/[userId]/signup/[verificationCode]/index'
 import RequestPasswordRequest from './users/reset-password-request'
 import ResetPassword from './users/reset-password/[verificationCode]'
 import Head from 'next/head'
+import { UserProvider } from '@/contexts/AuthProvider'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 export default function App({ Component, pageProps }: AppProps) {
   const { user, userLoading } = useAuthenticatedUser()
@@ -51,7 +53,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/images/favicon.ico" />
       </Head>
       <NextNProgress color="#37cdbe" />
-      {renderContent()}
+      <UserProvider>{renderContent()}</UserProvider>
     </>
   )
 }

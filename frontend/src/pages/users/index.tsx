@@ -1,6 +1,6 @@
 import PopUpConfirm from '@/components/PopUpConfirm'
 import SignUpModal from '@/components/auth/SignUpModal'
-import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import { useUser } from '@/contexts/AuthProvider'
 import { User } from '@/models/user'
 import * as UserApi from '@/network/api/user.api'
 import { UnauthorisedError } from '@/network/http-errors'
@@ -17,17 +17,8 @@ export const getServerSideProps: GetServerSideProps<UsersPageProps> = async (
 ) => {
   try {
     const { cookie } = context.req.headers
-    const user = await UserApi.getAuthenticatedUser(cookie)
-    if (user.role !== 'admin') {
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      }
-    }
     const users = await UserApi.getAllUsers(cookie)
-    return { props: { users, user } }
+    return { props: { users } }
   } catch (error) {
     if (error instanceof UnauthorisedError) {
       return {
@@ -47,7 +38,7 @@ interface UsersPageProps {
 }
 
 export default function UsersPage({ users }: UsersPageProps) {
-  const { user } = useAuthenticatedUser()
+  const { user } = useUser()
   const isMobile = useMediaQuery({ maxWidth: 640 })
   const [deleteUserId, setDeleteUserId] = useState('')
   const router = useRouter()
@@ -61,7 +52,6 @@ export default function UsersPage({ users }: UsersPageProps) {
       alert(error)
     }
   }
-
   const generateButtons = (userId: string) => {
     if (user?.role === 'admin' && user._id !== userId) {
       if (isMobile) {

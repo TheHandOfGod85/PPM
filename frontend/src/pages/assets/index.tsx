@@ -1,10 +1,10 @@
 import AssetsEntry from '@/components/AssetsEntry'
 import PaginationBar from '@/components/PaginationBar'
 import SearchAssets from '@/components/SearchAssets'
+import { useUser } from '@/contexts/AuthProvider'
 import { AssetsPage } from '@/models/asset'
-import { User } from '@/models/user'
 import * as AssetApi from '@/network/api/asset.api'
-import { getAuthenticatedUser } from '@/network/api/user.api'
+import { UnauthorisedError } from '@/network/http-errors'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -15,49 +15,60 @@ export const getServerSideProps: GetServerSideProps<AssetPageProps> = async (
   context: GetServerSidePropsContext
 ) => {
   const { cookie } = context.req.headers
-  const user = await getAuthenticatedUser(cookie)
   const page = parseInt(context.query.page?.toString() || '1')
   const filter = context.query.search as string
-  if (filter) {
-    const data = await AssetApi.getAssets(page, filter, cookie)
-    return { props: { data, user } }
-  } else {
-    if (page < 1) {
-      context.query.page = '1'
-      return {
-        redirect: {
-          destination: '/assets?' + stringify(context.query),
-          permanent: false,
-        },
+  try {
+    if (filter) {
+      const data = await AssetApi.getAssets(page, filter, cookie)
+      return { props: { data } }
+    } else {
+      if (page < 1) {
+        context.query.page = '1'
+        return {
+          redirect: {
+            destination: '/assets?' + stringify(context.query),
+            permanent: false,
+          },
+        }
       }
-    }
-    const data = await AssetApi.getAssets(page, filter, cookie)
+      const data = await AssetApi.getAssets(page, filter, cookie)
 
-    if (data.totalPages > 0 && page > data.totalPages) {
-      context.query.page = data.totalPages.toString()
+      if (data.totalPages > 0 && page > data.totalPages) {
+        context.query.page = data.totalPages.toString()
+        return {
+          redirect: {
+            destination: '/assets?' + stringify(context.query),
+            permanent: false,
+          },
+        }
+      }
+      return { props: { data } }
+    }
+  } catch (error) {
+    if (error instanceof UnauthorisedError) {
       return {
         redirect: {
-          destination: '/assets?' + stringify(context.query),
+          destination: '/',
           permanent: false,
         },
       }
+    } else {
+      throw error
     }
-    return { props: { data, user } }
   }
 }
 
 interface AssetPageProps {
   data: AssetsPage
-  user: User
 }
 
 export default function AssetPage({
   data: { assets, page, totalPages },
-  user,
 }: AssetPageProps) {
+  const { user } = useUser()
   const router = useRouter()
   const navbar = () => {
-    if (user.role === 'admin') {
+    if (user?.role === 'admin') {
       return (
         <div className="flex justify-between items-center mb-3">
           <Link href={'/assets/new-asset'}>
