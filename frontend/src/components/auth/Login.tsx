@@ -12,6 +12,7 @@ import { requiredStringSchema } from '@/utils/validation'
 import ErrorText from '../ErrorText'
 import Link from 'next/link'
 import Head from 'next/head'
+import useLoggedIn from '@/hooks/useLoggedIn'
 
 const validationSchema = yup.object({
   username: requiredStringSchema,
@@ -22,6 +23,7 @@ type LoginFormData = yup.InferType<typeof validationSchema>
 
 export default function Login() {
   const { mutateUser } = useAuthenticatedUser()
+  const { mutate } = useLoggedIn()
 
   const [errorText, setErrorText] = useState<string | null>(null)
 
@@ -38,6 +40,7 @@ export default function Login() {
       setErrorText(null)
       const user = await UsersApi.login(credentials)
       mutateUser(user)
+      mutate('isLoggedIn')
     } catch (error) {
       if (error instanceof UnauthorisedError) {
         setErrorText('Invalid credentials')

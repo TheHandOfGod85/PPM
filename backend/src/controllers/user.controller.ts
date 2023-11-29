@@ -30,6 +30,15 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   }
 }
 
+export const isLoggedIn: RequestHandler = async (req, res) => {
+  const user = req.user
+  if (!user) {
+    res.json(false)
+  } else {
+    res.json(true)
+  }
+}
+
 export const getUsersHandler: RequestHandler = async (req, res, next) => {
   try {
     const users = await UserModel.find()

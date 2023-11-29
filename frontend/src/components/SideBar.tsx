@@ -14,13 +14,17 @@ interface NavBarProps {
 }
 import { logout } from '@/network/api/user.api'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import useLoggedIn from '@/hooks/useLoggedIn'
 export default function SideBar({ children }: NavBarProps) {
   const router = useRouter()
   const { user, mutateUser } = useAuthenticatedUser()
+  const { mutate } = useLoggedIn()
+
   const onLogout = async () => {
     try {
       await logout()
       mutateUser(null)
+      mutate('isLoggedIn')
       router.push('/')
     } catch (error) {
       console.error(error)

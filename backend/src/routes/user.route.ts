@@ -78,4 +78,6 @@ router.delete(
   validateRequestSchema(removeUserValidator),
   UserController.removeUser
 )
+
+router.get('/isLoggedIn', UserController.isLoggedIn)
 export default router

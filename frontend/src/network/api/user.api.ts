@@ -79,3 +79,7 @@ export async function resetPassword(
 export async function removeUser(userId: string) {
   await api.delete(`/user/remove/${userId}`)
 }
+export async function isLoggedIn() {
+  const response = await api.get('/user/isLoggedIn')
+  return response.data
+}
