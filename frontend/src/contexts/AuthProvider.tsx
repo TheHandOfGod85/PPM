@@ -2,6 +2,7 @@ import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { User } from '@/models/user'
 import { UnauthorisedError } from '@/network/http-errors'
 import { ReactNode, createContext, useContext } from 'react'
+import React from 'react'
 import { KeyedMutator, mutate } from 'swr'
 
 interface UserContextProps {
