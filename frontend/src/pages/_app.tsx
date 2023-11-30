@@ -3,7 +3,6 @@ import SideBar from '@/components/SideBar'
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import NextNProgress from 'nextjs-progressbar'
-import Home from '.'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { useRouter } from 'next/router'
 import SignUp from './users/[userId]/signup/[verificationCode]/index'
@@ -35,7 +34,7 @@ export default function App({ Component, pageProps }: AppProps) {
     ) {
       return <ResetPassword />
     } else if (!user) {
-      return <Home />
+      return null
     } else {
       return (
         <SideBar>

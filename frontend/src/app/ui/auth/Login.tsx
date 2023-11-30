@@ -1,3 +1,4 @@
+'use client'
 import { useForm } from 'react-hook-form'
 import * as UsersApi from '@/network/api/user.api'
 import FormInputField from '../form/FormInputField'
