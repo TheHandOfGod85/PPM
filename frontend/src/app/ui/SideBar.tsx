@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
 import {
@@ -8,15 +9,17 @@ import {
   FaUserFriends,
 } from 'react-icons/fa'
 import { FaArrowRightFromBracket } from 'react-icons/fa6'
-import { useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
 interface NavBarProps {
   children: ReactNode
 }
 import { logout } from '@/network/api/user.api'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import useLoggedIn from '@/hooks/useLoggedIn'
+
 export default function SideBar({ children }: NavBarProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const { user, mutateUser } = useAuthenticatedUser()
   const { mutate } = useLoggedIn()
 
@@ -60,10 +63,7 @@ export default function SideBar({ children }: NavBarProps) {
             )}
 
             <li>
-              <Link
-                href={'/'}
-                className={router.pathname == '/' ? 'active' : ''}
-              >
+              <Link href={'/'} className={pathname == '/' ? 'active' : ''}>
                 <FaHome /> Home
               </Link>
             </li>
@@ -71,7 +71,7 @@ export default function SideBar({ children }: NavBarProps) {
               <li>
                 <Link
                   href={'/users'}
-                  className={router.pathname == '/users' ? 'active' : ''}
+                  className={pathname == '/users' ? 'active' : ''}
                 >
                   <FaUserFriends /> Users
                 </Link>
@@ -88,8 +88,8 @@ export default function SideBar({ children }: NavBarProps) {
               >
                 <li>
                   <Link
-                    href={'/assets'}
-                    className={router.pathname == '/assets' ? 'active' : ''}
+                    href={'/dashboard/assets'}
+                    className={pathname == '/dashboard/assets' ? 'active' : ''}
                   >
                     Assets List
                   </Link>
@@ -99,7 +99,7 @@ export default function SideBar({ children }: NavBarProps) {
                     <Link
                       href={'/assets/new-asset'}
                       className={
-                        router.pathname == '/assets/new-asset' ? 'active' : ''
+                        pathname == '/assets/new-asset' ? 'active' : ''
                       }
                     >
                       New Asset
@@ -111,7 +111,7 @@ export default function SideBar({ children }: NavBarProps) {
             <li className="absolute bottom-0 mb-4">
               <Link
                 href={'/about'}
-                className={router.pathname == '/about' ? 'active' : ''}
+                className={pathname == '/about' ? 'active' : ''}
               >
                 <FaQuestion /> About
               </Link>

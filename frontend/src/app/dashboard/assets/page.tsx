@@ -5,6 +5,7 @@ import AssetsPaginationBar from '@/app/ui/assets/AssetsPaginationBar'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { stringify } from 'querystring'
+import { getCookie } from '@/utils/utilsAppRouter'
 
 export const metadata: Metadata = {
   title: 'Assets',
@@ -21,19 +22,18 @@ interface AssetPageProps {
 export default async function AssetPage({ searchParams }: AssetPageProps) {
   const pageParam = parseInt(searchParams.page?.toString() || '1')
   const filter = searchParams.search
+  const cookie = getCookie()
   let data: AssetsPage = { assets: [], page: 0, totalPages: 0 }
 
   if (pageParam < 1) {
     searchParams.page = '1'
     redirect('/assets?' + stringify(searchParams))
   }
-  if (filter) {
-    data = await AssetApi.getAssets(pageParam, filter)
-    const { page, totalPages } = data
-    if (totalPages > 0 && page > totalPages) {
-      searchParams.page = totalPages.toString()
-      redirect('/assets?' + stringify(searchParams))
-    }
+  data = await AssetApi.getAssets(pageParam, filter, cookie)
+  const { page, totalPages } = data
+  if (totalPages > 0 && page > totalPages) {
+    searchParams.page = totalPages.toString()
+    redirect('/assets?' + stringify(searchParams))
   }
 
   return (

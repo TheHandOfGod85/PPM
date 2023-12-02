@@ -12,8 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { requiredStringSchema } from '@/utils/validation'
 import ErrorText from '../ErrorText'
 import Link from 'next/link'
-import Head from 'next/head'
-import useLoggedIn from '@/hooks/useLoggedIn'
+import { useRouter } from 'next/navigation'
 
 const validationSchema = yup.object({
   username: requiredStringSchema,
@@ -24,8 +23,7 @@ type LoginFormData = yup.InferType<typeof validationSchema>
 
 export default function Login() {
   const { mutateUser } = useAuthenticatedUser()
-  const { mutate } = useLoggedIn()
-
+  const router = useRouter()
   const [errorText, setErrorText] = useState<string | null>(null)
 
   const {
@@ -41,7 +39,7 @@ export default function Login() {
       setErrorText(null)
       const user = await UsersApi.login(credentials)
       mutateUser(user)
-      mutate('isLoggedIn')
+      router.push('/dashboard')
     } catch (error) {
       if (error instanceof UnauthorisedError) {
         setErrorText('Invalid credentials')
@@ -56,10 +54,6 @@ export default function Login() {
 
   return (
     <>
-      <Head>
-        <title>Login</title>
-        <meta name="description" content="Login page" />
-      </Head>
       <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
         <h1 className="title">Welcome - PPM System</h1>
         <div className="relative">

@@ -1,7 +1,8 @@
+'use client'
 import { Asset } from '@/models/asset'
 import { formatDate, openModal } from '@/utils/utils'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
 import { FaEdit, FaTrash } from 'react-icons/fa'
 import { useMediaQuery } from 'react-responsive'
@@ -17,6 +18,7 @@ export default function AssetsEntry({
   asset: { name, description, createdAt, updatedAt, serialNumber, _id },
 }: AssetsEntryProps) {
   const { user } = useAuthenticatedUser()
+  const pathname = usePathname()
   const createdUpdatedAt =
     updatedAt > createdAt ? (
       <>
@@ -27,7 +29,7 @@ export default function AssetsEntry({
     )
   const isMobile = useMediaQuery({ maxWidth: 640 })
   const generateButtons = (assetId: string) => {
-    if (router.pathname === '/assets' && user?.role === 'admin') {
+    if (pathname === '/assets' && user?.role === 'admin') {
       if (isMobile) {
         return (
           <div className="flex gap-1">
@@ -71,7 +73,7 @@ export default function AssetsEntry({
   }
   const router = useRouter()
   const customClasses =
-    router.pathname === '/assets' ? (
+    pathname === '/assets' ? (
       <Link href={`/assets/${_id}`}>
         <h2 className="card-title text-accent text-2xl font-bold hover:text-accent-focus hover:text-[1.6rem]">
           {name}
@@ -83,7 +85,7 @@ export default function AssetsEntry({
 
   async function onDelete(assetId: string) {
     await AssetApi.deleteAsset(assetId)
-    router.replace(router.asPath)
+    router.replace(pathname!)
   }
   return (
     <>
