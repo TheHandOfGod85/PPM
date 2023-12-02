@@ -62,7 +62,7 @@ export default function NewPartAssetForm({
         },
         assetId!
       )
-      router.push(`/assets/${assetId}`)
+      router.push(`/dashboard/assets/${assetId}`)
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
         reset()
@@ -124,7 +124,7 @@ export default function NewPartAssetForm({
               Create part
             </LoadingButton>
             <div></div>
-            <GoBackButton href={`/assets/${assetId}`} />
+            <GoBackButton href={`/dashboard/assets/${assetId}`} />
           </div>
         </form>
       </div>

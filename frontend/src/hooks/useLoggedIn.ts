@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import * as UserApi from '@/network/api/user.api'
+import * as UserApi from '@/app/lib/data/user.data'
 
 export default function useLoggedIn() {
   const { data, mutate, isLoading } = useSWR('isLoggedIn', async () => {

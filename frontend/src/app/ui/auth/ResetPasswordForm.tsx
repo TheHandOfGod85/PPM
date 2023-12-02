@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form'
 import * as UsersApi from '@/app/lib/data/user.data'
 import * as yup from 'yup'
 import { BadRequestError, NotFoundError } from '@/app/lib/http-errors'
-import { User } from '@/app/lib/models/user'
 import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
 import LoadingButton from '../LoadingButton'
@@ -15,7 +14,6 @@ import ErrorText from '../ErrorText'
 
 interface ResetPasswordFormProps {
   verificationCode: string
-  user: User
 }
 
 const validationSchema = yup.object({
@@ -26,7 +24,6 @@ type ResetPasswordFormData = yup.InferType<typeof validationSchema>
 
 export default function ResetPasswordForm({
   verificationCode,
-  user,
 }: ResetPasswordFormProps) {
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
@@ -43,7 +40,6 @@ export default function ResetPasswordForm({
     try {
       setErrorText(null)
       await UsersApi.resetPassword(credentials, verificationCode)
-      //   mutateUser(user)
       router.push('/')
     } catch (error) {
       if (error instanceof NotFoundError) {
@@ -57,42 +53,38 @@ export default function ResetPasswordForm({
     }
   }
 
-  if (user) {
-    router.push('/')
-  } else {
-    return (
-      <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
-        <div className="relative">
-          <div className="absolute inset-0.5 bg-neutral-400 rounded-lg blur-lg"></div>
-          <div className="card relative bg-neutral w-full">
-            <div className="card-body">
-              <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                <div className="join join-vertical w-full gap-3 mt-2 p-4">
-                  <h3 className="card-title">Reset password</h3>
-                  <FormInputField
-                    register={register('email')}
-                    placeholder="Email"
-                    error={errors.email}
-                  />
-                  <PasswordInputField
-                    register={register('password')}
-                    placeholder="Password"
-                    error={errors.password}
-                  />
-                  <LoadingButton
-                    type="submit"
-                    className="btn-accent"
-                    isLoading={isSubmitting}
-                  >
-                    Send
-                  </LoadingButton>
-                  {errorText && <ErrorText errorText={errorText} />}
-                </div>
-              </form>
-            </div>
+  return (
+    <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
+      <div className="relative">
+        <div className="absolute inset-0.5 bg-neutral-400 rounded-lg blur-lg"></div>
+        <div className="card relative bg-neutral w-full">
+          <div className="card-body">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+              <div className="join join-vertical w-full gap-3 mt-2 p-4">
+                <h3 className="card-title">Reset password</h3>
+                <FormInputField
+                  register={register('email')}
+                  placeholder="Email"
+                  error={errors.email}
+                />
+                <PasswordInputField
+                  register={register('password')}
+                  placeholder="Password"
+                  error={errors.password}
+                />
+                <LoadingButton
+                  type="submit"
+                  className="btn-accent"
+                  isLoading={isSubmitting}
+                >
+                  Send
+                </LoadingButton>
+                {errorText && <ErrorText errorText={errorText} />}
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }

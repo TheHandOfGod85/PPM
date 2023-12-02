@@ -9,15 +9,15 @@ export const metadata: Metadata = {
 }
 
 interface NewPartAssetFormPageProps {
-  searchParams: {
+  params: {
     assetId: string
   }
 }
 
 export default async function NewPartAssetPage({
-  searchParams,
+  params,
 }: NewPartAssetFormPageProps) {
-  const assetId = searchParams.assetId
+  const assetId = params.assetId
   if (!assetId) throw Error('Asset Id missing')
   const cookie = getCookie()
   const user = await getAuthenticatedUser(cookie)

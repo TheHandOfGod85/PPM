@@ -4,15 +4,13 @@ import * as PartApi from '@/app/lib/data/part.data'
 import EditPartForm from '@/app/ui/parts/EditPartForm'
 
 interface EditPartPageProps {
-  searchParams: {
+  params: {
     partId: string
   }
 }
 
-export default async function EditPartPage({
-  searchParams,
-}: EditPartPageProps) {
-  const partId = searchParams.partId
+export default async function EditPartPage({ params }: EditPartPageProps) {
+  const partId = params.partId
   if (!partId) throw Error('Part id missing')
   const cookie = getCookie()
   const user = await getAuthenticatedUser(cookie)

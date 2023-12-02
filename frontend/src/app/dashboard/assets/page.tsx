@@ -9,6 +9,8 @@ import { getCookie } from '@/utils/utilsAppRouter'
 import { getAuthenticatedUser } from '@/app/lib/data/user.data'
 import Navbar from '@/app/ui/assets/Navbar'
 
+
+
 export const metadata: Metadata = {
   title: 'Assets',
   description: 'assets page',
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
 
 interface AssetPageProps {
   searchParams: {
-    page: string
+    page?: string
     search: string
   }
 }
@@ -30,13 +32,13 @@ export default async function AssetPage({ searchParams }: AssetPageProps) {
 
   if (pageParam < 1) {
     searchParams.page = '1'
-    redirect('/assets?' + stringify(searchParams))
+    redirect('/dashboard/assets?' + stringify(searchParams))
   }
   data = await AssetApi.getAssets(pageParam, filter, cookie)
   const { page, totalPages } = data
   if (totalPages > 0 && page > totalPages) {
     searchParams.page = totalPages.toString()
-    redirect('/assets?' + stringify(searchParams))
+    redirect('/dashboard/assets?' + stringify(searchParams))
   }
 
   return (
@@ -47,7 +49,7 @@ export default async function AssetPage({ searchParams }: AssetPageProps) {
         {data.assets.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 gap-4 mx-auto">
             {data.assets.map((asset) => (
-              <AssetsEntry key={asset._id} asset={asset} />
+              <AssetsEntry key={asset._id} asset={asset} user={user} />
             ))}
           </div>
         )}

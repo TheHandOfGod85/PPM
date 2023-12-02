@@ -19,7 +19,7 @@ export default function AssetsPaginationBar({
       currentPage={currentPage}
       pageCount={totalPages}
       onPageItemClicked={(page) => {
-        router.push('/assets?page=' + page)
+        router.push('/dashboard/assets?page=' + page)
       }}
     />
   )

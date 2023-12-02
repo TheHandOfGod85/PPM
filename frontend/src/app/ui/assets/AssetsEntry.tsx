@@ -7,18 +7,20 @@ import React from 'react'
 import { FaEdit, FaTrash } from 'react-icons/fa'
 import { useMediaQuery } from 'react-responsive'
 import PopUpConfirm from '../PopUpConfirm'
-import * as AssetApi from '@/network/api/asset.api'
-import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import * as AssetApi from '@/app/lib/data/assets.data'
+import { User } from '@/app/lib/models/user'
 
 interface AssetsEntryProps {
   asset: Asset
+  user: User
 }
 
 export default function AssetsEntry({
   asset: { name, description, createdAt, updatedAt, serialNumber, _id },
+  user,
 }: AssetsEntryProps) {
-  const { user } = useAuthenticatedUser()
   const pathname = usePathname()
+  const router = useRouter()
   const createdUpdatedAt =
     updatedAt > createdAt ? (
       <>
@@ -29,7 +31,7 @@ export default function AssetsEntry({
     )
   const isMobile = useMediaQuery({ maxWidth: 640 })
   const generateButtons = (assetId: string) => {
-    if (pathname === '/assets' && user?.role === 'admin') {
+    if (pathname === '/dashboard/assets' && user?.role === 'admin') {
       if (isMobile) {
         return (
           <div className="flex gap-1">
@@ -43,7 +45,7 @@ export default function AssetsEntry({
             </button>
             <Link
               className="btn btn-info btn-xs"
-              href={`/assets/${assetId}/edit-asset`}
+              href={`/dashboard/assets/${assetId}/edit-asset`}
             >
               <FaEdit />
             </Link>
@@ -62,7 +64,7 @@ export default function AssetsEntry({
             </button>
             <Link
               className="btn btn-info btn-sm"
-              href={`/assets/${assetId}/edit-asset`}
+              href={`/dashboard/assets/${assetId}/edit-asset`}
             >
               Edit
             </Link>
@@ -71,10 +73,9 @@ export default function AssetsEntry({
       }
     }
   }
-  const router = useRouter()
   const customClasses =
-    pathname === '/assets' ? (
-      <Link href={`/assets/${_id}`}>
+    pathname === '/dashboard/assets' ? (
+      <Link href={`/dashboard/assets/${_id}`}>
         <h2 className="card-title text-accent text-2xl font-bold hover:text-accent-focus hover:text-[1.6rem]">
           {name}
         </h2>
@@ -85,7 +86,7 @@ export default function AssetsEntry({
 
   async function onDelete(assetId: string) {
     await AssetApi.deleteAsset(assetId)
-    router.replace(pathname!)
+    router.refresh()
   }
   return (
     <>

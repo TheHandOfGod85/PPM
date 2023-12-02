@@ -1,16 +1,11 @@
-import { getAuthenticatedUser } from "@/app/lib/data/user.data"
-import { getCookie } from "@/utils/utilsAppRouter"
+import ResetPasswordRequestForm from '@/app/ui/auth/ResetPasswordRequestForm'
+import { Metadata } from 'next'
 
-interface ResetPasswordRequestPageProps {
-  searchParams: {
-    userId: string
-    verificationCode: string
-  }
+export const metadata: Metadata = {
+  title: 'Request password',
+  description: 'Request password page',
 }
-export default async function ResetPasswordRequestPage({
-  searchParams,
-}: ResetPasswordRequestPageProps) {
-    const cookie = getCookie()
-    const user = await getAuthenticatedUser(cookie)
-  return <div>page</div>
+
+export default async function ResetPasswordRequestPage() {
+  return <ResetPasswordRequestForm />
 }

@@ -7,7 +7,7 @@ export default function NotFoundPage() {
       <p className="text-accent-focus mb-3">
         Looks like this page does not exist
       </p>
-      <GoBackButton href="/" buttonName="go home" />
+      <GoBackButton href="/dashboard" buttonName="go home" />
     </div>
   )
 }

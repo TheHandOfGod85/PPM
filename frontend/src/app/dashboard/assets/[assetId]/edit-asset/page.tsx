@@ -1,45 +1,19 @@
-import { getCookie } from '@/utils/utilsAppRouter'
 import * as AssetApi from '@/app/lib/data/assets.data'
-import { NotFoundError, UnauthorisedError } from '@/app/lib/http-errors'
-import { redirect } from 'next/navigation'
-import { getAuthenticatedUser } from '@/network/api/user.api'
 import EditAssetForm from '@/app/ui/assets/EditAssetForm'
-import { Asset } from '@/app/lib/models/asset'
-import { User } from '@/app/lib/models/user'
+import { getAuthenticatedUser } from '@/app/lib/data/user.data'
+import { getCookie } from '@/utils/utilsAppRouter'
 
 interface EditAssetPageProps {
-  seracParams: {
+  params: {
     assetId: string
   }
 }
-export default async function EditAssetPage({
-  seracParams,
-}: EditAssetPageProps) {
-  let user: User | undefined = undefined
-  let asset: Asset = {
-    _id: '',
-    name: '',
-    description: '',
-    serialNumber: '',
-    parts: [],
-    createdAt: '',
-    updatedAt: '',
-  }
-  try {
-    const cookie = getCookie()
-    user = await getAuthenticatedUser()
-    const assetId = seracParams.assetId
-    if (!assetId) throw Error('Asset id missing')
-    asset = await AssetApi.getAsset(assetId, cookie)
-  } catch (error) {
-    if (error instanceof NotFoundError) {
-      return { notFound: true }
-    } else if (error instanceof UnauthorisedError) {
-      redirect('/')
-    } else {
-      throw error
-    }
-  }
+export default async function EditAssetPage({ params }: EditAssetPageProps) {
+  const cookie = getCookie()
+  const user = await getAuthenticatedUser(cookie)
+  const assetId = params.assetId
+  if (!assetId) throw Error('Asset id missing')
+  const asset = await AssetApi.getAsset(assetId, cookie)
 
   return <EditAssetForm asset={asset} user={user} />
 }

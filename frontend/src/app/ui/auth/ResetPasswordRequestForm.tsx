@@ -1,45 +1,42 @@
 'use client'
 import * as UsersApi from '@/app/lib/data/user.data'
-import { TooManyRequestsError, UnauthorisedError } from '@/app/lib/http-errors'
-import { requiredStringSchema } from '@/utils/validation'
+import { NotFoundError, TooManyRequestsError } from '@/app/lib/http-errors'
+import { openModal } from '@/utils/utils'
+import { emailSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
+import AlertDaisy from '../Alert'
 import ErrorText from '../ErrorText'
 import LoadingButton from '../LoadingButton'
 import FormInputField from '../form/FormInputField'
-import PasswordInputField from '../form/PasswordInputField'
 
 const validationSchema = yup.object({
-  username: requiredStringSchema,
-  password: requiredStringSchema,
+  email: emailSchema.required(),
 })
+type RequestPasswordFormData = yup.InferType<typeof validationSchema>
 
-type LoginFormData = yup.InferType<typeof validationSchema>
-
-export default function Login() {
-  const router = useRouter()
+export default function ResetPasswordRequestForm() {
   const [errorText, setErrorText] = useState<string | null>(null)
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({
+  } = useForm<RequestPasswordFormData>({
     resolver: yupResolver(validationSchema),
   })
 
-  async function onSubmit(credentials: LoginFormData) {
+  async function onSubmit({ email }: RequestPasswordFormData) {
     try {
       setErrorText(null)
-      await UsersApi.login(credentials)
-      router.push('/dashboard')
+      await UsersApi.requestResetPasswordCode(email)
+      openModal('alert')
     } catch (error) {
-      if (error instanceof UnauthorisedError) {
-        setErrorText('Invalid credentials')
+      if (error instanceof NotFoundError) {
+        setErrorText('Invalid email')
       } else if (error instanceof TooManyRequestsError) {
         setErrorText('Too many requests, please try later.')
       } else {
@@ -52,37 +49,30 @@ export default function Login() {
   return (
     <>
       <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">
-        <h1 className="title">Welcome - PPM System</h1>
         <div className="relative">
           <div className="absolute inset-0.5 bg-neutral-400 rounded-lg blur-lg"></div>
           <div className="card relative bg-neutral w-full">
             <div className="card-body">
               <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <div className="join join-vertical w-full gap-3 mt-2 p-4">
-                  <h3 className="card-title">Login</h3>
+                  <h3 className="card-title">Reset password request</h3>
                   <FormInputField
-                    register={register('username')}
+                    register={register('email')}
                     placeholder="Email"
-                    error={errors.username}
-                  />
-                  <PasswordInputField
-                    register={register('password')}
-                    placeholder="Password"
-                    type="password"
-                    error={errors.password}
+                    error={errors.email}
                   />
                   <LoadingButton
                     type="submit"
                     className="btn-accent"
                     isLoading={isSubmitting}
                   >
-                    Login
+                    Send
                   </LoadingButton>
                   <Link
-                    className="text-right hover:text-accent-focus underline"
-                    href={'/users/reset-password-request'}
+                    className="text-end underline hover:text-accent-focus"
+                    href={'/'}
                   >
-                    Forgot password?
+                    Login
                   </Link>
                   {errorText && <ErrorText errorText={errorText} />}
                 </div>
@@ -91,6 +81,7 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <AlertDaisy message="Email sent, please check your inbox" />
     </>
   )
 }

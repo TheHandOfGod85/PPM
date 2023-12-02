@@ -45,7 +45,7 @@ export default function EditAssetForm({ asset, user }: EditAssetFormProps) {
         },
         asset._id
       )
-      await router.push(`/assets`)
+      await router.push(`/dashboard/assets`)
     } catch (error) {
       if (error instanceof BadRequestError) {
         setErrorText(error.message)
@@ -108,7 +108,7 @@ export default function EditAssetForm({ asset, user }: EditAssetFormProps) {
                 Edit
               </button>
               <div></div>
-              <GoBackButton href={`/assets`} />
+              <GoBackButton href={`/dashboard/assets`} />
             </div>
           </form>
         </div>

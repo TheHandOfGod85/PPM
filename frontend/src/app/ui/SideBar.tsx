@@ -13,7 +13,7 @@ import { usePathname, useRouter } from 'next/navigation'
 interface NavBarProps {
   children: ReactNode
 }
-import { logout } from '@/network/api/user.api'
+import { logout } from '@/app/lib/data/user.data'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import useLoggedIn from '@/hooks/useLoggedIn'
 
@@ -63,15 +63,18 @@ export default function SideBar({ children }: NavBarProps) {
             )}
 
             <li>
-              <Link href={'/'} className={pathname == '/' ? 'active' : ''}>
+              <Link
+                href={'/dashboard'}
+                className={pathname == '/dashboard' ? 'active' : ''}
+              >
                 <FaHome /> Home
               </Link>
             </li>
             {user?.role === 'admin' && (
               <li>
                 <Link
-                  href={'/users'}
-                  className={pathname == '/users' ? 'active' : ''}
+                  href={'/dashboard/users'}
+                  className={pathname == '/dshboard/users' ? 'active' : ''}
                 >
                   <FaUserFriends /> Users
                 </Link>
@@ -97,9 +100,11 @@ export default function SideBar({ children }: NavBarProps) {
                 {user?.role === 'admin' && (
                   <li>
                     <Link
-                      href={'/assets/new-asset'}
+                      href={'/dashboard/assets/new-asset'}
                       className={
-                        pathname == '/assets/new-asset' ? 'active' : ''
+                        pathname == '/dashboard/assets/new-asset'
+                          ? 'active'
+                          : ''
                       }
                     >
                       New Asset
@@ -110,8 +115,8 @@ export default function SideBar({ children }: NavBarProps) {
             </div>
             <li className="absolute bottom-0 mb-4">
               <Link
-                href={'/about'}
-                className={pathname == '/about' ? 'active' : ''}
+                href={'/dashboard/about'}
+                className={pathname == '/dashboard/about' ? 'active' : ''}
               >
                 <FaQuestion /> About
               </Link>

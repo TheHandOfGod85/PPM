@@ -9,9 +9,9 @@ export default function SearchAssets() {
   const router = useRouter()
   useEffect(() => {
     if (!query) {
-      router.push('/assets')
+      router.push('/dashboard/assets')
     } else {
-      router.push(`/assets?search=${query}`)
+      router.push(`/dashboard/assets?search=${query}`)
     }
   }, [query, router])
   return (

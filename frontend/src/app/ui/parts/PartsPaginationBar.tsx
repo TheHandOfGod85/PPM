@@ -19,7 +19,7 @@ export default function PartsPaginationBar({
       currentPage={currentPage}
       pageCount={totalPages}
       onPageItemClicked={(page) => {
-        router.push('/parts?page=' + page)
+        router.push('/dashboard`/parts?page=' + page)
       }}
     />
   )

@@ -1,57 +1,34 @@
-import PopUpConfirm from '@/components/PopUpConfirm'
-import SignUpModal from '@/components/auth/SignUpModal'
-import { useUser } from '@/contexts/AuthProvider'
-import { User } from '@/models/user'
-import * as UserApi from '@/network/api/user.api'
-import { UnauthorisedError } from '@/network/http-errors'
-import { formatDate, openModal } from '@/utils/utils'
-import { GetServerSideProps, GetServerSidePropsContext } from 'next'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
-import { FaTrash, FaUser } from 'react-icons/fa'
+'use client'
+import { User } from '@/app/lib/models/user'
+import React, { useState } from 'react'
+import * as UsersApi from '@/app/lib/data/user.data'
 import { useMediaQuery } from 'react-responsive'
+import { useRouter } from 'next/navigation'
+import { formatDate, openModal } from '@/utils/utils'
+import { FaTrash, FaUser } from 'react-icons/fa'
+import SendRegistrationFormModal from '../auth/SendRegistrationFormModal'
+import PopUpConfirm from '../PopUpConfirm'
 
-export const getServerSideProps: GetServerSideProps<UsersPageProps> = async (
-  context: GetServerSidePropsContext
-) => {
-  try {
-    const { cookie } = context.req.headers
-    const users = await UserApi.getAllUsers(cookie)
-    return { props: { users } }
-  } catch (error) {
-    if (error instanceof UnauthorisedError) {
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      }
-    } else {
-      throw error
-    }
-  }
-}
-
-interface UsersPageProps {
+interface UsersTableProps {
   users: User[]
+  user: User
 }
 
-export default function UsersPage({ users }: UsersPageProps) {
-  const { user } = useUser()
+export default function UsersTable({ users, user }: UsersTableProps) {
   const isMobile = useMediaQuery({ maxWidth: 640 })
-  const [deleteUserId, setDeleteUserId] = useState('')
   const router = useRouter()
+  const [deleteUserId, setDeleteUserId] = useState('')
 
   async function onDeleteUser(userId: string) {
     try {
-      await UserApi.removeUser(userId)
-      router.replace(router.asPath)
+      await UsersApi.removeUser(userId)
+      router.refresh()
     } catch (error) {
       console.error(error)
       alert(error)
     }
   }
+
   const generateButtons = (userId: string) => {
     if (user?.role === 'admin' && user._id !== userId) {
       if (isMobile) {
@@ -97,12 +74,9 @@ export default function UsersPage({ users }: UsersPageProps) {
 
     return daysRemaining > 0 ? `${daysRemaining} days` : 'Expired'
   }
+
   return (
     <>
-      <Head>
-        <title>Users - PPM System</title>
-        <meta name="description" content="users page" />
-      </Head>
       <h1 className="title">Users Page</h1>
       <div className="container mx-auto px-2">
         <button
@@ -148,7 +122,7 @@ export default function UsersPage({ users }: UsersPageProps) {
           </table>
         </div>
       </div>
-      <SignUpModal />
+      <SendRegistrationFormModal />
       <PopUpConfirm
         id="remove_user"
         title={'Remove user'}

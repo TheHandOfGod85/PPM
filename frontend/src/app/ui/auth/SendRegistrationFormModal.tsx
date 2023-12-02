@@ -1,13 +1,14 @@
-import * as UsersApi from '@/network/api/user.api'
+'use client'
+import * as UsersApi from '@/app/lib/data/user.data'
 import {
   BadRequestError,
   ConflictError,
   TooManyRequestsError,
-} from '@/network/http-errors'
+} from '@/app/lib/http-errors'
 import { closeModal, openModal } from '@/utils/utils'
 import { emailSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -26,7 +27,7 @@ const validationSchema = yup.object({
 
 type SendRegistrationFormData = yup.InferType<typeof validationSchema>
 
-export default function SignUpModal() {
+export default function SendRegistrationFormModal() {
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
   const {
@@ -41,7 +42,7 @@ export default function SignUpModal() {
     try {
       setErrorText(null)
       await UsersApi.sendRegistration(email, role)
-      router.replace(router.asPath)
+      // router.replace(router.asPath)
       closeModal('send_registration_modal')
       openModal('alert')
       reset()

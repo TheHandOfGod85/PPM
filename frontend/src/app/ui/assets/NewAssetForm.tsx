@@ -41,7 +41,7 @@ export default function NewAssetForm({ user }: NewAssetFormProps) {
     try {
       setErrorText(null)
       await AssetApi.createAsset(input)
-      router.push(`/assets/`)
+      await router.push(`/dashboard/assets`)
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
         setErrorText(error.message)
@@ -90,7 +90,7 @@ export default function NewAssetForm({ user }: NewAssetFormProps) {
                 Create asset
               </LoadingButton>
               <div></div>
-              <GoBackButton href="/assets" />
+              <GoBackButton href="/dashboard/assets" />
             </div>
           </form>
         </div>

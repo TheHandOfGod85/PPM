@@ -1,5 +1,5 @@
 'use client'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import GoBackButton from './ui/GoBackButton'
 
 export default function ErrorPage() {
@@ -13,7 +13,7 @@ export default function ErrorPage() {
       </p>
       <GoBackButton
         onClick={() => {
-          router.reload()
+          router.refresh()
         }}
         buttonName="refresh"
       />

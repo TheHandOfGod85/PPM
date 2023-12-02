@@ -52,7 +52,8 @@ export default function EditPartForm({ user, part }: EditPartFormProps) {
         },
         part._id
       )
-      await router.push(`/assets/${part.asset._id}`)
+      router.refresh()
+      router.push(`/dashboard/assets/${part.asset._id}`)
     } catch (error) {
       if (error instanceof BadRequestError) {
         setErrorText(error.message)
@@ -128,7 +129,7 @@ export default function EditPartForm({ user, part }: EditPartFormProps) {
                 Edit
               </button>
               <div></div>
-              <GoBackButton href={`/assets/${part.asset._id}`} />
+              <GoBackButton href={`/dashboard/assets/${part.asset._id}`} />
             </div>
           </form>
         </div>

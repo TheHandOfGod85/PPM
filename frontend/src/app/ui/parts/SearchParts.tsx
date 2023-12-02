@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router'
+'use client'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -12,9 +13,9 @@ export default function SearchParts({ id }: SearchPartsProps) {
   const router = useRouter()
   useEffect(() => {
     if (!query) {
-      router.push(`/assets/${id}`)
+      router.push(`/dashboard/assets/${id}`)
     } else {
-      router.push(`/assets/${id}?search=${query}`)
+      router.push(`/dashboard/assets/${id}?search=${query}`)
     }
   }, [query, router, id])
   return (
