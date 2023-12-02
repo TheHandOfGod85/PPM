@@ -6,6 +6,8 @@ import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { stringify } from 'querystring'
 import { getCookie } from '@/utils/utilsAppRouter'
+import { getAuthenticatedUser } from '@/app/lib/data/user.data'
+import Navbar from '@/app/ui/assets/Navbar'
 
 export const metadata: Metadata = {
   title: 'Assets',
@@ -20,9 +22,10 @@ interface AssetPageProps {
 }
 
 export default async function AssetPage({ searchParams }: AssetPageProps) {
+  const cookie = getCookie()
+  const user = await getAuthenticatedUser(cookie)
   const pageParam = parseInt(searchParams.page?.toString() || '1')
   const filter = searchParams.search
-  const cookie = getCookie()
   let data: AssetsPage = { assets: [], page: 0, totalPages: 0 }
 
   if (pageParam < 1) {
@@ -40,7 +43,7 @@ export default async function AssetPage({ searchParams }: AssetPageProps) {
     <>
       <div className="container mx-auto px-2">
         <h1 className="title">Assets</h1>
-        {/* {navbar()} */}
+        <Navbar user={user} />
         {data.assets.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 gap-4 mx-auto">
             {data.assets.map((asset) => (

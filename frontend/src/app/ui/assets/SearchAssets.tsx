@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router'
+'use client'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -12,7 +13,7 @@ export default function SearchAssets() {
     } else {
       router.push(`/assets?search=${query}`)
     }
-  }, [query])
+  }, [query, router])
   return (
     <input
       value={text}
