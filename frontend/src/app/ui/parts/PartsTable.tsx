@@ -1,5 +1,5 @@
 'use client'
-import { Part } from '@/models/part'
+import { Part } from '@/app/lib/models/part'
 import Image from 'next/image'
 import { FaTrash, FaEdit } from 'react-icons/fa'
 import { useMediaQuery } from 'react-responsive'
