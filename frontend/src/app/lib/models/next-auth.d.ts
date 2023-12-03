@@ -11,6 +11,7 @@ declare module 'next-auth' {
       about: string
       role: string
       verified: boolean
+      cookie: string
       createdAt: string
       updatedAt: string
     }

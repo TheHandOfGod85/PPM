@@ -36,4 +36,5 @@ axiosInstance.interceptors.response.use(
   },
   { synchronous: true }
 )
+
 export default axiosInstance

@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import api from '@/app/lib/axiosInstance'
+import { getCookie } from '@/utils/utilsAppRouter'
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -39,9 +40,11 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      const cookie = await getCookie()
       return {
         ...token,
         ...user,
+        cookie,
       }
     },
     async session({ session, token, user }) {

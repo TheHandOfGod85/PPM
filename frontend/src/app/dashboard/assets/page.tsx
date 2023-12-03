@@ -1,6 +1,5 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import * as AssetApi from '@/app/lib/data/assets.data'
-import { AssetsPage } from '@/app/lib/models/asset'
 import AssetsEntry from '@/app/ui/assets/AssetsEntry'
 import AssetsPaginationBar from '@/app/ui/assets/AssetsPaginationBar'
 import Navbar from '@/app/ui/assets/Navbar'
@@ -23,19 +22,17 @@ interface AssetPageProps {
 }
 
 export default async function AssetPage({ searchParams }: AssetPageProps) {
-  const cookie = getCookie()
   const session = await getServerSession(authOptions)
   const user = session?.user
 
   const pageParam = parseInt(searchParams.page?.toString() || '1')
   const filter = searchParams.search
-  let data: AssetsPage = { assets: [], page: 0, totalPages: 0 }
 
   if (pageParam < 1) {
     searchParams.page = '1'
     redirect('/dashboard/assets?' + stringify(searchParams))
   }
-  data = await AssetApi.getAssets(pageParam, filter, cookie)
+  const data = await AssetApi.getAssets(pageParam, filter, user?.cookie)
   const { page, totalPages } = data
   if (totalPages > 0 && page > totalPages) {
     searchParams.page = totalPages.toString()

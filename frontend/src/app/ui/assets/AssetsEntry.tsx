@@ -9,7 +9,6 @@ import { useMediaQuery } from 'react-responsive'
 import PopUpConfirm from '../PopUpConfirm'
 import * as AssetApi from '@/app/lib/data/assets.data'
 import { User } from '@/app/lib/models/user'
-import { useSession } from 'next-auth/react'
 
 interface AssetsEntryProps {
   asset: Asset
@@ -20,8 +19,6 @@ export default function AssetsEntry({
   asset: { name, description, createdAt, updatedAt, serialNumber, _id },
   user,
 }: AssetsEntryProps) {
-  // const { data: session } = useSession()
-  // const user = session?.user
   const pathname = usePathname()
   const router = useRouter()
   const createdUpdatedAt =

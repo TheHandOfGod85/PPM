@@ -22,7 +22,7 @@ const validationSchema = yup.object({
 type CreateAssetFormData = yup.InferType<typeof validationSchema>
 
 interface NewAssetFormProps {
-  user: User
+  user: User | undefined
 }
 
 export default function NewAssetForm({ user }: NewAssetFormProps) {
@@ -52,7 +52,7 @@ export default function NewAssetForm({ user }: NewAssetFormProps) {
       }
     }
   }
-  if (user.role !== 'admin') {
+  if (user?.role !== 'admin') {
     router.push('/')
   } else {
     return (
