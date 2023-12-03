@@ -148,11 +148,11 @@ export const signup: RequestHandler<
     assertIsDefined(result)
     const newUser = result.toObject()
     delete newUser.password
-    req.logIn(newUser, (error) => {
-      if (error) throw error
-      res.status(201).json(newUser)
-    })
-    // res.status(201).json(newUser)
+    // req.logIn(newUser, (error) => {
+    //   if (error) throw error
+    //   res.status(201).json(newUser)
+    // })
+    res.status(201).json(newUser)
   } catch (error) {
     next(error)
   }

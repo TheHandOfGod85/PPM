@@ -8,5 +8,5 @@ export interface User {
   verified: boolean
   createdAt: string
   updatedAt: string
-  token: [{ createdAt: string }]
+  token?: [{ createdAt: string }]
 }

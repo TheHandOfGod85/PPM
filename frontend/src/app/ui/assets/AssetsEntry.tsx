@@ -1,5 +1,5 @@
 'use client'
-import { Asset } from '@/models/asset'
+import { Asset } from '@/app/lib/models/asset'
 import { formatDate, openModal } from '@/utils/utils'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -9,16 +9,19 @@ import { useMediaQuery } from 'react-responsive'
 import PopUpConfirm from '../PopUpConfirm'
 import * as AssetApi from '@/app/lib/data/assets.data'
 import { User } from '@/app/lib/models/user'
+import { useSession } from 'next-auth/react'
 
 interface AssetsEntryProps {
   asset: Asset
-  user: User
+  user: User | undefined
 }
 
 export default function AssetsEntry({
   asset: { name, description, createdAt, updatedAt, serialNumber, _id },
   user,
 }: AssetsEntryProps) {
+  // const { data: session } = useSession()
+  // const user = session?.user
   const pathname = usePathname()
   const router = useRouter()
   const createdUpdatedAt =

@@ -1,6 +1,9 @@
 'use client'
+import { logout } from '@/app/lib/data/user.data'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import React, { ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
+import { ReactNode } from 'react'
 import {
   FaAlignJustify,
   FaHome,
@@ -9,26 +12,21 @@ import {
   FaUserFriends,
 } from 'react-icons/fa'
 import { FaArrowRightFromBracket } from 'react-icons/fa6'
-import { usePathname, useRouter } from 'next/navigation'
 interface NavBarProps {
   children: ReactNode
 }
-import { logout } from '@/app/lib/data/user.data'
-import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
-import useLoggedIn from '@/hooks/useLoggedIn'
 
 export default function SideBar({ children }: NavBarProps) {
-  const router = useRouter()
   const pathname = usePathname()
-  const { user, mutateUser } = useAuthenticatedUser()
-  const { mutate } = useLoggedIn()
+  const { data: session } = useSession()
 
   const onLogout = async () => {
     try {
       await logout()
-      mutateUser(null)
-      mutate('isLoggedIn')
-      router.push('/')
+      signOut({
+        redirect: true,
+        callbackUrl: '/',
+      })
     } catch (error) {
       console.error(error)
     }
@@ -56,9 +54,9 @@ export default function SideBar({ children }: NavBarProps) {
           <ul className="menu p-4 w-60 min-h-full bg-base-200 text-base-content font-semibold text-lg gap-2">
             {/* Sidebar content here */}
 
-            {user && (
+            {session?.user && (
               <h1 className="font-bold text-secondary">
-                Hello, {user?.displayName}
+                Hello, {session?.user.displayName}
               </h1>
             )}
 
@@ -70,7 +68,7 @@ export default function SideBar({ children }: NavBarProps) {
                 <FaHome /> Home
               </Link>
             </li>
-            {user?.role === 'admin' && (
+            {session?.user?.role === 'admin' && (
               <li>
                 <Link
                   href={'/dashboard/users'}
@@ -97,7 +95,7 @@ export default function SideBar({ children }: NavBarProps) {
                     Assets List
                   </Link>
                 </li>
-                {user?.role === 'admin' && (
+                {session?.user?.role === 'admin' && (
                   <li>
                     <Link
                       href={'/dashboard/assets/new-asset'}

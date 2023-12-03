@@ -1,4 +1,4 @@
-import { Asset, AssetsPage } from '@/models/asset'
+import { Asset, AssetsPage } from '@/app/lib/models/asset'
 import api from '@/app/lib/axiosInstance'
 
 export async function getAssets(

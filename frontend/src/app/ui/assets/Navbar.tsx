@@ -4,7 +4,7 @@ import Link from 'next/link'
 import SearchAssets from './SearchAssets'
 
 interface NavbarProps {
-  user: User
+  user: User | undefined
 }
 export default function Navbar({ user }: NavbarProps) {
   if (user?.role === 'admin') {

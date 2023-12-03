@@ -1,4 +1,4 @@
-import { User } from '@/models/user'
+import { User } from '@/app/lib/models/user'
 import api from '@/app/lib/axiosInstance'
 
 export async function sendRegistration(email: string, role: string) {

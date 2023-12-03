@@ -1,5 +1,4 @@
 'use client'
-import * as UsersApi from '@/app/lib/data/user.data'
 import { TooManyRequestsError, UnauthorisedError } from '@/app/lib/http-errors'
 import { requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -12,6 +11,7 @@ import ErrorText from '../ErrorText'
 import LoadingButton from '../LoadingButton'
 import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
+import { signIn } from 'next-auth/react'
 
 const validationSchema = yup.object({
   username: requiredStringSchema,
@@ -21,7 +21,6 @@ const validationSchema = yup.object({
 type LoginFormData = yup.InferType<typeof validationSchema>
 
 export default function Login() {
-  const router = useRouter()
   const [errorText, setErrorText] = useState<string | null>(null)
 
   const {
@@ -35,8 +34,14 @@ export default function Login() {
   async function onSubmit(credentials: LoginFormData) {
     try {
       setErrorText(null)
-      await UsersApi.login(credentials)
-      router.push('/dashboard')
+      // await UsersApi.login(credentials)
+      // router.push('/dashboard')
+      await signIn('credentials', {
+        username: credentials.username,
+        password: credentials.password,
+        redirect: true,
+        callbackUrl: '/dashboard',
+      })
     } catch (error) {
       if (error instanceof UnauthorisedError) {
         setErrorText('Invalid credentials')
