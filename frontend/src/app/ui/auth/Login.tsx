@@ -11,7 +11,7 @@ import ErrorText from '../ErrorText'
 import LoadingButton from '../LoadingButton'
 import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
-import { signIn } from 'next-auth/react'
+import * as UsersApi from '@/app/lib/data/user.data'
 
 const validationSchema = yup.object({
   username: requiredStringSchema,
@@ -21,6 +21,7 @@ const validationSchema = yup.object({
 type LoginFormData = yup.InferType<typeof validationSchema>
 
 export default function Login() {
+  const router = useRouter()
   const [errorText, setErrorText] = useState<string | null>(null)
 
   const {
@@ -34,14 +35,8 @@ export default function Login() {
   async function onSubmit(credentials: LoginFormData) {
     try {
       setErrorText(null)
-      // await UsersApi.login(credentials)
-      // router.push('/dashboard')
-      await signIn('credentials', {
-        username: credentials.username,
-        password: credentials.password,
-        redirect: true,
-        callbackUrl: '/dashboard',
-      })
+      await UsersApi.login(credentials)
+      router.push('/dashboard')
     } catch (error) {
       if (error instanceof UnauthorisedError) {
         setErrorText('Invalid credentials')

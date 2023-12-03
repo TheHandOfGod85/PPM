@@ -1,4 +1,3 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import * as AssetApi from '@/app/lib/data/assets.data'
 import * as PartApi from '@/app/lib/data/part.data'
 import { getAuthenticatedUser } from '@/app/lib/data/user.data'
@@ -7,6 +6,7 @@ import AssetsEntry from '@/app/ui/assets/AssetsEntry'
 import PartsPaginationBar from '@/app/ui/parts/PartsPaginationBar'
 import PartsTable from '@/app/ui/parts/PartsTable'
 import SearchParts from '@/app/ui/parts/SearchParts'
+import { getCookie } from '@/utils/utilsAppRouter'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
@@ -32,8 +32,7 @@ export default async function AssetDetailsPage({
 }: AssetDetailsPageProps) {
   const assetId = params.assetId
   if (!assetId) throw Error('Id is missing')
-  const session = await getServerSession(authOptions)
-  const cookie = session?.user.cookie
+  const cookie = await getCookie()
   const user = await getAuthenticatedUser(cookie)
   const filter = searchParams.search
   const pageParam = parseInt(searchParams.page || '1')

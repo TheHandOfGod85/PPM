@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Login from './ui/auth/Login'
-import { getServerSession } from 'next-auth'
+import { isLoggedIn } from './lib/data/user.data'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 }
 
 export default async function Homepage() {
-  const session = await getServerSession()
-  const user = session?.user
-  if (user) {
+  const loggedIn = await isLoggedIn()
+  console.log(loggedIn)
+  if (loggedIn) {
     redirect('/dashboard')
   } else {
     return <Login />

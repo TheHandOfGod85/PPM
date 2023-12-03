@@ -30,12 +30,16 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   }
 }
 
-export const isLoggedIn: RequestHandler = async (req, res) => {
-  const user = req.user
-  if (!user) {
-    res.json(false)
-  } else {
-    res.json(true)
+export const isLoggedIn: RequestHandler = async (req, res, next) => {
+  try {
+    const user = req.user
+    if (!user) {
+      res.status(200).json(false)
+    } else {
+      res.status(200).json(true)
+    }
+  } catch (error) {
+    next(error)
   }
 }
 

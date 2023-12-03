@@ -1,8 +1,7 @@
 'use client'
 import { logout } from '@/app/lib/data/user.data'
-import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
 import {
   FaAlignJustify,
@@ -12,21 +11,20 @@ import {
   FaUserFriends,
 } from 'react-icons/fa'
 import { FaArrowRightFromBracket } from 'react-icons/fa6'
+import { User } from '../lib/models/user'
 interface NavBarProps {
   children: ReactNode
+  user: User
 }
 
-export default function SideBar({ children }: NavBarProps) {
+export default function SideBar({ children, user }: NavBarProps) {
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const router = useRouter()
 
   const onLogout = async () => {
     try {
       await logout()
-      signOut({
-        redirect: true,
-        callbackUrl: '/',
-      })
+      router.push('/')
     } catch (error) {
       console.error(error)
     }
@@ -54,9 +52,9 @@ export default function SideBar({ children }: NavBarProps) {
           <ul className="menu p-4 w-60 min-h-full bg-base-200 text-base-content font-semibold text-lg gap-2">
             {/* Sidebar content here */}
 
-            {session?.user && (
+            {user && (
               <h1 className="font-bold text-secondary">
-                Hello, {session?.user.displayName}
+                Hello, {user.displayName}
               </h1>
             )}
 
@@ -68,7 +66,7 @@ export default function SideBar({ children }: NavBarProps) {
                 <FaHome /> Home
               </Link>
             </li>
-            {session?.user?.role === 'admin' && (
+            {user?.role === 'admin' && (
               <li>
                 <Link
                   href={'/dashboard/users'}
@@ -95,7 +93,7 @@ export default function SideBar({ children }: NavBarProps) {
                     Assets List
                   </Link>
                 </li>
-                {session?.user?.role === 'admin' && (
+                {user?.role === 'admin' && (
                   <li>
                     <Link
                       href={'/dashboard/assets/new-asset'}

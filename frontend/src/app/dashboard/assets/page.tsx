@@ -1,4 +1,3 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import * as AssetApi from '@/app/lib/data/assets.data'
 import { getAuthenticatedUser } from '@/app/lib/data/user.data'
 import AssetsEntry from '@/app/ui/assets/AssetsEntry'
@@ -6,7 +5,6 @@ import AssetsPaginationBar from '@/app/ui/assets/AssetsPaginationBar'
 import Navbar from '@/app/ui/assets/Navbar'
 import { getCookie } from '@/utils/utilsAppRouter'
 import { Metadata } from 'next'
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { stringify } from 'querystring'
 
@@ -23,8 +21,7 @@ interface AssetPageProps {
 }
 
 export default async function AssetPage({ searchParams }: AssetPageProps) {
-  const session = await getServerSession(authOptions)
-  const cookie = session?.user.cookie
+  const cookie = await getCookie()
   const user = await getAuthenticatedUser(cookie)
 
   const pageParam = parseInt(searchParams.page?.toString() || '1')
