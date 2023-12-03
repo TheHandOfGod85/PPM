@@ -18,7 +18,7 @@ import {
 
 const router = express.Router()
 
-router.get('/me', requireAuth, UserController.getAuthenticatedUser)
+router.get('/me', UserController.getAuthenticatedUser)
 // Used for testing purposes
 // router.get('/me', UserController.getAuthenticatedUser)
 

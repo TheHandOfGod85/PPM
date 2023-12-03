@@ -13,7 +13,6 @@ export const findAssetsHandler: RequestHandler<
   GetAssetsQuery
 > = async (req, res, next) => {
   try {
-    console.log(req.user)
     const getAssetsQuery = await search(AssetModel as Model<unknown>, req.query)
     const assets = await getAssetsQuery.result
 
