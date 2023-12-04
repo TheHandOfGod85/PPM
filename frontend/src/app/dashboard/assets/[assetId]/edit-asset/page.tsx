@@ -1,7 +1,6 @@
 import * as AssetApi from '@/app/lib/data/assets.data'
 import EditAssetForm from '@/app/ui/assets/EditAssetForm'
-import { getAuthenticatedUser } from '@/app/lib/data/user.data'
-import { getCookie } from '@/utils/utilsAppRouter'
+import { cookies } from 'next/headers'
 
 interface EditAssetPageProps {
   params: {
@@ -9,11 +8,9 @@ interface EditAssetPageProps {
   }
 }
 export default async function EditAssetPage({ params }: EditAssetPageProps) {
-  const cookie = await getCookie()
-  const user = await getAuthenticatedUser(cookie)
   const assetId = params.assetId
   if (!assetId) throw Error('Asset id missing')
-  const asset = await AssetApi.getAsset(assetId, cookie)
+  const asset = await AssetApi.getAsset(assetId, cookies().toString())
 
-  return <EditAssetForm asset={asset} user={user} />
+  return <EditAssetForm asset={asset} />
 }

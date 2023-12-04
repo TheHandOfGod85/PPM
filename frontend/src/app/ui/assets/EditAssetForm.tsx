@@ -1,19 +1,19 @@
 'use client'
-import * as yup from 'yup'
+import * as AssetApi from '@/app/lib/data/assets.data'
+import { BadRequestError } from '@/app/lib/http-errors'
+import { Asset } from '@/app/lib/models/asset'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import { openModal } from '@/utils/utils'
+import { requiredStringSchema } from '@/utils/validation'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { requiredStringSchema } from '@/utils/validation'
-import * as AssetApi from '@/app/lib/data/assets.data'
-import { Asset } from '@/app/lib/models/asset'
-import { BadRequestError } from '@/app/lib/http-errors'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import FormInputField from '../form/FormInputField'
+import * as yup from 'yup'
 import ErrorText from '../ErrorText'
-import { openModal } from '@/utils/utils'
 import GoBackButton from '../GoBackButton'
 import PopUpConfirm from '../PopUpConfirm'
-import { User } from '@/app/lib/models/user'
+import FormInputField from '../form/FormInputField'
 
 const validationSchema = yup.object({
   name: requiredStringSchema,
@@ -24,10 +24,10 @@ type EditAssetFormData = yup.InferType<typeof validationSchema>
 
 interface EditAssetFormProps {
   asset: Asset
-  user: User
 }
 
-export default function EditAssetForm({ asset, user }: EditAssetFormProps) {
+export default function EditAssetForm({ asset }: EditAssetFormProps) {
+  const { user } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
 

@@ -1,4 +1,5 @@
 'use client'
+import * as UsersApi from '@/app/lib/data/user.data'
 import { TooManyRequestsError, UnauthorisedError } from '@/app/lib/http-errors'
 import { requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -11,7 +12,6 @@ import ErrorText from '../ErrorText'
 import LoadingButton from '../LoadingButton'
 import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
-import * as UsersApi from '@/app/lib/data/user.data'
 
 const validationSchema = yup.object({
   username: requiredStringSchema,
@@ -36,6 +36,7 @@ export default function Login() {
     try {
       setErrorText(null)
       await UsersApi.login(credentials)
+      localStorage.setItem('loggedin', 'true')
       router.push('/dashboard')
     } catch (error) {
       if (error instanceof UnauthorisedError) {

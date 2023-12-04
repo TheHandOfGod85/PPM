@@ -1,9 +1,11 @@
-import { getAuthenticatedUser } from '@/app/lib/data/user.data'
 import NewAssetForm from '@/app/ui/assets/NewAssetForm'
-import { getCookie } from '@/utils/utilsAppRouter'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'New asset',
+  description: 'New asset page',
+}
 
 export default async function NewAssetPage() {
-  const cookie = await getCookie()
-  const user = await getAuthenticatedUser(cookie)
-  return <NewAssetForm user={user} />
+  return <NewAssetForm />
 }

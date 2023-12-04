@@ -26,5 +26,3 @@ export function closeModal(modalId: string) {
     console.error(`Modal with id ${modalId} not found.`)
   }
 }
-
-

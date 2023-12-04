@@ -1,13 +1,10 @@
 import { Metadata } from 'next'
-import { isLoggedIn } from '../lib/data/user.data'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
   description: 'Dashboard page',
 }
 export default async function Dashboard() {
-  const loggedIn = await isLoggedIn()
-  console.log(loggedIn)
   return (
     <>
       <h1 className="title">PPM System</h1>

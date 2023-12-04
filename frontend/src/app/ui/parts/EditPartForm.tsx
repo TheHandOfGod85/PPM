@@ -1,22 +1,21 @@
 'use client'
-import React, { useState } from 'react'
-import { User } from '@/app/lib/models/user'
-import * as yup from 'yup'
-import { fileSchema, requiredStringSchema } from '@/utils/validation'
-import { useRouter } from 'next/navigation'
 import * as PartApi from '@/app/lib/data/part.data'
 import { BadRequestError } from '@/app/lib/http-errors'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Part } from '@/app/lib/models/part'
-import FormInputField from '../form/FormInputField'
-import ErrorText from '../ErrorText'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { openModal } from '@/utils/utils'
+import { fileSchema, requiredStringSchema } from '@/utils/validation'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import ErrorText from '../ErrorText'
 import GoBackButton from '../GoBackButton'
 import PopUpConfirm from '../PopUpConfirm'
+import FormInputField from '../form/FormInputField'
 
 interface EditPartFormProps {
-  user: User
   part: Part
 }
 
@@ -29,7 +28,8 @@ const validationSchema = yup.object({
 })
 type EdiPartFormData = yup.InferType<typeof validationSchema>
 
-export default function EditPartForm({ user, part }: EditPartFormProps) {
+export default function EditPartForm({ part }: EditPartFormProps) {
+  const { user } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
 
@@ -78,7 +78,7 @@ export default function EditPartForm({ user, part }: EditPartFormProps) {
       partNumber: part.partNumber,
     },
   })
-  if (user.role !== 'admin') {
+  if (user?.role !== 'admin') {
     router.push('/')
   } else {
     return (

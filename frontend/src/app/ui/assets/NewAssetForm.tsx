@@ -1,17 +1,17 @@
 'use client'
-import { useState } from 'react'
-import { requiredStringSchema } from '@/utils/validation'
-import * as yup from 'yup'
-import { User } from '@/app/lib/models/user'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import * as AssetApi from '@/app/lib/data/assets.data'
 import { BadRequestError, ConflictError } from '@/app/lib/http-errors'
-import FormInputField from '../form/FormInputField'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import { requiredStringSchema } from '@/utils/validation'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
 import ErrorText from '../ErrorText'
-import LoadingButton from '../LoadingButton'
 import GoBackButton from '../GoBackButton'
+import LoadingButton from '../LoadingButton'
+import FormInputField from '../form/FormInputField'
 
 const validationSchema = yup.object({
   name: requiredStringSchema,
@@ -21,11 +21,8 @@ const validationSchema = yup.object({
 
 type CreateAssetFormData = yup.InferType<typeof validationSchema>
 
-interface NewAssetFormProps {
-  user: User | undefined
-}
-
-export default function NewAssetForm({ user }: NewAssetFormProps) {
+export default function NewAssetForm() {
+  const { user } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
 

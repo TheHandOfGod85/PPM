@@ -8,13 +8,14 @@ import { formatDate, openModal } from '@/utils/utils'
 import { FaTrash, FaUser } from 'react-icons/fa'
 import SendRegistrationFormModal from '../auth/SendRegistrationFormModal'
 import PopUpConfirm from '../PopUpConfirm'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 interface UsersTableProps {
   users: User[]
-  user: User
 }
 
-export default function UsersTable({ users, user }: UsersTableProps) {
+export default function UsersTable({ users }: UsersTableProps) {
+  const { user } = useAuthenticatedUser()
   const isMobile = useMediaQuery({ maxWidth: 640 })
   const router = useRouter()
   const [deleteUserId, setDeleteUserId] = useState('')

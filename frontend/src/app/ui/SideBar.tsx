@@ -24,6 +24,7 @@ export default function SideBar({ children, user }: NavBarProps) {
   const onLogout = async () => {
     try {
       await logout()
+      localStorage.removeItem('loggedin')
       router.push('/')
     } catch (error) {
       console.error(error)

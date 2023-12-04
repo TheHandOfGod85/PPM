@@ -1,10 +1,9 @@
 import * as AssetApi from '@/app/lib/data/assets.data'
-import { getAuthenticatedUser } from '@/app/lib/data/user.data'
 import AssetsEntry from '@/app/ui/assets/AssetsEntry'
 import AssetsPaginationBar from '@/app/ui/assets/AssetsPaginationBar'
 import Navbar from '@/app/ui/assets/Navbar'
-import { getCookie } from '@/utils/utilsAppRouter'
 import { Metadata } from 'next'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { stringify } from 'querystring'
 
@@ -21,9 +20,6 @@ interface AssetPageProps {
 }
 
 export default async function AssetPage({ searchParams }: AssetPageProps) {
-  const cookie = await getCookie()
-  const user = await getAuthenticatedUser(cookie)
-
   const pageParam = parseInt(searchParams.page?.toString() || '1')
   const filter = searchParams.search
 
@@ -31,7 +27,7 @@ export default async function AssetPage({ searchParams }: AssetPageProps) {
     searchParams.page = '1'
     redirect('/dashboard/assets?' + stringify(searchParams))
   }
-  const data = await AssetApi.getAssets(pageParam, filter, cookie)
+  const data = await AssetApi.getAssets(pageParam, filter, cookies().toString())
   const { page, totalPages } = data
   if (totalPages > 0 && page > totalPages) {
     searchParams.page = totalPages.toString()
@@ -42,11 +38,11 @@ export default async function AssetPage({ searchParams }: AssetPageProps) {
     <>
       <div className="container mx-auto px-2">
         <h1 className="title">Assets</h1>
-        <Navbar user={user} />
+        <Navbar />
         {data.assets.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 gap-4 mx-auto">
             {data.assets.map((asset) => (
-              <AssetsEntry key={asset._id} asset={asset} user={user} />
+              <AssetsEntry key={asset._id} asset={asset} />
             ))}
           </div>
         )}

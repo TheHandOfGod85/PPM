@@ -1,20 +1,19 @@
 'use client'
-import { User } from '@/app/lib/models/user'
+import * as PartApi from '@/app/lib/data/part.data'
+import { BadRequestError, ConflictError } from '@/app/lib/http-errors'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { fileSchema, requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import * as PartApi from '@/app/lib/data/part.data'
 import * as yup from 'yup'
-import { BadRequestError, ConflictError } from '@/app/lib/http-errors'
-import FormInputField from '../form/FormInputField'
 import ErrorText from '../ErrorText'
-import LoadingButton from '../LoadingButton'
 import GoBackButton from '../GoBackButton'
+import LoadingButton from '../LoadingButton'
+import FormInputField from '../form/FormInputField'
 
 interface NewPartAssetFormProps {
-  user: User
   assetId: string
 }
 
@@ -28,10 +27,8 @@ const validationSchema = yup.object({
 
 type CreatePartFormData = yup.InferType<typeof validationSchema>
 
-export default function NewPartAssetForm({
-  user,
-  assetId,
-}: NewPartAssetFormProps) {
+export default function NewPartAssetForm({ assetId }: NewPartAssetFormProps) {
+  const { user } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
 
@@ -74,7 +71,7 @@ export default function NewPartAssetForm({
       }
     }
   }
-  if (user.role !== 'admin') {
+  if (user?.role !== 'admin') {
     router.push('/')
   } else {
     return (

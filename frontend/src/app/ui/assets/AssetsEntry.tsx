@@ -8,17 +8,16 @@ import { FaEdit, FaTrash } from 'react-icons/fa'
 import { useMediaQuery } from 'react-responsive'
 import PopUpConfirm from '../PopUpConfirm'
 import * as AssetApi from '@/app/lib/data/assets.data'
-import { User } from '@/app/lib/models/user'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 interface AssetsEntryProps {
   asset: Asset
-  user: User | undefined
 }
 
 export default function AssetsEntry({
   asset: { name, description, createdAt, updatedAt, serialNumber, _id },
-  user,
 }: AssetsEntryProps) {
+  const { user } = useAuthenticatedUser()
   const pathname = usePathname()
   const router = useRouter()
   const createdUpdatedAt =
