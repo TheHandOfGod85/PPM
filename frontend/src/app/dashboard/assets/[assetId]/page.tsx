@@ -1,15 +1,12 @@
 import * as AssetApi from '@/app/lib/data/assets.data'
 import * as PartApi from '@/app/lib/data/part.data'
-import { getAuthenticatedUser } from '@/app/lib/data/user.data'
 import GoBackButton from '@/app/ui/GoBackButton'
 import AssetsEntry from '@/app/ui/assets/AssetsEntry'
 import PartsPaginationBar from '@/app/ui/parts/PartsPaginationBar'
 import PartsTable from '@/app/ui/parts/PartsTable'
 import SearchParts from '@/app/ui/parts/SearchParts'
-import { getCookie } from '@/utils/utilsAppRouter'
 import { Metadata } from 'next'
 import { cookies } from 'next/headers'
-import Link from 'next/link'
 import NewPartButton from './NewPartButton'
 
 export const metadata: Metadata = {

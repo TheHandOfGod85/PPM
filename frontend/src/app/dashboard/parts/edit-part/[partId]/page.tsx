@@ -1,7 +1,5 @@
 import * as PartApi from '@/app/lib/data/part.data'
-import { getAuthenticatedUser } from '@/app/lib/data/user.data'
 import EditPartForm from '@/app/ui/parts/EditPartForm'
-import { getCookie } from '@/utils/utilsAppRouter'
 import { cookies } from 'next/headers'
 
 interface EditPartPageProps {

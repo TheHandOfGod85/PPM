@@ -15,12 +15,7 @@ interface ResetPasswordPageProps {
 export default async function ResetPasswordPage({
   params,
 }: ResetPasswordPageProps) {
-  // const cookie = await getCookie()
-  // const user = await getAuthenticatedUser(cookie)
   const verificationCode = params.verificationCode
-  // if (user) {
-  //   redirect('/dashboard')
-  // } else {
-    return <ResetPasswordForm verificationCode={verificationCode} />
-  // }
+
+  return <ResetPasswordForm verificationCode={verificationCode} />
 }

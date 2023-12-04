@@ -7,12 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default async function ResetPasswordRequestPage() {
-  // const cookie = await getCookie()
-  // const user = await getAuthenticatedUser(cookie)
-
-  // if (user) {
-  //   redirect('/dashboard')
-  // } else {
   return <ResetPasswordRequestForm />
-  // }
 }

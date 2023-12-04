@@ -1,6 +1,4 @@
-import { getAuthenticatedUser } from '@/app/lib/data/user.data'
 import SignupFom from '@/app/ui/auth/SignupFom'
-import { getCookie } from '@/utils/utilsAppRouter'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
