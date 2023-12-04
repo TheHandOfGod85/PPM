@@ -1,22 +1,22 @@
 'use client'
+import * as PartApi from '@/app/lib/data/part.data'
 import { Part } from '@/app/lib/models/part'
+import { openModal } from '@/utils/utils'
 import Image from 'next/image'
-import { FaTrash, FaEdit } from 'react-icons/fa'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { FaEdit, FaTrash } from 'react-icons/fa'
 import { useMediaQuery } from 'react-responsive'
 import PopUpConfirm from '../PopUpConfirm'
-import { openModal } from '@/utils/utils'
-import { useRouter } from 'next/navigation'
-import * as PartApi from '@/app/lib/data/part.data'
-import { useState } from 'react'
-import Link from 'next/link'
-import { User } from '@/app/lib/models/user'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 interface PartsTableProps {
   parts: Part[]
-  user: User
 }
 
-export default function PartsTable({ parts, user }: PartsTableProps) {
+export default function PartsTable({ parts }: PartsTableProps) {
+  const { user } = useAuthenticatedUser()
   const [deletePartId, setDeletePartId] = useState('')
   const router = useRouter()
   const isMobile = useMediaQuery({ maxWidth: 640 })

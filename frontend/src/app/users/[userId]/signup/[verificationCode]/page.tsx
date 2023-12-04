@@ -16,13 +16,10 @@ interface SignupPageProps {
 }
 
 export default async function SignupPage({ searchParams }: SignupPageProps) {
-  const cookie = await getCookie()
-  const user = await getAuthenticatedUser(cookie)
   const userId = searchParams.userId
   const verificationCode = searchParams.verificationCode
   return (
     <SignupFom
-      user={user}
       userId={userId}
       verificationCode={verificationCode}
     />

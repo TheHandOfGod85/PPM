@@ -8,7 +8,9 @@ import PartsTable from '@/app/ui/parts/PartsTable'
 import SearchParts from '@/app/ui/parts/SearchParts'
 import { getCookie } from '@/utils/utilsAppRouter'
 import { Metadata } from 'next'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
+import NewPartButton from './NewPartButton'
 
 export const metadata: Metadata = {
   title: 'Asset details',
@@ -31,17 +33,16 @@ export default async function AssetDetailsPage({
 }: AssetDetailsPageProps) {
   const assetId = params.assetId
   if (!assetId) throw Error('Id is missing')
-  const cookie = await getCookie()
-  const user = await getAuthenticatedUser(cookie)
+
   const filter = searchParams.search
   const pageParam = parseInt(searchParams.page || '1')
 
-  const getAssetQuery = AssetApi.getAsset(assetId, cookie)
+  const getAssetQuery = AssetApi.getAsset(assetId, cookies().toString())
   const getPartsData = PartApi.getPartsByAssetId(
     pageParam,
     assetId,
     filter,
-    cookie
+    cookies().toString()
   )
 
   const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
@@ -49,18 +50,14 @@ export default async function AssetDetailsPage({
   return (
     <div className="container mx-auto max-w-[1000px] px-2">
       <h1 className="title">Asset details</h1>
-      {user.role === 'admin' && (
-        <Link href={`/dashboard/assets/${asset._id}/new-part`}>
-          <button className="btn btn-neutral mb-2 btn-sm">new part</button>
-        </Link>
-      )}
+      <NewPartButton asset={asset} />
 
-      <AssetsEntry asset={asset} user={user} />
+      <AssetsEntry asset={asset} />
       <div className="overflow-x-auto mt-9 mb-3">
         <div className="flex items-center justify-center my-3">
           <SearchParts id={assetId} />
         </div>
-        <PartsTable parts={parts} user={user} />
+        <PartsTable parts={parts} />
       </div>
       <div className="flex justify-between">
         <PartsPaginationBar currentPage={page} totalPages={totalPages} />

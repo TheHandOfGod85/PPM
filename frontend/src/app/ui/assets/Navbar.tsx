@@ -1,12 +1,9 @@
 'use client'
-import { User } from '@/app/lib/models/user'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import Link from 'next/link'
 import SearchAssets from './SearchAssets'
-import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
-// interface NavbarProps {
-//   user: User | undefined
-// }
+
 export default function Navbar() {
   const { user } = useAuthenticatedUser()
   if (user?.role === 'admin') {

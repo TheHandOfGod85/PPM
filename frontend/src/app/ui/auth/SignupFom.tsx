@@ -12,6 +12,7 @@ import FormInputField from '../form/FormInputField'
 import PasswordInputField from '../form/PasswordInputField'
 import LoadingButton from '../LoadingButton'
 import ErrorText from '../ErrorText'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 const validationSchema = yup.object({
   username: usernameSchema.required('Required'),
@@ -23,16 +24,15 @@ const validationSchema = yup.object({
 type SignUpFormData = yup.InferType<typeof validationSchema>
 
 interface SignupFomProps {
-  user: User
   userId: string
   verificationCode: string
 }
 
 export default function SignupFom({
-  user,
   userId,
   verificationCode,
 }: SignupFomProps) {
+  const { user } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
 

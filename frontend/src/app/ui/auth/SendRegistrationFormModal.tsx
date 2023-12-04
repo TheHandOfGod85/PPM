@@ -8,15 +8,14 @@ import {
 import { closeModal, openModal } from '@/utils/utils'
 import { emailSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
+import AlertDaisy from '../Alert'
 import ErrorText from '../ErrorText'
 import LoadingButton from '../LoadingButton'
 import FormInputField from '../form/FormInputField'
 import SelectInputField from '../form/SelectInputField'
-import AlertDaisy from '../Alert'
 
 const roles = ['admin', 'user']
 
@@ -29,7 +28,6 @@ type SendRegistrationFormData = yup.InferType<typeof validationSchema>
 
 export default function SendRegistrationFormModal() {
   const [errorText, setErrorText] = useState<string | null>(null)
-  const router = useRouter()
   const {
     register,
     handleSubmit,

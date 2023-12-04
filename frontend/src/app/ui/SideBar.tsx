@@ -1,5 +1,6 @@
 'use client'
 import { logout } from '@/app/lib/data/user.data'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
@@ -11,13 +12,12 @@ import {
   FaUserFriends,
 } from 'react-icons/fa'
 import { FaArrowRightFromBracket } from 'react-icons/fa6'
-import { User } from '../lib/models/user'
 interface NavBarProps {
   children: ReactNode
-  user: User
 }
 
-export default function SideBar({ children, user }: NavBarProps) {
+export default function SideBar({ children }: NavBarProps) {
+  const { user } = useAuthenticatedUser()
   const pathname = usePathname()
   const router = useRouter()
 
