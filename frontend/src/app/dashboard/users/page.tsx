@@ -1,5 +1,5 @@
 import { getAllUsers } from '@/lib/data/user.data'
-import UsersTable from '@/ui/users/UsersTable'
+import UsersTable from '@/app/ui/users/UsersTable'
 import { cookies } from 'next/headers'
 
 export default async function UsersPage() {

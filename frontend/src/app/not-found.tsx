@@ -1,4 +1,4 @@
-import GoBackButton from "@/ui/GoBackButton";
+import GoBackButton from '@/app/ui/GoBackButton'
 
 export default function NotFoundPage() {
   return (

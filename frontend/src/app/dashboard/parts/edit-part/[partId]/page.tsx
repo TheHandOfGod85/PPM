@@ -1,5 +1,5 @@
 import * as PartApi from '@/lib/data/part.data'
-import EditPartForm from '@/ui/parts/EditPartForm'
+import EditPartForm from '@/app/ui/parts/EditPartForm'
 import { cookies } from 'next/headers'
 
 interface EditPartPageProps {

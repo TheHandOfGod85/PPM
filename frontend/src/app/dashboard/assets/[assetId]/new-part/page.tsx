@@ -1,4 +1,4 @@
-import NewPartAssetForm from '@/ui/assets/NewPartAssetForm'
+import NewPartAssetForm from '@/app/ui/assets/NewPartAssetForm'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

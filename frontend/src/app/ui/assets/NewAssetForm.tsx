@@ -1,17 +1,18 @@
 'use client'
 import * as AssetApi from '@/lib/data/assets.data'
-import { BadRequestError, ConflictError } from '@/lib/http-errors'
-import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
-import { requiredStringSchema } from '@/utils/validation'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+
 import * as yup from 'yup'
 import ErrorText from '../ErrorText'
 import GoBackButton from '../GoBackButton'
 import LoadingButton from '../LoadingButton'
 import FormInputField from '../form/FormInputField'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import { redirect, useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { requiredStringSchema } from '@/utils/validation'
+import { BadRequestError, ConflictError } from '@/lib/http-errors'
 
 const validationSchema = yup.object({
   name: requiredStringSchema,
@@ -50,7 +51,7 @@ export default function NewAssetForm() {
     }
   }
   if (user?.role !== 'admin') {
-    router.push('/')
+    redirect('/dashboard')
   } else {
     return (
       <>

@@ -1,4 +1,4 @@
-import SignupFom from '@/ui/auth/SignupFom'
+import SignupFom from '@/app/ui/auth/SignupFom'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

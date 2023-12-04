@@ -1,4 +1,4 @@
-import ResetPasswordForm from '@/ui/auth/ResetPasswordForm'
+import ResetPasswordForm from '@/app/ui/auth/ResetPasswordForm'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

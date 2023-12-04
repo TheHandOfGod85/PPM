@@ -1,4 +1,4 @@
-import Login from '@/ui/auth/Login'
+import Login from '@/app/ui/auth/Login'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

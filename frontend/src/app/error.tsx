@@ -1,5 +1,5 @@
 'use client'
-import GoBackButton from '@/ui/GoBackButton'
+import GoBackButton from '@/app/ui/GoBackButton'
 import { useRouter } from 'next/navigation'
 
 export default function ErrorPage() {

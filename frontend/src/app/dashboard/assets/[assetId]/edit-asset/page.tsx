@@ -1,5 +1,5 @@
 import * as AssetApi from '@/lib/data/assets.data'
-import EditAssetForm from '@/ui/assets/EditAssetForm'
+import EditAssetForm from '@/app/ui/assets/EditAssetForm'
 import { cookies } from 'next/headers'
 
 interface EditAssetPageProps {
