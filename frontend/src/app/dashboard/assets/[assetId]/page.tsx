@@ -8,7 +8,6 @@ import PartsTable from '@/app/ui/parts/PartsTable'
 import SearchParts from '@/app/ui/parts/SearchParts'
 import { getCookie } from '@/utils/utilsAppRouter'
 import { Metadata } from 'next'
-import { getServerSession } from 'next-auth'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
