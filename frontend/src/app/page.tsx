@@ -1,5 +1,5 @@
+import Login from '@/ui/auth/Login'
 import { Metadata } from 'next'
-import Login from './ui/auth/Login'
 
 export const metadata: Metadata = {
   title: 'Login',

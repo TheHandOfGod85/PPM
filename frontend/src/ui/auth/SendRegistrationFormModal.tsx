@@ -1,10 +1,10 @@
 'use client'
-import * as UsersApi from '@/app/lib/data/user.data'
+import * as UsersApi from '@/lib/data/user.data'
 import {
   BadRequestError,
   ConflictError,
   TooManyRequestsError,
-} from '@/app/lib/http-errors'
+} from '@/lib/http-errors'
 import { closeModal, openModal } from '@/utils/utils'
 import { emailSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'

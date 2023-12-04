@@ -1,5 +1,5 @@
 'use client'
-import { Asset } from '@/app/lib/models/asset'
+import { Asset } from '@/lib/models/asset'
 import { formatDate, openModal } from '@/utils/utils'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -7,7 +7,7 @@ import React from 'react'
 import { FaEdit, FaTrash } from 'react-icons/fa'
 import { useMediaQuery } from 'react-responsive'
 import PopUpConfirm from '../PopUpConfirm'
-import * as AssetApi from '@/app/lib/data/assets.data'
+import * as AssetApi from '@/lib/data/assets.data'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 
 interface AssetsEntryProps {

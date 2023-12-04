@@ -1,6 +1,6 @@
 'use client'
-import * as UsersApi from '@/app/lib/data/user.data'
-import { NotFoundError, TooManyRequestsError } from '@/app/lib/http-errors'
+import * as UsersApi from '@/lib/data/user.data'
+import { NotFoundError, TooManyRequestsError } from '@/lib/http-errors'
 import { openModal } from '@/utils/utils'
 import { emailSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'

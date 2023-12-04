@@ -1,13 +1,14 @@
-import * as AssetApi from '@/app/lib/data/assets.data'
-import * as PartApi from '@/app/lib/data/part.data'
-import GoBackButton from '@/app/ui/GoBackButton'
-import AssetsEntry from '@/app/ui/assets/AssetsEntry'
-import PartsPaginationBar from '@/app/ui/parts/PartsPaginationBar'
-import PartsTable from '@/app/ui/parts/PartsTable'
-import SearchParts from '@/app/ui/parts/SearchParts'
+import * as AssetApi from '@//lib/data/assets.data'
+import * as PartApi from '@/lib/data/part.data'
+import GoBackButton from '@/ui/GoBackButton'
+import AssetsEntry from '@/ui/assets/AssetsEntry'
+import NewPartButton from '@/ui/assets/NewPartButton'
+import PartsPaginationBar from '@/ui/parts/PartsPaginationBar'
+import PartsTable from '@/ui/parts/PartsTable'
+import SearchParts from '@/ui/parts/SearchParts'
+
 import { Metadata } from 'next'
 import { cookies } from 'next/headers'
-import NewPartButton from './NewPartButton'
 
 export const metadata: Metadata = {
   title: 'Asset details',

@@ -1,6 +1,5 @@
 'use client'
-
-import { Asset } from '@/app/lib/models/asset'
+import { Asset } from '@/lib/models/asset'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import Link from 'next/link'
 interface NewPartButtonProps {

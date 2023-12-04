@@ -1,6 +1,6 @@
 'use client'
-import * as AssetApi from '@/app/lib/data/assets.data'
-import { BadRequestError, ConflictError } from '@/app/lib/http-errors'
+import * as AssetApi from '@/lib/data/assets.data'
+import { BadRequestError, ConflictError } from '@/lib/http-errors'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'

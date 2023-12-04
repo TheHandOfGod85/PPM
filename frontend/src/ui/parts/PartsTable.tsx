@@ -1,6 +1,6 @@
 'use client'
-import * as PartApi from '@/app/lib/data/part.data'
-import { Part } from '@/app/lib/models/part'
+import * as PartApi from '@/lib/data/part.data'
+import { Part } from '@/lib/models/part'
 import { openModal } from '@/utils/utils'
 import Image from 'next/image'
 import Link from 'next/link'

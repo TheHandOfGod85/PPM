@@ -1,6 +1,6 @@
 'use client'
-import * as UsersApi from '@/app/lib/data/user.data'
-import { TooManyRequestsError, UnauthorisedError } from '@/app/lib/http-errors'
+import * as UsersApi from '@/lib/data/user.data'
+import { TooManyRequestsError, UnauthorisedError } from '@/lib/http-errors'
 import { requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Link from 'next/link'

@@ -1,5 +1,5 @@
 'use client'
-import { logout } from '@/app/lib/data/user.data'
+import { logout } from '@/lib/data/user.data'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'

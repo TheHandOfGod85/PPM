@@ -1,6 +1,6 @@
 'use client'
-import * as PartApi from '@/app/lib/data/part.data'
-import { BadRequestError, ConflictError } from '@/app/lib/http-errors'
+import * as PartApi from '@/lib/data/part.data'
+import { BadRequestError, ConflictError } from '@/lib/http-errors'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { fileSchema, requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'

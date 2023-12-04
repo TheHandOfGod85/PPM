@@ -1,5 +1,5 @@
-import { User } from '@/app/lib/models/user'
-import api from '@/app/lib/axiosInstance'
+import { User } from '@/lib/models/user'
+import api from '@/lib/axiosInstance'
 
 export async function sendRegistration(email: string, role: string) {
   await api.post('/user/send-registration', {

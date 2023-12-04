@@ -1,6 +1,6 @@
 'use client'
-import { usePathname, useRouter } from 'next/navigation'
-import GoBackButton from './ui/GoBackButton'
+import GoBackButton from '@/ui/GoBackButton'
+import { useRouter } from 'next/navigation'
 
 export default function ErrorPage() {
   const router = useRouter()

@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: 'Dashboard',
   description: 'Dashboard page',
 }
-export default async function Dashboard() {
+export default function Dashboard() {
   return (
     <>
       <h1 className="title">PPM System</h1>

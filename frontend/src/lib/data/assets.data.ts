@@ -1,5 +1,5 @@
-import { Asset, AssetsPage } from '@/app/lib/models/asset'
-import api from '@/app/lib/axiosInstance'
+import { Asset, AssetsPage } from '@/lib/models/asset'
+import api from '@/lib/axiosInstance'
 
 export async function getAssets(
   page?: number,

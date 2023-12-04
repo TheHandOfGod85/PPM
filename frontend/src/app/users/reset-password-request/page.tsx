@@ -1,4 +1,4 @@
-import ResetPasswordRequestForm from '@/app/ui/auth/ResetPasswordRequestForm'
+import ResetPasswordRequestForm from '@/ui/auth/ResetPasswordRequestForm'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -6,6 +6,6 @@ export const metadata: Metadata = {
   description: 'Request password page',
 }
 
-export default async function ResetPasswordRequestPage() {
+export default function ResetPasswordRequestPage() {
   return <ResetPasswordRequestForm />
 }

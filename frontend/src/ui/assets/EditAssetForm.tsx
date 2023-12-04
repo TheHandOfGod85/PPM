@@ -1,10 +1,10 @@
 'use client'
-import * as PartApi from '@/app/lib/data/part.data'
-import { BadRequestError } from '@/app/lib/http-errors'
-import { Part } from '@/app/lib/models/part'
+import * as AssetApi from '@/lib/data/assets.data'
+import { BadRequestError } from '@/lib/http-errors'
+import { Asset } from '@/lib/models/asset'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { openModal } from '@/utils/utils'
-import { fileSchema, requiredStringSchema } from '@/utils/validation'
+import { requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -15,45 +15,37 @@ import GoBackButton from '../GoBackButton'
 import PopUpConfirm from '../PopUpConfirm'
 import FormInputField from '../form/FormInputField'
 
-interface EditPartFormProps {
-  part: Part
-}
-
 const validationSchema = yup.object({
   name: requiredStringSchema,
   description: yup.string(),
-  manufacturer: requiredStringSchema,
-  partNumber: requiredStringSchema,
-  partImage: fileSchema,
+  serialNumber: requiredStringSchema,
 })
-type EdiPartFormData = yup.InferType<typeof validationSchema>
+type EditAssetFormData = yup.InferType<typeof validationSchema>
 
-export default function EditPartForm({ part }: EditPartFormProps) {
+interface EditAssetFormProps {
+  asset: Asset
+}
+
+export default function EditAssetForm({ asset }: EditAssetFormProps) {
   const { user } = useAuthenticatedUser()
   const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
 
   async function onSubmit({
-    manufacturer,
     name,
-    partNumber,
     description,
-    partImage,
-  }: EdiPartFormData) {
+    serialNumber,
+  }: EditAssetFormData) {
     try {
-      setErrorText(null)
-      await PartApi.updatePartAsset(
+      await AssetApi.editAsset(
         {
-          manufacturer,
           name,
-          partNumber,
           description,
-          partImage: partImage?.item(0) || undefined,
+          serialNumber,
         },
-        part._id
+        asset._id
       )
-      router.refresh()
-      router.push(`/dashboard/assets/${part.asset._id}`)
+      await router.push(`/dashboard/assets`)
     } catch (error) {
       if (error instanceof BadRequestError) {
         setErrorText(error.message)
@@ -69,22 +61,22 @@ export default function EditPartForm({ part }: EditPartFormProps) {
     handleSubmit,
     watch,
     formState: { errors, isSubmitting, isDirty },
-  } = useForm<EdiPartFormData>({
+  } = useForm<EditAssetFormData>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      description: part.description,
-      manufacturer: part.manufacturer,
-      name: part.name,
-      partNumber: part.partNumber,
+      description: asset.description,
+      name: asset.name,
+      serialNumber: asset.serialNumber,
     },
   })
+
   if (user?.role !== 'admin') {
     router.push('/')
   } else {
     return (
       <>
         <div className="container mx-auto max-w-[1000px] px-2">
-          <h1 className="title">Edit part</h1>
+          <h1 className="title">Edit asset</h1>
           <form>
             <div className="join join-vertical w-full gap-5">
               <FormInputField
@@ -94,23 +86,10 @@ export default function EditPartForm({ part }: EditPartFormProps) {
                 error={errors.name}
               />
               <FormInputField
-                register={register('partNumber')}
-                placeholder="Edit part number"
+                register={register('serialNumber')}
+                placeholder="Edit asset serial number"
                 maxLength={100}
-                error={errors.partNumber}
-              />
-              <FormInputField
-                register={register('manufacturer')}
-                placeholder="Edit part manufacturer"
-                maxLength={100}
-                error={errors.manufacturer}
-              />
-              <FormInputField
-                register={register('partImage')}
-                isFileStyle
-                type="file"
-                accept="image/png,image/jpeg"
-                error={errors.partImage}
+                error={errors.serialNumber}
               />
               <FormInputField
                 placeholder="Edit part description"
@@ -124,19 +103,19 @@ export default function EditPartForm({ part }: EditPartFormProps) {
               <button
                 type="button"
                 className="btn btn-neutral"
-                onClick={() => openModal('edit_part_confirm')}
+                onClick={() => openModal('edit_asset_confirm')}
               >
                 Edit
               </button>
               <div></div>
-              <GoBackButton href={`/dashboard/assets/${part.asset._id}`} />
+              <GoBackButton href={`/dashboard/assets`} />
             </div>
           </form>
         </div>
         <PopUpConfirm
-          id="edit_part_confirm"
-          title="Edit part"
-          infoMessage={`Are you sure you want to edit part ${part.name}?`}
+          id="edit_asset_confirm"
+          title="Edit asset"
+          infoMessage={`Are you sure you want to edit asset ${asset.name}?`}
           buttonSubmit="Yes"
           button2="No"
           onSubmit={handleSubmit(onSubmit)}

@@ -1,6 +1,6 @@
 import useSWR from 'swr'
-import * as UserApi from '@/app/lib/data/user.data'
-import { UnauthorisedError } from '@/app/lib/http-errors'
+import * as UserApi from '@/lib/data/user.data'
+import { UnauthorisedError } from '@/lib/http-errors'
 
 export default function useAuthenticatedUser() {
   const {

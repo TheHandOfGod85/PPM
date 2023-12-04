@@ -1,4 +1,4 @@
-import SignupFom from '@/app/ui/auth/SignupFom'
+import SignupFom from '@/ui/auth/SignupFom'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -16,10 +16,5 @@ interface SignupPageProps {
 export default async function SignupPage({ searchParams }: SignupPageProps) {
   const userId = searchParams.userId
   const verificationCode = searchParams.verificationCode
-  return (
-    <SignupFom
-      userId={userId}
-      verificationCode={verificationCode}
-    />
-  )
+  return <SignupFom userId={userId} verificationCode={verificationCode} />
 }

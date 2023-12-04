@@ -1,5 +1,5 @@
-import { Part, PartsPage } from '@/app/lib/models/part'
-import api from '@/app/lib/axiosInstance'
+import { Part, PartsPage } from '@/lib/models/part'
+import api from '@/lib/axiosInstance'
 
 export async function getPartsByAssetId(
   page: number = 1,

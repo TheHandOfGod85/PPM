@@ -1,4 +1,4 @@
-import ResetPasswordForm from '@/app/ui/auth/ResetPasswordForm'
+import ResetPasswordForm from '@/ui/auth/ResetPasswordForm'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -12,9 +12,7 @@ interface ResetPasswordPageProps {
   }
 }
 
-export default async function ResetPasswordPage({
-  params,
-}: ResetPasswordPageProps) {
+export default function ResetPasswordPage({ params }: ResetPasswordPageProps) {
   const verificationCode = params.verificationCode
 
   return <ResetPasswordForm verificationCode={verificationCode} />
