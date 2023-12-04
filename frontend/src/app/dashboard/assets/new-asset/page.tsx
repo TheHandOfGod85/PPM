@@ -6,6 +6,6 @@ export const metadata: Metadata = {
   description: 'New asset page',
 }
 
-export default async function NewAssetPage() {
+export default function NewAssetPage() {
   return <NewAssetForm />
 }
