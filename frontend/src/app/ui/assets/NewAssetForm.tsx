@@ -38,7 +38,7 @@ export default function NewAssetForm() {
     try {
       setErrorText(null)
       await AssetApi.createAsset(input)
-      await router.push(`/dashboard/assets`)
+      router.push(`/dashboard/assets`)
     } catch (error) {
       if (error instanceof ConflictError || error instanceof BadRequestError) {
         setErrorText(error.message)
