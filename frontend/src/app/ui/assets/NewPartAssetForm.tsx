@@ -4,7 +4,7 @@ import { BadRequestError, ConflictError } from '@/lib/http-errors'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { fileSchema, requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -72,7 +72,7 @@ export default function NewPartAssetForm({ assetId }: NewPartAssetFormProps) {
     }
   }
   if (user?.role !== 'admin') {
-    router.push('/')
+    redirect('/dashboard')
   } else {
     return (
       <div className="container mx-auto max-w-[1000px] px-2">

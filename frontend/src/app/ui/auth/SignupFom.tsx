@@ -1,7 +1,7 @@
 'use client'
 import { passwordSchema, usernameSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as UsersApi from '@/lib/data/user.data'
@@ -59,7 +59,7 @@ export default function SignupFom({
     }
   }
   if (user) {
-    router.push('/')
+    redirect('/')
   } else {
     return (
       <div className="flex flex-col max-w-3xl mx-auto px-2 justify-center h-screen ">

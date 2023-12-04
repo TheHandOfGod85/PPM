@@ -2,7 +2,7 @@
 import { logout } from '@/lib/data/user.data'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { redirect, usePathname, useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
 import {
   FaAlignJustify,
@@ -25,7 +25,7 @@ export default function SideBar({ children }: NavBarProps) {
     try {
       await logout()
       localStorage.removeItem('loggedin')
-      router.push('/')
+      redirect('/')
     } catch (error) {
       console.error(error)
     }

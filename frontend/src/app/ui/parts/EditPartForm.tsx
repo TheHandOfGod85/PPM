@@ -6,7 +6,7 @@ import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { openModal } from '@/utils/utils'
 import { fileSchema, requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -79,7 +79,7 @@ export default function EditPartForm({ part }: EditPartFormProps) {
     },
   })
   if (user?.role !== 'admin') {
-    router.push('/')
+    redirect('/dashboard')
   } else {
     return (
       <>
