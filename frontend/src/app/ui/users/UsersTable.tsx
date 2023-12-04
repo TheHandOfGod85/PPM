@@ -9,12 +9,11 @@ import { FaTrash, FaUser } from 'react-icons/fa'
 import SendRegistrationFormModal from '../auth/SendRegistrationFormModal'
 import PopUpConfirm from '../PopUpConfirm'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import useSWR from 'swr'
+import * as UserApi from '@/lib/data/user.data'
 
-interface UsersTableProps {
-  users: User[]
-}
-
-export default function UsersTable({ users }: UsersTableProps) {
+export default function UsersTable() {
+  const { data: users } = useSWR('get-users', UserApi.getAllUsers)
   const { user } = useAuthenticatedUser()
   const isMobile = useMediaQuery({ maxWidth: 640 })
   const router = useRouter()
@@ -100,7 +99,7 @@ export default function UsersTable({ users }: UsersTableProps) {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {users?.map((user) => (
                 <tr key={user._id}>
                   <td className="whitespace-nowrap">
                     {user.email ? user.email : 'N/A'}
