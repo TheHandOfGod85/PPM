@@ -35,15 +35,15 @@ export default async function AssetDetailsPage({
   const filter = searchParams.search
   const pageParam = parseInt(searchParams.page || '1')
 
-  const getAssetQuery = AssetApi.getAsset(assetId, cookies().toString())
-  const getPartsData = PartApi.getPartsByAssetId(
+  const asset = await AssetApi.getAsset(assetId, cookies().toString())
+  const data = await PartApi.getPartsByAssetId(
     pageParam,
     assetId,
     filter,
     cookies().toString()
   )
 
-  const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
+  // const [asset, data] = await Promise.all([getAssetQuery, getPartsData])
   const { page, parts, totalPages } = data
   return (
     <div className="container mx-auto max-w-[1000px] px-2">
