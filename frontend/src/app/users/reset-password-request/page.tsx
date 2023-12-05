@@ -1,3 +1,4 @@
+import HideRoute from '@/app/ui/auth/HideRoute'
 import ResetPasswordRequestForm from '@/app/ui/auth/ResetPasswordRequestForm'
 import { Metadata } from 'next'
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 }
 
 export default function ResetPasswordRequestPage() {
-  return <ResetPasswordRequestForm />
+  return (
+    <HideRoute>
+      <ResetPasswordRequestForm />
+    </HideRoute>
+  )
 }

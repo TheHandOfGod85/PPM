@@ -5,7 +5,7 @@ import { requiredStringSchema } from '@/utils/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import ErrorText from '../ErrorText'
@@ -23,7 +23,6 @@ type LoginFormData = yup.InferType<typeof validationSchema>
 export default function Login() {
   const router = useRouter()
   const [errorText, setErrorText] = useState<string | null>(null)
-
   const {
     register,
     handleSubmit,

@@ -1,3 +1,4 @@
+import HideRoute from '@/app/ui/auth/HideRoute'
 import ResetPasswordForm from '@/app/ui/auth/ResetPasswordForm'
 import { Metadata } from 'next'
 
@@ -15,5 +16,9 @@ interface ResetPasswordPageProps {
 export default function ResetPasswordPage({ params }: ResetPasswordPageProps) {
   const verificationCode = params.verificationCode
 
-  return <ResetPasswordForm verificationCode={verificationCode} />
+  return (
+    <HideRoute>
+      <ResetPasswordForm verificationCode={verificationCode} />
+    </HideRoute>
+  )
 }

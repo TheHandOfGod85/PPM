@@ -1,5 +1,6 @@
 import Login from '@/app/ui/auth/Login'
 import { Metadata } from 'next'
+import HideRoute from './ui/auth/HideRoute'
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 }
 
 export default async function Homepage() {
-  return <Login />
+  return (
+    <HideRoute>
+      <Login />
+    </HideRoute>
+  )
 }

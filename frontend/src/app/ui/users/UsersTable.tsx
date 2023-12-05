@@ -1,22 +1,25 @@
 'use client'
-import { User } from '@/lib/models/user'
-import React, { useState } from 'react'
-import * as UsersApi from '@/lib/data/user.data'
-import { useMediaQuery } from 'react-responsive'
-import { useRouter } from 'next/navigation'
-import { formatDate, openModal } from '@/utils/utils'
-import { FaTrash, FaUser } from 'react-icons/fa'
-import SendRegistrationFormModal from '../auth/SendRegistrationFormModal'
-import PopUpConfirm from '../PopUpConfirm'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
+import * as UsersApi from '@/lib/data/user.data'
+import { formatDate, openModal } from '@/utils/utils'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { FaTrash, FaUser } from 'react-icons/fa'
+import { useMediaQuery } from 'react-responsive'
+import PopUpConfirm from '../PopUpConfirm'
+import SendRegistrationFormModal from '../auth/SendRegistrationFormModal'
 import useSWR from 'swr'
-import * as UserApi from '@/lib/data/user.data'
 
 export default function UsersTable() {
-  const { data: users } = useSWR('get-users', UserApi.getAllUsers)
-  const { user } = useAuthenticatedUser()
-  const isMobile = useMediaQuery({ maxWidth: 640 })
   const router = useRouter()
+  const { user } = useAuthenticatedUser()
+  useEffect(() => {
+    if (user?.role !== 'admin') {
+      router.push('/dashboard')
+    }
+  }, [user, router])
+  const { data: users } = useSWR('get-users', UsersApi.getAllUsers)
+  const isMobile = useMediaQuery({ maxWidth: 640 })
   const [deleteUserId, setDeleteUserId] = useState('')
 
   async function onDeleteUser(userId: string) {

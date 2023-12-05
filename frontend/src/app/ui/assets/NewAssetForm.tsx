@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import useAuthenticatedUser from '@/hooks/useAuthenticatedUser'
 import { redirect, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { requiredStringSchema } from '@/utils/validation'
 import { BadRequestError, ConflictError } from '@/lib/http-errors'
 
@@ -23,9 +23,14 @@ const validationSchema = yup.object({
 type CreateAssetFormData = yup.InferType<typeof validationSchema>
 
 export default function NewAssetForm() {
-  const { user } = useAuthenticatedUser()
-  const [errorText, setErrorText] = useState<string | null>(null)
   const router = useRouter()
+  const { user } = useAuthenticatedUser()
+  useEffect(() => {
+    if (user?.role !== 'admin') {
+      router.push('/dashboard')
+    }
+  }, [user, router])
+  const [errorText, setErrorText] = useState<string | null>(null)
 
   const {
     register,

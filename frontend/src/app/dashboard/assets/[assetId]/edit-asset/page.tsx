@@ -1,6 +1,10 @@
-import * as AssetApi from '@/lib/data/assets.data'
 import EditAssetForm from '@/app/ui/assets/EditAssetForm'
-import { cookies } from 'next/headers'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Edit Asset',
+  description: 'Edit Asset page',
+}
 
 interface EditAssetPageProps {
   params: {
@@ -10,7 +14,6 @@ interface EditAssetPageProps {
 export default async function EditAssetPage({ params }: EditAssetPageProps) {
   const assetId = params.assetId
   if (!assetId) throw Error('Asset id missing')
-  const asset = await AssetApi.getAsset(assetId, cookies().toString())
 
-  return <EditAssetForm asset={asset} />
+  return <EditAssetForm assetId={assetId} />
 }

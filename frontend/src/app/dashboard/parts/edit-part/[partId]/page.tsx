@@ -1,6 +1,12 @@
 import * as PartApi from '@/lib/data/part.data'
 import EditPartForm from '@/app/ui/parts/EditPartForm'
 import { cookies } from 'next/headers'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Edit part ',
+  description: 'Edit part page',
+}
 
 interface EditPartPageProps {
   params: {

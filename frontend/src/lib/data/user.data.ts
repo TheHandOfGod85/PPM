@@ -42,6 +42,9 @@ export async function getAuthenticatedUser(cookie?: string) {
   const response = await api.get<User>('/user/me', {
     headers: { Cookie: cookie },
   })
+  if (!response.data) {
+    return null
+  }
   return response.data
 }
 

@@ -1,3 +1,4 @@
+import HideRoute from '@/app/ui/auth/HideRoute'
 import SignupFom from '@/app/ui/auth/SignupFom'
 import { Metadata } from 'next'
 
@@ -16,5 +17,9 @@ interface SignupPageProps {
 export default async function SignupPage({ searchParams }: SignupPageProps) {
   const userId = searchParams.userId
   const verificationCode = searchParams.verificationCode
-  return <SignupFom userId={userId} verificationCode={verificationCode} />
+  return (
+    <HideRoute>
+      <SignupFom userId={userId} verificationCode={verificationCode} />
+    </HideRoute>
+  )
 }
