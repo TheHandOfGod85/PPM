@@ -19,7 +19,7 @@ router.route('/ids').get(AssetController.findAssetsIdsHandler)
 router
   .route('/')
 
-  .get( AssetController.findAssetsHandler)
+  .get(AssetController.findAssetsHandler)
   .post(
     requireAuth,
     restrictTo('admin'),
