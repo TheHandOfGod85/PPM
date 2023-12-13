@@ -23,7 +23,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 16
           script: |
-            cd /apps/PPM/
+            cd /home/daniele/apps/PPM/
             git fetch
             git pull
             cd backend
