@@ -21,8 +21,8 @@ router
 
   .get(AssetController.findAssetsHandler)
   .post(
-    requireAuth,
-    restrictTo('admin'),
+    // requireAuth,
+    // restrictTo('admin'),
     validateRequestSchema(createAssetValidator),
     AssetController.createAssetHandler
   )
