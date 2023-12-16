@@ -9,6 +9,10 @@ const assetSchema = new Schema(
     name: { type: String, required: true },
     description: String,
     serialNumber: { type: String, required: true, unique: true },
+    plannedMaintenance: {
+      startDate: { type: String },
+      interval: { type: Number },
+    },
   },
   {
     timestamps: true,

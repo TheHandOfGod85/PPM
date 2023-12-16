@@ -1,14 +1,14 @@
 import express from 'express'
 import * as AssetController from '../controllers/asset.controller'
+import { requireAuth, restrictTo } from '../middlewares/requireAuth'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
+import partRoute from '../routes/part.route'
 import {
   createAssetValidator,
   idAssetValidator,
   updateAssetvalidator,
 } from '../validation/asset.validator'
-import partRoute from '../routes/part.route'
-import { restrictTo } from '../middlewares/requireAuth'
-import { requireAuth } from '../middlewares/requireAuth'
+import { createPlannedMaintenanceValidator } from './../validation/asset.validator'
 
 const router = express.Router()
 
@@ -45,6 +45,15 @@ router
     restrictTo('admin'),
     validateRequestSchema(idAssetValidator),
     AssetController.deleteAssetHandler
+  )
+
+router
+  .route('/:assetId/planned-maintenance')
+  .patch(
+    requireAuth,
+    restrictTo('admin'),
+    validateRequestSchema(createPlannedMaintenanceValidator),
+    AssetController.createAssetPlannedMaintenance
   )
 
 export default router

@@ -47,3 +47,28 @@ export type UpdateAssetParams = yup.InferType<
   typeof updateAssetvalidator
 >['params']
 //###############################################################
+
+export const plannedMaintenanceBodyValidator = yup.object({
+  startDate: yup.date(),
+  interval: yup.number(),
+  tasks: yup.array().of(
+    yup.object().shape({
+      name: yup.string().required(),
+      description: yup.string(),
+    })
+  ),
+})
+export type PlannedMaintenanceBody = yup.InferType<
+  typeof plannedMaintenanceBodyValidator
+>
+//###############################################################
+export const createPlannedMaintenanceValidator = yup.object({
+  params: yup.object({
+    _id: objectIdSchema,
+  }),
+  body: plannedMaintenanceBodyValidator,
+})
+
+export type CreatePlannedMaintenance = yup.InferType<
+  typeof createPlannedMaintenanceValidator
+>

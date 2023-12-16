@@ -1,10 +1,15 @@
 import { RequestHandler } from 'express'
 import createHttpError from 'http-errors'
 import AssetModel from '../models/asset'
-import { AssetBody, IdAssetParams } from '../validation/asset.validator'
+import {
+  AssetBody,
+  IdAssetParams,
+  PlannedMaintenanceBody,
+} from '../validation/asset.validator'
 import { GetAssetsQuery } from './../validation/asset.validator'
 import { search } from '../utils/search'
 import { Model } from 'mongoose'
+import calculateNextMaintenanceDate from '../utils/calculatetNextMaintenanceDate'
 
 export const findAssetsHandler: RequestHandler<
   unknown,
@@ -54,6 +59,9 @@ export const findAssetHandler: RequestHandler<
           'description',
           'imageUrl',
         ],
+      })
+      .populate({
+        path: 'plannedMaintenance.tasks',
       })
       .exec()
     if (!asset) {
@@ -120,6 +128,44 @@ export const deleteAssetHandler: RequestHandler<
     }
     await asset.deleteOne()
     res.sendStatus(204)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const createAssetPlannedMaintenance: RequestHandler<
+  IdAssetParams,
+  unknown,
+  PlannedMaintenanceBody,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const { assetId } = req.params
+    const { startDate, interval, tasks } = req.body
+
+    const convertedDate = new Date(startDate as Date) 
+
+    const nextMaintenanceDate = calculateNextMaintenanceDate(
+      convertedDate,
+      interval as number
+    )
+
+    const asset = await AssetModel.findByIdAndUpdate(assetId, {
+      plannedMaintenance: {
+        startDate: nextMaintenanceDate,
+        interval,
+        tasks,
+      },
+    })
+      .populate({
+        path: 'plannedMaintenance.tasks',
+      })
+      .exec()
+
+    if (!asset) {
+      throw createHttpError(404, `No asset found with id ${assetId}`)
+    }
+    res.status(200).json(asset)
   } catch (error) {
     next(error)
   }
