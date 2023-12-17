@@ -4,8 +4,10 @@ import { requireAuth, restrictTo } from '../middlewares/requireAuth'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
 import partRoute from '../routes/part.route'
 import {
+  addNewTaskValidator,
   createAssetValidator,
   idAssetValidator,
+  idsDeleteTaskValidator,
   updateAssetvalidator,
 } from '../validation/asset.validator'
 import { createPlannedMaintenanceValidator } from './../validation/asset.validator'
@@ -49,11 +51,45 @@ router
 
 router
   .route('/:assetId/planned-maintenance')
-  .patch(
+  .post(
     requireAuth,
     restrictTo('admin'),
     validateRequestSchema(createPlannedMaintenanceValidator),
     AssetController.createAssetPlannedMaintenance
+  )
+
+router
+  .route('/:assetId/planned-maintenance/addTask')
+  .post(
+    requireAuth,
+    restrictTo('admin'),
+    validateRequestSchema(addNewTaskValidator),
+    AssetController.addNewTask
+  )
+
+router
+  .route('/:assetId/:taskId/deleteTask')
+  .post(
+    requireAuth,
+    restrictTo('admin'),
+    validateRequestSchema(idsDeleteTaskValidator),
+    AssetController.deleteTask
+  )
+router
+  .route('/:assetId/:taskId/updateTask')
+  .post(
+    requireAuth,
+    restrictTo('admin'),
+    validateRequestSchema(idsDeleteTaskValidator),
+    AssetController.updateTask
+  )
+router
+  .route('/:assetId/updatePlannedMaintenance')
+  .post(
+    requireAuth,
+    restrictTo('admin'),
+    validateRequestSchema(createPlannedMaintenanceValidator),
+    AssetController.updatePlannedMaintenance
   )
 
 export default router

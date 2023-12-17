@@ -49,14 +49,12 @@ export type UpdateAssetParams = yup.InferType<
 //###############################################################
 
 export const plannedMaintenanceBodyValidator = yup.object({
-  startDate: yup.date(),
-  interval: yup.number(),
-  tasks: yup.array().of(
-    yup.object().shape({
-      name: yup.string().required(),
-      description: yup.string(),
-    })
-  ),
+  startDate: yup.date().required(),
+  interval: yup.number().required(),
+  task: yup.object({
+    name: yup.string(),
+    description: yup.string(),
+  }),
 })
 export type PlannedMaintenanceBody = yup.InferType<
   typeof plannedMaintenanceBodyValidator
@@ -72,3 +70,25 @@ export const createPlannedMaintenanceValidator = yup.object({
 export type CreatePlannedMaintenance = yup.InferType<
   typeof createPlannedMaintenanceValidator
 >
+//###############################################################
+export const idsDeleteTaskValidator = yup.object({
+  params: yup.object({
+    assetId: objectIdSchema,
+    taskId: objectIdSchema,
+  }),
+})
+
+export type IdsDeleteTaskParams = yup.InferType<
+  typeof idsDeleteTaskValidator
+>['params']
+//###############################################################
+export const addNewTaskValidator = yup.object({
+  params: yup.object({
+    assetId: objectIdSchema,
+  }),
+  task: yup.object({
+    name: yup.string(),
+    description: yup.string(),
+  }),
+})
+export type AddNewTaskBody = yup.InferType<typeof addNewTaskValidator>

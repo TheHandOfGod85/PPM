@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Debug",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\src\\server.ts",
+      "program": "${workspaceFolder}/src/server.ts",
       "runtimeArgs": [
         "-r",
         "ts-node/register",
@@ -32,7 +32,7 @@
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true,
+      // "disableOptimisticBPs": true,
       "windows": {
         "program": "${workspaceFolder}/node_modules/jest/bin/jest"
       }

@@ -12,6 +12,12 @@ const assetSchema = new Schema(
     plannedMaintenance: {
       startDate: { type: String },
       interval: { type: Number },
+      tasks: [
+        {
+          name: String,
+          description: String,
+        },
+      ],
     },
   },
   {
