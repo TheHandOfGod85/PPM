@@ -416,6 +416,8 @@ export const completePlannedMaintenance: RequestHandler<
       },
     })
 
+    await asset.save()
+
     res.status(200).json(asset)
   } catch (error) {
     next(error)
