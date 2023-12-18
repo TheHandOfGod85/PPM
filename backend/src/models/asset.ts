@@ -1,8 +1,8 @@
+import fs from 'fs'
 import { InferSchemaType, Query, Schema, model } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
-import PartModel from './part'
 import env from '../env'
-import fs from 'fs'
+import PartModel from './part'
 
 const assetSchema = new Schema(
   {

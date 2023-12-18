@@ -98,9 +98,9 @@ export const toggleCompletedTaskValidator = yup.object({
     taskId: objectIdSchema,
     assetId: objectIdSchema,
   }),
-  task: yup.object({
-    completed: yup.bool(),
-  }),
+  // task: yup.object({
+  //   completed: yup.bool(),
+  // }),
 })
 export type ToggleCompletedTask = yup.InferType<
   typeof toggleCompletedTaskValidator

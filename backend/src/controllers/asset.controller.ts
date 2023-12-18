@@ -1,18 +1,17 @@
 import { RequestHandler } from 'express'
 import createHttpError from 'http-errors'
+import { Model } from 'mongoose'
 import AssetModel from '../models/asset'
+import calculateNextMaintenanceDate from '../utils/calculatetNextMaintenanceDate'
+import { search } from '../utils/search'
 import {
   AddNewTaskBody,
   AssetBody,
   IdAssetParams,
   IdsDeleteTaskParams,
   PlannedMaintenanceBody,
-  ToggleCompletedTask,
 } from '../validation/asset.validator'
 import { GetAssetsQuery } from './../validation/asset.validator'
-import { search } from '../utils/search'
-import { Model } from 'mongoose'
-import calculateNextMaintenanceDate from '../utils/calculatetNextMaintenanceDate'
 
 export const findAssetsHandler: RequestHandler<
   unknown,
@@ -344,22 +343,28 @@ export const updatePlannedMaintenance: RequestHandler<
 export const toggleTaskCompleted: RequestHandler<
   IdsDeleteTaskParams,
   unknown,
-  ToggleCompletedTask,
+  unknown,
   unknown
 > = async (req, res, next) => {
   try {
     const { assetId, taskId } = req.params
 
-    const { task } = req.body
-
     const assetToUpdate = await AssetModel.findOne({
       _id: assetId,
       'plannedMaintenance.tasks._id': taskId,
-    }).exec()
+    })
+      .populate({
+        path: 'plannedMaintenance.tasks',
+      })
+      .exec()
 
     if (!assetToUpdate) {
       throw createHttpError(404, `No asset or task found.`)
     }
+
+    const task = assetToUpdate.plannedMaintenance?.tasks.find(
+      (task: any) => task._id.toString() === taskId
+    )
 
     const asset = await AssetModel.findOneAndUpdate(
       {
@@ -368,7 +373,7 @@ export const toggleTaskCompleted: RequestHandler<
       },
       {
         $set: {
-          'plannedMaintenance.tasks.$.completed': task.completed,
+          'plannedMaintenance.tasks.$.completed': !task?.completed,
         },
       },
       {
