@@ -8,6 +8,7 @@ import {
   createAssetValidator,
   idAssetValidator,
   idsDeleteTaskValidator,
+  toggleCompletedTaskValidator,
   updateAssetvalidator,
 } from '../validation/asset.validator'
 import { createPlannedMaintenanceValidator } from './../validation/asset.validator'
@@ -90,6 +91,22 @@ router
     restrictTo('admin'),
     validateRequestSchema(createPlannedMaintenanceValidator),
     AssetController.updatePlannedMaintenance
+  )
+router
+  .route('/:assetId/:taskId/toggleCompleted')
+  .post(
+    requireAuth,
+    restrictTo('admin'),
+    validateRequestSchema(toggleCompletedTaskValidator),
+    AssetController.toggleTaskCompleted
+  )
+router
+  .route('/:assetId/completePlannedMaintenance')
+  .post(
+    requireAuth,
+    restrictTo('admin'),
+    validateRequestSchema(idAssetValidator),
+    AssetController.completePlannedMaintenance
   )
 
 export default router

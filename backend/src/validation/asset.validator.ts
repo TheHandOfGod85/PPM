@@ -92,3 +92,16 @@ export const addNewTaskValidator = yup.object({
   }),
 })
 export type AddNewTaskBody = yup.InferType<typeof addNewTaskValidator>
+//###############################################################
+export const toggleCompletedTaskValidator = yup.object({
+  params: yup.object({
+    taskId: objectIdSchema,
+    assetId: objectIdSchema,
+  }),
+  task: yup.object({
+    completed: yup.bool(),
+  }),
+})
+export type ToggleCompletedTask = yup.InferType<
+  typeof toggleCompletedTaskValidator
+>

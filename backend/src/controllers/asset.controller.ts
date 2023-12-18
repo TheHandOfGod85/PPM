@@ -7,6 +7,7 @@ import {
   IdAssetParams,
   IdsDeleteTaskParams,
   PlannedMaintenanceBody,
+  ToggleCompletedTask,
 } from '../validation/asset.validator'
 import { GetAssetsQuery } from './../validation/asset.validator'
 import { search } from '../utils/search'
@@ -334,6 +335,87 @@ export const updatePlannedMaintenance: RequestHandler<
     if (!asset) {
       throw createHttpError(404, `No asset found with id ${assetId}`)
     }
+    res.status(200).json(asset)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const toggleTaskCompleted: RequestHandler<
+  IdsDeleteTaskParams,
+  unknown,
+  ToggleCompletedTask,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const { assetId, taskId } = req.params
+
+    const { task } = req.body
+
+    const assetToUpdate = await AssetModel.findOne({
+      _id: assetId,
+      'plannedMaintenance.tasks._id': taskId,
+    }).exec()
+
+    if (!assetToUpdate) {
+      throw createHttpError(404, `No asset or task found.`)
+    }
+
+    const asset = await AssetModel.findOneAndUpdate(
+      {
+        _id: assetId,
+        'plannedMaintenance.tasks._id': taskId,
+      },
+      {
+        $set: {
+          'plannedMaintenance.tasks.$.completed': task.completed,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    )
+      .populate({
+        path: 'plannedMaintenance.tasks',
+      })
+      .exec()
+
+    res.status(200).json(asset)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const completePlannedMaintenance: RequestHandler<
+  IdAssetParams,
+  unknown,
+  unknown,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const { assetId } = req.params
+
+    const asset = await AssetModel.findOne({ _id: assetId })
+
+    if (!asset) {
+      throw createHttpError(404, `No asset found with id ${assetId}`)
+    }
+    const previousInterval = asset?.plannedMaintenance?.interval
+
+    const convertedDate = new Date(Date.now())
+
+    const nextMaintenanceDate = calculateNextMaintenanceDate(
+      convertedDate,
+      previousInterval as number
+    )
+
+    await asset?.updateOne({
+      $set: {
+        'plannedMaintenance.startDate': nextMaintenanceDate,
+      },
+    })
+
     res.status(200).json(asset)
   } catch (error) {
     next(error)

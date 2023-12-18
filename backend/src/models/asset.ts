@@ -16,6 +16,7 @@ const assetSchema = new Schema(
         {
           name: String,
           description: String,
+          completed: { type: Boolean, default: false },
         },
       ],
     },
