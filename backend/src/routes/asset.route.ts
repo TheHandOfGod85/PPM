@@ -96,7 +96,6 @@ router
   .route('/:assetId/:taskId/toggleCompleted')
   .post(
     requireAuth,
-    restrictTo('admin'),
     validateRequestSchema(toggleCompletedTaskValidator),
     AssetController.toggleTaskCompleted
   )
