@@ -1,7 +1,6 @@
 import express from 'express'
 import * as AssetController from '../controllers/asset.controller'
 import * as TaskController from '../controllers/task.controller'
-import * as HistoryController from '../controllers/history.controller'
 import { requireAuth, restrictTo } from '../middlewares/requireAuth'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
 import partRoute from '../routes/part.route'
@@ -117,9 +116,5 @@ router
     validateRequestSchema(addTaskNoteValidator),
     TaskController.addTaskNote
   )
-
-router
-  .route('/assets/history')
-  .get(requireAuth, HistoryController.findHistoryMaintenance)
 
 export default router

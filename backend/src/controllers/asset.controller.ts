@@ -64,6 +64,10 @@ export const findAssetHandler: RequestHandler<
       .populate({
         path: 'plannedMaintenance.tasks',
       })
+      .populate({
+        path: 'history',
+        select: ['completedDate', 'completedTasks'],
+      })
       .exec()
     if (!asset) {
       throw createHttpError(404, `No asset found with id ${assetId}`)
@@ -187,10 +191,6 @@ export const completePlannedMaintenance: RequestHandler<
       throw createHttpError(404, `No asset found with id ${assetId}`)
     }
 
-    asset.plannedMaintenance?.tasks.forEach((task) => {
-      task.note = undefined
-    })
-
     const previousInterval = asset?.plannedMaintenance?.interval
 
     const convertedDate = new Date(Date.now())
@@ -211,6 +211,12 @@ export const completePlannedMaintenance: RequestHandler<
       completedTasks: asset.plannedMaintenance?.tasks,
     })
 
+    await asset.save()
+
+    asset.plannedMaintenance?.tasks.forEach((task) => {
+      task.note = undefined
+      task.completed = false
+    })
     await asset.save()
 
     res.status(200).json(asset)
