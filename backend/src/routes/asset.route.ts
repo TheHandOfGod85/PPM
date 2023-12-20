@@ -1,10 +1,13 @@
 import express from 'express'
 import * as AssetController from '../controllers/asset.controller'
+import * as TaskController from '../controllers/task.controller'
+import * as HistoryController from '../controllers/history.controller'
 import { requireAuth, restrictTo } from '../middlewares/requireAuth'
 import validateRequestSchema from '../middlewares/validateRequestSchema'
 import partRoute from '../routes/part.route'
 import {
   addNewTaskValidator,
+  addTaskNoteValidator,
   createAssetValidator,
   idAssetValidator,
   idsDeleteTaskValidator,
@@ -65,7 +68,7 @@ router
     requireAuth,
     restrictTo('admin'),
     validateRequestSchema(addNewTaskValidator),
-    AssetController.addNewTask
+    TaskController.addNewTask
   )
 
 router
@@ -74,7 +77,7 @@ router
     requireAuth,
     restrictTo('admin'),
     validateRequestSchema(idsDeleteTaskValidator),
-    AssetController.deleteTask
+    TaskController.deleteTask
   )
 router
   .route('/:assetId/:taskId/updateTask')
@@ -82,7 +85,7 @@ router
     requireAuth,
     restrictTo('admin'),
     validateRequestSchema(idsDeleteTaskValidator),
-    AssetController.updateTask
+    TaskController.updateTask
   )
 router
   .route('/:assetId/updatePlannedMaintenance')
@@ -90,22 +93,33 @@ router
     requireAuth,
     restrictTo('admin'),
     validateRequestSchema(createPlannedMaintenanceValidator),
-    AssetController.updatePlannedMaintenance
+    TaskController.updatePlannedMaintenance
   )
 router
   .route('/:assetId/:taskId/toggleCompleted')
   .post(
     requireAuth,
     validateRequestSchema(toggleCompletedTaskValidator),
-    AssetController.toggleTaskCompleted
+    TaskController.toggleTaskCompleted
   )
 router
   .route('/:assetId/completePlannedMaintenance')
   .post(
     requireAuth,
-    restrictTo('admin'),
     validateRequestSchema(idAssetValidator),
     AssetController.completePlannedMaintenance
   )
+
+router
+  .route('/:assetId/:taskId/addNote')
+  .post(
+    requireAuth,
+    validateRequestSchema(addTaskNoteValidator),
+    TaskController.addTaskNote
+  )
+
+router
+  .route('/assets/history')
+  .get(requireAuth, HistoryController.findHistoryMaintenance)
 
 export default router

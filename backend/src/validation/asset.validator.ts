@@ -78,7 +78,7 @@ export const idsDeleteTaskValidator = yup.object({
   }),
 })
 
-export type IdsDeleteTaskParams = yup.InferType<
+export type IdsTaskParams = yup.InferType<
   typeof idsDeleteTaskValidator
 >['params']
 //###############################################################
@@ -98,10 +98,20 @@ export const toggleCompletedTaskValidator = yup.object({
     taskId: objectIdSchema,
     assetId: objectIdSchema,
   }),
-  // task: yup.object({
-  //   completed: yup.bool(),
-  // }),
 })
 export type ToggleCompletedTask = yup.InferType<
   typeof toggleCompletedTaskValidator
 >
+
+//###############################################################
+export const addTaskNoteValidator = yup.object({
+  params: yup.object({
+    taskId: objectIdSchema,
+    assetId: objectIdSchema,
+  }),
+  body: yup.object({
+    note: yup.string(),
+  }),
+})
+
+export type AddTaskNote = yup.InferType<typeof addTaskNoteValidator>['body']

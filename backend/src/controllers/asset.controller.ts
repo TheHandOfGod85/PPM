@@ -2,13 +2,12 @@ import { RequestHandler } from 'express'
 import createHttpError from 'http-errors'
 import { Model } from 'mongoose'
 import AssetModel from '../models/asset'
+import HistoryModel from '../models/history-maintenance'
 import calculateNextMaintenanceDate from '../utils/calculatetNextMaintenanceDate'
 import { search } from '../utils/search'
 import {
-  AddNewTaskBody,
   AssetBody,
   IdAssetParams,
-  IdsDeleteTaskParams,
   PlannedMaintenanceBody,
 } from '../validation/asset.validator'
 import { GetAssetsQuery } from './../validation/asset.validator'
@@ -173,225 +172,6 @@ export const createAssetPlannedMaintenance: RequestHandler<
   }
 }
 
-export const addNewTask: RequestHandler<
-  IdAssetParams,
-  unknown,
-  AddNewTaskBody,
-  unknown
-> = async (req, res, next) => {
-  try {
-    const { assetId } = req.params
-    const { task } = req.body
-
-    const asset = await AssetModel.findByIdAndUpdate(
-      assetId,
-      {
-        $push: { 'plannedMaintenance.tasks': task },
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    )
-      .populate({
-        path: 'plannedMaintenance.tasks',
-      })
-      .exec()
-
-    if (!asset) {
-      throw createHttpError(404, `No asset found with id ${assetId}`)
-    }
-    res.status(200).json(asset)
-  } catch (error) {
-    next(error)
-  }
-}
-export const deleteTask: RequestHandler<
-  IdsDeleteTaskParams,
-  unknown,
-  unknown,
-  unknown
-> = async (req, res, next) => {
-  try {
-    const { assetId, taskId } = req.params
-
-    const existingTask = await AssetModel.findOne({
-      _id: assetId,
-      'plannedMaintenance.tasks._id': taskId,
-    })
-
-    if (!existingTask) {
-      throw createHttpError(404, `No task found with id ${taskId}`)
-    }
-
-    const asset = await AssetModel.findByIdAndUpdate(
-      assetId,
-      {
-        $pull: { 'plannedMaintenance.tasks': { _id: taskId } },
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    )
-      .populate({
-        path: 'plannedMaintenance.tasks',
-      })
-      .exec()
-
-    if (!asset) {
-      throw createHttpError(404, `No asset found with id ${assetId}`)
-    }
-    res.sendStatus(204)
-  } catch (error) {
-    next(error)
-  }
-}
-export const updateTask: RequestHandler<
-  IdsDeleteTaskParams,
-  unknown,
-  PlannedMaintenanceBody,
-  unknown
-> = async (req, res, next) => {
-  try {
-    const { assetId, taskId } = req.params
-
-    const { task } = req.body
-
-    const assetToUpdate = await AssetModel.findOne({
-      _id: assetId,
-      'plannedMaintenance.tasks._id': taskId,
-    }).exec()
-
-    if (!assetToUpdate) {
-      throw createHttpError(404, `No asset or task found.`)
-    }
-
-    const asset = await AssetModel.findOneAndUpdate(
-      {
-        _id: assetId,
-        'plannedMaintenance.tasks._id': taskId,
-      },
-      {
-        $set: {
-          'plannedMaintenance.tasks.$': { ...task, _id: taskId },
-        },
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    )
-      .populate({
-        path: 'plannedMaintenance.tasks',
-      })
-      .exec()
-
-    res.status(200).json(asset)
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const updatePlannedMaintenance: RequestHandler<
-  IdAssetParams,
-  unknown,
-  PlannedMaintenanceBody,
-  unknown
-> = async (req, res, next) => {
-  try {
-    const { assetId } = req.params
-
-    const { interval, startDate } = req.body
-
-    const convertedDate = new Date(startDate as Date)
-
-    const nextMaintenanceDate = calculateNextMaintenanceDate(
-      convertedDate,
-      interval ? interval : 1
-    )
-
-    const asset = await AssetModel.findOneAndUpdate(
-      {
-        _id: assetId,
-      },
-      {
-        $set: {
-          'plannedMaintenance.interval': interval ? interval : 1,
-          'plannedMaintenance.startDate': nextMaintenanceDate,
-        },
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    )
-      .populate({
-        path: 'plannedMaintenance.tasks',
-      })
-      .exec()
-
-    if (!asset) {
-      throw createHttpError(404, `No asset found with id ${assetId}`)
-    }
-    res.status(200).json(asset)
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const toggleTaskCompleted: RequestHandler<
-  IdsDeleteTaskParams,
-  unknown,
-  unknown,
-  unknown
-> = async (req, res, next) => {
-  try {
-    const { assetId, taskId } = req.params
-
-    const assetToUpdate = await AssetModel.findOne({
-      _id: assetId,
-      'plannedMaintenance.tasks._id': taskId,
-    })
-      .populate({
-        path: 'plannedMaintenance.tasks',
-      })
-      .exec()
-
-    if (!assetToUpdate) {
-      throw createHttpError(404, `No asset or task found.`)
-    }
-
-    const task = assetToUpdate.plannedMaintenance?.tasks.find(
-      (task: any) => task._id.toString() === taskId
-    )
-
-    const asset = await AssetModel.findOneAndUpdate(
-      {
-        _id: assetId,
-        'plannedMaintenance.tasks._id': taskId,
-      },
-      {
-        $set: {
-          'plannedMaintenance.tasks.$.completed': !task?.completed,
-        },
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    )
-      .populate({
-        path: 'plannedMaintenance.tasks',
-      })
-      .exec()
-
-    res.status(200).json(asset)
-  } catch (error) {
-    next(error)
-  }
-}
-
 export const completePlannedMaintenance: RequestHandler<
   IdAssetParams,
   unknown,
@@ -406,6 +186,11 @@ export const completePlannedMaintenance: RequestHandler<
     if (!asset) {
       throw createHttpError(404, `No asset found with id ${assetId}`)
     }
+
+    asset.plannedMaintenance?.tasks.forEach((task) => {
+      task.note = undefined
+    })
+
     const previousInterval = asset?.plannedMaintenance?.interval
 
     const convertedDate = new Date(Date.now())
@@ -419,6 +204,11 @@ export const completePlannedMaintenance: RequestHandler<
       $set: {
         'plannedMaintenance.startDate': nextMaintenanceDate,
       },
+    })
+
+    await HistoryModel.create({
+      asset: asset._id,
+      completedTasks: asset.plannedMaintenance?.tasks,
     })
 
     await asset.save()

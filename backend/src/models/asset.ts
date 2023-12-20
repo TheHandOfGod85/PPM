@@ -17,6 +17,7 @@ const assetSchema = new Schema(
           name: String,
           description: String,
           completed: { type: Boolean, default: false },
+          note: String,
         },
       ],
     },
@@ -31,6 +32,12 @@ const assetSchema = new Schema(
 
 assetSchema.virtual('parts', {
   ref: 'Part',
+  localField: '_id',
+  foreignField: 'asset',
+})
+
+assetSchema.virtual('history', {
+  ref: 'History',
   localField: '_id',
   foreignField: 'asset',
 })
