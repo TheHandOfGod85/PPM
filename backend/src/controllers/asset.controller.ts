@@ -208,6 +208,7 @@ export const completePlannedMaintenance: RequestHandler<
 
     await HistoryModel.create({
       asset: asset._id,
+      user: req.user?._id,
       completedTasks: asset.plannedMaintenance?.tasks,
     })
 

@@ -3,6 +3,7 @@ import { InferSchemaType, Schema, model } from 'mongoose'
 const historySchema = new Schema(
   {
     asset: { type: Schema.Types.ObjectId, ref: 'Asset', required: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     completedDate: { type: Date, default: Date.now },
     completedTasks: [
       {
